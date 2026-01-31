@@ -1,0 +1,467 @@
+﻿@model IEnumerable<DatSanBong.Models.NguoiDung>
+@{
+    ViewBag.Title = "Quản lý người dùng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --secondary: #0ea5e9;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    .page-header {
+        margin-bottom: 32px;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 0.9375rem;
+    }
+
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .btn-add {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        color: white;
+        text-decoration: none;
+    }
+
+    .alert {
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInDown 0.4s ease-out;
+    }
+
+    @@keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .alert i {
+        font-size: 1.25rem;
+    }
+
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+        border-left: 4px solid var(--success);
+    }
+
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+        border-left: 4px solid var(--danger);
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .table {
+        margin: 0;
+        width: 100%;
+    }
+
+    .table thead {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+
+    .table thead th {
+        color: white;
+        font-weight: 700;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 16px 12px;
+        border: none;
+        white-space: nowrap;
+    }
+
+    .table tbody tr {
+        border-bottom: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .table tbody td {
+        padding: 16px 12px;
+        vertical-align: middle;
+        color: #475569;
+        font-size: 0.9375rem;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+
+    .user-details {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .user-username {
+        font-size: 0.875rem;
+        color: #64748b;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-primary {
+        background: rgba(37, 99, 235, 0.1);
+        color: #1e40af;
+    }
+
+    .badge-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+    }
+
+    .badge-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+    }
+
+    .badge-warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: #92400e;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-action {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-edit {
+        background: rgba(245, 158, 11, 0.1);
+        color: #92400e;
+    }
+
+    .btn-edit:hover {
+        background: var(--warning);
+        color: white;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-delete {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+    }
+
+    .btn-delete:hover {
+        background: var(--danger);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #64748b;
+    }
+
+    .empty-state i {
+        font-size: 64px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+
+    @@media (max-width: 768px) {
+        .header-actions {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .table thead {
+            display: none;
+        }
+
+        .table tbody tr {
+            display: block;
+            margin-bottom: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .table tbody td {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border: none;
+        }
+
+        .table tbody td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .action-buttons {
+            width: 100%;
+        }
+
+        .btn-action {
+            flex: 1;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="fas fa-users"></i>
+        Quản Lý Người Dùng
+    </h1>
+    <p class="page-subtitle">Quản lý tài khoản và phân quyền người dùng trong hệ thống</p>
+</div>
+
+<div class="header-actions">
+    <div></div>
+    @Html.ActionLink("Thêm người dùng mới", "CreateUser", null, new { @class = "btn-add" })
+    <i class="fas fa-user-plus"></i>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        <span>@TempData["SuccessMessage"]</span>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>@TempData["ErrorMessage"]</span>
+    </div>
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="table-card">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Người Dùng</th>
+                        <th>Email</th>
+                        <th>Số Điện Thoại</th>
+                        <th>Vai Trò</th>
+                        <th>Trạng Thái</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td data-label="ID">
+                                <span style="font-weight: 700; color: #1e293b;">#@item.IDuser</span>
+                            </td>
+                            <td data-label="Người Dùng">
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        @(string.IsNullOrEmpty(item.fullname) ? "U" : item.fullname.Substring(0, 1).ToUpper())
+                                    </div>
+                                    <div class="user-details">
+                                        <div class="user-name">@(string.IsNullOrEmpty(item.fullname) ? "Chưa cập nhật" : item.fullname)</div>
+                                        <div class="user-username">@@@item.username</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-label="Email">
+                                <i class="fas fa-envelope" style="color: #94a3b8; margin-right: 6px;"></i>
+                                @item.email
+                            </td>
+                            <td data-label="Số Điện Thoại">
+                                @if (!string.IsNullOrEmpty(item.sdt))
+                                {
+                                    <i class="fas fa-phone" style="color: #94a3b8; margin-right: 6px;"></i>
+                                    @item.sdt
+                                }
+                                else
+                                {
+                                    <span style="color: #94a3b8;">Chưa cập nhật</span>
+                                }
+                            </td>
+                            <td data-label="Vai Trò">
+                                @{
+                                    var roleName = item.Role.Role_name;
+                                    var badgeClass = "badge-primary";
+                                    var icon = "fa-user";
+
+                                    if (roleName == "Admin")
+                                    {
+                                        badgeClass = "badge-danger";
+                                        icon = "fa-user-shield";
+                                    }
+                                    else if (roleName == "Employee")
+                                    {
+                                        badgeClass = "badge-warning";
+                                        icon = "fa-user-tie";
+                                    }
+                                }
+                                <span class="badge @badgeClass">
+                                    <i class="fas @icon"></i>
+                                    @roleName
+                                </span>
+                            </td>
+                            <td data-label="Trạng Thái">
+                                @if (item.trangthaiTK)
+                                {
+                                    <span class="badge badge-success">
+                                        <i class="fas fa-check-circle"></i>
+                                        Hoạt động
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">
+                                        <i class="fas fa-lock"></i>
+                                        Khóa
+                                    </span>
+                                }
+                            </td>
+                            <td data-label="Thao Tác">
+                                <div class="action-buttons">
+                                    <a href="@Url.Action("EditUser", new { id = item.IDuser })" class="btn-action btn-edit" title="Sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    @using (Html.BeginForm("DeleteUser", "Admin", new { id = item.IDuser }, FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Bạn có chắc chắn muốn xóa người dùng này?');" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-action btn-delete" title="Xóa">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="table-card">
+        <div class="empty-state">
+            <i class="fas fa-users"></i>
+            <h3>Chưa có người dùng nào</h3>
+            <p>Hãy thêm người dùng mới để bắt đầu quản lý</p>
+            @Html.ActionLink("Thêm người dùng", "CreateUser", null, new { @class = "btn-add" })
+            <i class="fas fa-user-plus"></i>
+        </div>
+    </div>
+}

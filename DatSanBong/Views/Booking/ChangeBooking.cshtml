@@ -1,0 +1,782 @@
+﻿@model DatSanBong.Models.DonDatSan
+@{
+    ViewBag.Title = "Đổi lịch đặt sân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1e40af;
+        --secondary: #0ea5e9;
+        --accent: #06b6d4;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    /* ===============================================
+       BACK BUTTON
+    =============================================== */
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 24px;
+        transition: all 0.2s ease;
+    }
+
+    .back-button:hover {
+        color: var(--primary);
+        transform: translateX(-4px);
+    }
+
+    /* ===============================================
+       PAGE HEADER
+    =============================================== */
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 1rem;
+    }
+
+    /* ===============================================
+       TWO COLUMN LAYOUT
+    =============================================== */
+    .change-booking-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        margin-bottom: 32px;
+    }
+
+    /* ===============================================
+       CURRENT BOOKING INFO
+    =============================================== */
+    .current-booking-card {
+        background: white;
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+        position: sticky;
+        top: 24px;
+        height: fit-content;
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .info-item {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .info-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #64748b;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-label i {
+        color: var(--primary);
+    }
+
+    .info-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .highlight-value {
+        font-size: 1.25rem;
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    /* ===============================================
+       CHANGE FORM
+    =============================================== */
+    .change-form-card {
+        background: white;
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+    }
+
+    .form-section {
+        margin-bottom: 24px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label i {
+        color: var(--primary);
+    }
+
+    .form-label .required {
+        color: var(--danger);
+        margin-left: 4px;
+    }
+
+    .form-control,
+    .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .form-hint {
+        font-size: 0.8125rem;
+        color: #94a3b8;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .form-hint i {
+        color: var(--warning);
+    }
+
+    /* ===============================================
+       COMPARISON DISPLAY
+    =============================================== */
+    .comparison-box {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(14, 165, 233, 0.05));
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 24px;
+        border: 1px solid rgba(37, 99, 235, 0.1);
+    }
+
+    .comparison-title {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .comparison-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .comparison-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .old-value {
+        text-align: right;
+        color: #94a3b8;
+        text-decoration: line-through;
+        font-size: 0.875rem;
+    }
+
+    .arrow {
+        color: var(--primary);
+        font-size: 1.125rem;
+    }
+
+    .new-value {
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 0.875rem;
+    }
+
+    /* ===============================================
+       BUTTONS
+    =============================================== */
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 32px;
+    }
+
+    .btn-action {
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+        background: #f8fafc;
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, var(--danger), #dc2626);
+        color: white;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+    }
+
+    /* ===============================================
+       ALERTS
+    =============================================== */
+    .alert {
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .alert i {
+        font-size: 1.25rem;
+    }
+
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+        border-left: 4px solid var(--success);
+    }
+
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+        border-left: 4px solid var(--danger);
+    }
+
+    .alert-warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: #b45309;
+        border-left: 4px solid var(--warning);
+    }
+
+    /* ===============================================
+       MODAL
+    =============================================== */
+    .modal-content {
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border-radius: 20px 20px 0 0;
+        border: none;
+        padding: 24px 32px;
+    }
+
+    .modal-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+
+    .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .modal-body {
+        padding: 32px;
+    }
+
+    .modal-footer {
+        border: none;
+        padding: 24px 32px;
+        background: #f8fafc;
+        border-radius: 0 0 20px 20px;
+    }
+
+    /* ===============================================
+       RESPONSIVE
+    =============================================== */
+    @@media (max-width: 1024px) {
+        .change-booking-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .current-booking-card {
+            position: relative;
+            top: 0;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        .current-booking-card,
+        .change-form-card {
+            padding: 24px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-action {
+            width: 100%;
+        }
+
+        .comparison-row {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+
+        .old-value {
+            text-align: center;
+        }
+
+        .arrow {
+            display: none;
+        }
+    }
+</style>
+
+<!-- Back Button -->
+<a href="@Url.Action("BookingDetails", "User", new { id = Model.IDBooking })" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+    Quay lại chi tiết đơn
+</a>
+
+<!-- Success/Error Messages -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        <span>@TempData["SuccessMessage"]</span>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>@TempData["ErrorMessage"]</span>
+    </div>
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1 class="page-title">Đổi Lịch Đặt Sân</h1>
+    <p class="page-subtitle">Cập nhật ngày và giờ cho đơn đặt sân #@Model.IDBooking</p>
+</div>
+
+<!-- Two Column Layout -->
+<div class="change-booking-layout">
+    <!-- Left: Current Booking Info -->
+    <div class="current-booking-card">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <h2 class="card-title">Thông Tin Hiện Tại</h2>
+        </div>
+
+        <div class="info-item">
+            <div class="info-label">
+                <i class="fas fa-futbol"></i>
+                Sân bóng
+            </div>
+            <div class="info-value">@Model.SanBong.TenSanBong</div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-label">
+                <i class="fas fa-map-marker-alt"></i>
+                Địa chỉ
+            </div>
+            <div class="info-value">@Model.SanBong.DiaChi</div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-label">
+                <i class="fas fa-calendar-day"></i>
+                Ngày đặt
+            </div>
+            <div class="info-value">@Model.NgayBooking.ToString("dddd, dd/MM/yyyy")</div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-label">
+                <i class="fas fa-clock"></i>
+                Khung giờ
+            </div>
+            <div class="info-value">@Model.start_time.ToString(@"hh\:mm") - @Model.end_time.ToString(@"hh\:mm")</div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-label">
+                <i class="fas fa-money-bill-wave"></i>
+                Tổng tiền
+            </div>
+            <div class="highlight-value">@Model.TongTien.ToString("N0") VNĐ</div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-label">
+                <i class="fas fa-credit-card"></i>
+                Phương thức thanh toán
+            </div>
+            <div class="info-value">@(Model.PhuongThucThanhToan?.TenPT ?? "Chưa chọn")</div>
+        </div>
+
+        <div class="alert alert-warning" style="margin-top: 24px; margin-bottom: 0;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Vui lòng kiểm tra kỹ thông tin mới trước khi xác nhận</span>
+        </div>
+    </div>
+
+    <!-- Right: Change Form -->
+    <div class="change-form-card">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="fas fa-edit"></i>
+            </div>
+            <h2 class="card-title">Thông Tin Mới</h2>
+        </div>
+
+        @using (Html.BeginForm("ChangeBooking", "Booking", FormMethod.Post, new { @id = "changeBookingForm" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.IDBooking)
+            @Html.HiddenFor(model => model.IDuser)
+            @Html.HiddenFor(model => model.IDSanBong)
+            @Html.HiddenFor(model => model.IDstatus)
+            @Html.HiddenFor(model => model.TTThanhToan)
+            @Html.HiddenFor(model => model.created_at)
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-calendar-alt"></i>
+                    Ngày đặt mới
+                    <span class="required">*</span>
+                </label>
+                @Html.TextBoxFor(model => model.NgayBooking, 
+                    "{0:yyyy-MM-dd}", 
+                    new { 
+                        @class = "form-control", 
+                        type = "date", 
+                        min = DateTime.Today.ToString("yyyy-MM-dd"),
+                        required = "required",
+                        id = "newDate"
+                    })
+                @Html.ValidationMessageFor(model => model.NgayBooking, "", new { @class = "text-danger" })
+                <div class="form-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Chọn ngày mới (từ hôm nay trở đi)
+                </div>
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-clock"></i>
+                    Giờ bắt đầu mới
+                    <span class="required">*</span>
+                </label>
+                <input type="time" 
+                       name="startTime" 
+                       class="form-control" 
+                       value="@Model.start_time.ToString(@"hh\:mm")" 
+                       required
+                       id="newStartTime" />
+                <div class="form-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Chọn giờ bắt đầu mới
+                </div>
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-clock"></i>
+                    Giờ kết thúc mới
+                    <span class="required">*</span>
+                </label>
+                <input type="time" 
+                       name="endTime" 
+                       class="form-control" 
+                       value="@Model.end_time.ToString(@"hh\:mm")" 
+                       required
+                       id="newEndTime" />
+                <div class="form-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Chọn giờ kết thúc mới
+                </div>
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-credit-card"></i>
+                    Phương thức thanh toán
+                    <span class="required">*</span>
+                </label>
+                @Html.DropDownListFor(model => model.IDPT, 
+                    (SelectList)ViewBag.PhuongThucThanhToanList, 
+                    "--- Chọn phương thức thanh toán ---", 
+                    new { @class = "form-select" })
+                @Html.ValidationMessageFor(model => model.IDPT, "", new { @class = "text-danger" })
+            </div>
+
+            <!-- Comparison Box -->
+            <div class="comparison-box" id="comparisonBox" style="display: none;">
+                <div class="comparison-title">
+                    <i class="fas fa-exchange-alt"></i>
+                    Thay đổi
+                </div>
+                <div id="comparisonContent"></div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="submit" class="btn-action btn-primary">
+                    <i class="fas fa-check-circle"></i>
+                    Xác nhận đổi lịch
+                </button>
+                <a href="@Url.Action("BookingDetails", "User", new { id = Model.IDBooking })" class="btn-action btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Hủy bỏ
+                </a>
+            </div>
+        }
+
+        @{
+            bool canCancel = Model.NgayBooking >= DateTime.Today && 
+                           (Model.IDstatus == 1 || Model.IDstatus == 2);
+        }
+
+        @if (canCancel)
+        {
+            <div style="margin-top: 24px; padding-top: 24px; border-top: 2px solid #f1f5f9;">
+                <button type="button" class="btn-action btn-danger" data-bs-toggle="modal" data-bs-target="#cancelBookingModal" style="width: 100%;">
+                    <i class="fas fa-ban"></i>
+                    Hủy đơn đặt sân
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Cancel Booking Modal -->
+<div class="modal fade" id="cancelBookingModal" tabindex="-1" aria-labelledby="cancelBookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelBookingModalLabel">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Xác nhận hủy đơn
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @using (Html.BeginForm("CancelBooking", "Booking", FormMethod.Post, new { id = "cancelForm" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("id", Model.IDBooking)
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Bạn có chắc chắn muốn hủy đơn đặt sân <strong>#@Model.IDBooking</strong> không?</span>
+                    </div>
+                    
+                    <div class="form-section">
+                        <label for="reason" class="form-label">
+                            <i class="fas fa-comment-dots"></i>
+                            Lý do hủy
+                        </label>
+                        <textarea class="form-control" 
+                                  id="reason" 
+                                  name="reason" 
+                                  rows="4"
+                                  placeholder="Vui lòng cho chúng tôi biết lý do hủy đơn (không bắt buộc)..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-action btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i>
+                        Đóng
+                    </button>
+                    <button type="submit" class="btn-action btn-danger">
+                        <i class="fas fa-check"></i>
+                        Xác nhận hủy
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            const currentDate = '@Model.NgayBooking.ToString("yyyy-MM-dd")';
+            const currentStartTime = '@Model.start_time.ToString(@"hh\:mm")';
+            const currentEndTime = '@Model.end_time.ToString(@"hh\:mm")';
+
+            function updateComparison() {
+                const newDate = $('#newDate').val();
+                const newStartTime = $('#newStartTime').val();
+                const newEndTime = $('#newEndTime').val();
+
+                let hasChanges = false;
+                let html = '';
+
+                // Compare date
+                if (newDate && newDate !== currentDate) {
+                    hasChanges = true;
+                    const oldDateFormatted = new Date(currentDate).toLocaleDateString('vi-VN');
+                    const newDateFormatted = new Date(newDate).toLocaleDateString('vi-VN');
+                    html += `
+                        <div class="comparison-row">
+                            <div class="old-value">${oldDateFormatted}</div>
+                            <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                            <div class="new-value">${newDateFormatted}</div>
+                        </div>
+                    `;
+                }
+
+                // Compare time
+                if ((newStartTime && newStartTime !== currentStartTime) || 
+                    (newEndTime && newEndTime !== currentEndTime)) {
+                    hasChanges = true;
+                    html += `
+                        <div class="comparison-row">
+                            <div class="old-value">${currentStartTime} - ${currentEndTime}</div>
+                            <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                            <div class="new-value">${newStartTime} - ${newEndTime}</div>
+                        </div>
+                    `;
+                }
+
+                if (hasChanges) {
+                    $('#comparisonContent').html(html);
+                    $('#comparisonBox').slideDown();
+                } else {
+                    $('#comparisonBox').slideUp();
+                }
+            }
+
+            // Listen for changes
+            $('#newDate, #newStartTime, #newEndTime').on('change input', updateComparison);
+
+            // Validate time
+            $('#changeBookingForm').on('submit', function(e) {
+                const startTime = $('#newStartTime').val();
+                const endTime = $('#newEndTime').val();
+
+                if (startTime >= endTime) {
+                    e.preventDefault();
+                    alert('Giờ kết thúc phải sau giờ bắt đầu!');
+                    return false;
+                }
+            });
+
+            // Initial check
+            updateComparison();
+        });
+    </script>
+}

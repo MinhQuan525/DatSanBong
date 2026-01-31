@@ -1,0 +1,215 @@
+﻿@{
+    ViewBag.Title = "Truy cập bị từ chối";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    // Xác định trang chủ phù hợp với role
+    string homeController = "Home";
+    string homeAction = "Index";
+    
+    if (Session["UserRoleID"] != null)
+    {
+        int userRoleID = (int)Session["UserRoleID"];
+        
+        if (userRoleID == 3) // Admin
+        {
+            homeController = "Admin";
+        }
+        else if (userRoleID == 2) // Employee
+        {
+            homeController = "Employee";
+        }
+        // else: Customer (default Home)
+    }
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+    }
+
+    .access-denied-container {
+        max-width: 800px;
+        margin: 80px auto;
+        padding: 0 20px;
+    }
+
+    .access-denied-card {
+        background: white;
+        border-radius: 16px;
+        padding: 60px 40px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        text-align: center;
+    }
+
+    .icon-wrapper {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 32px;
+        background: rgba(239, 68, 68, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .icon-wrapper i {
+        font-size: 60px;
+        color: var(--danger);
+    }
+
+    .access-denied-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 16px;
+    }
+
+    .access-denied-message {
+        font-size: 1.125rem;
+        color: #64748b;
+        margin-bottom: 32px;
+        line-height: 1.6;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(251, 113, 133, 0.05));
+        border-left: 4px solid var(--danger);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 32px;
+        text-align: left;
+    }
+
+    .info-box-title {
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-box-title i {
+        color: var(--danger);
+    }
+
+    .info-box-list {
+        margin: 0;
+        padding-left: 20px;
+        color: #64748b;
+        font-size: 0.9375rem;
+    }
+
+    .info-box-list li {
+        margin-bottom: 8px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 14px 32px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), #0ea5e9);
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-warning {
+        background: white;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-warning:hover {
+        background: #f8fafc;
+        border-color: var(--warning);
+        color: var(--warning);
+        text-decoration: none;
+    }
+
+    @@media (max-width: 768px) {
+        .access-denied-card {
+            padding: 40px 24px;
+        }
+
+        .access-denied-title {
+            font-size: 1.5rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-action {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="access-denied-container">
+    <div class="access-denied-card">
+        <div class="icon-wrapper">
+            <i class="fas fa-ban"></i>
+        </div>
+
+        <h1 class="access-denied-title">
+            Truy Cập Bị Từ Chối!
+        </h1>
+
+        <p class="access-denied-message">
+            Bạn không có quyền truy cập vào trang này. 
+            <br>Vui lòng kiểm tra lại quyền hạn của bạn.
+        </p>
+
+        <div class="info-box">
+            <div class="info-box-title">
+                <i class="fas fa-info-circle"></i>
+                Lý do có thể:
+            </div>
+            <ul class="info-box-list">
+                <li>Bạn không có quyền truy cập vào chức năng này</li>
+                <li>Trang yêu cầu vai trò khác (Admin/Employee)</li>
+                <li>Phiên đăng nhập của bạn có thể đã hết hạn</li>
+                <li>Bạn đang cố truy cập tài nguyên không thuộc quyền quản lý</li>
+            </ul>
+        </div>
+
+        <div class="action-buttons">
+            <a href="@Url.Action(homeAction, homeController)" class="btn-action btn-primary">
+                <i class="fas fa-home"></i>
+                Quay về trang chủ
+            </a>
+            <a href="@Url.Action("Logout", "Account")" class="btn-action btn-warning">
+                <i class="fas fa-sign-out-alt"></i>
+                Đăng xuất
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,889 @@
+﻿@model DatSanBong.Models.NguoiDung
+@{
+    ViewBag.Title = "Thông tin cá nhân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1e40af;
+        --secondary: #0ea5e9;
+        --accent: #06b6d4;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    /* ===============================================
+       BACK BUTTON
+    =============================================== */
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 24px;
+        transition: all 0.2s ease;
+    }
+
+    .back-button:hover {
+        color: var(--primary);
+        transform: translateX(-4px);
+    }
+
+    /* ===============================================
+       PAGE HEADER
+    =============================================== */
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 1rem;
+    }
+
+    /* ===============================================
+       TWO COLUMN LAYOUT
+    =============================================== */
+    .profile-layout {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 32px;
+        margin-bottom: 32px;
+    }
+
+    /* ===============================================
+       USER INFO CARD
+    =============================================== */
+    .user-card {
+        background: white;
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+        position: sticky;
+        top: 24px;
+        height: fit-content;
+    }
+
+    .user-avatar-section {
+        text-align: center;
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .user-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        color: white;
+        font-size: 3rem;
+        font-weight: 800;
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .user-avatar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        animation: shimmer 3s infinite;
+    }
+
+    @@keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    .user-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 4px;
+    }
+
+    .user-username {
+        color: #64748b;
+        font-size: 0.9375rem;
+        font-weight: 600;
+    }
+
+    .user-email {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #64748b;
+        font-size: 0.875rem;
+        margin-top: 8px;
+        padding: 6px 12px;
+        background: rgba(37, 99, 235, 0.05);
+        border-radius: 20px;
+    }
+
+    .user-email i {
+        color: var(--primary);
+    }
+
+    .info-section {
+        margin-bottom: 24px;
+    }
+
+    .info-section-title {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        margin-bottom: 8px;
+        background: #f8fafc;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+        background: #f1f5f9;
+        transform: translateX(4px);
+    }
+
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 12px;
+        font-size: 16px;
+    }
+
+    .info-content {
+        flex: 1;
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #94a3b8;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .info-value {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-active {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+    }
+
+    .status-inactive {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+    }
+
+    /* ===============================================
+       EDIT FORM CARD
+    =============================================== */
+    .edit-card {
+        background: white;
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .form-section {
+        margin-bottom: 24px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label i {
+        color: var(--primary);
+    }
+
+    .form-label .required {
+        color: var(--danger);
+        margin-left: 4px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .form-hint {
+        font-size: 0.8125rem;
+        color: #94a3b8;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .form-hint i {
+        color: var(--warning);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 32px;
+    }
+
+    .btn-action {
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+        background: #f8fafc;
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    /* ===============================================
+       ALERTS
+    =============================================== */
+    .alert {
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInDown 0.4s ease-out;
+    }
+
+    .alert i {
+        font-size: 1.25rem;
+    }
+
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+        border-left: 4px solid var(--success);
+    }
+
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+        border-left: 4px solid var(--danger);
+    }
+
+    @@keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===============================================
+       QUICK ACTIONS
+    =============================================== */
+    .quick-actions {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(14, 165, 233, 0.05));
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 24px;
+    }
+
+    .quick-actions-title {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 12px;
+    }
+
+    .quick-action-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: white;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .quick-action-item:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    }
+
+    .quick-action-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .quick-action-text {
+        flex: 1;
+    }
+
+    .quick-action-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .quick-action-desc {
+        font-size: 0.75rem;
+        color: #64748b;
+    }
+
+    .quick-action-arrow {
+        color: #94a3b8;
+    }
+
+    /* ===============================================
+       VALIDATION
+    =============================================== */
+    .validation-summary-errors {
+        background: rgba(239, 68, 68, 0.1);
+        border-left: 4px solid var(--danger);
+        color: #991b1b;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+    }
+
+    .validation-summary-errors ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .validation-summary-errors li {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .text-danger {
+        color: var(--danger);
+        font-size: 0.8125rem;
+        margin-top: 6px;
+        font-weight: 600;
+    }
+
+    /* ===============================================
+       RESPONSIVE
+    =============================================== */
+    @@media (max-width: 1024px) {
+        .profile-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .user-card {
+            position: relative;
+            top: 0;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        .user-card,
+        .edit-card {
+            padding: 24px;
+        }
+
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            font-size: 2.5rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-action {
+            width: 100%;
+        }
+    }
+
+    /* ===============================================
+       ANIMATIONS
+    =============================================== */
+    .user-card,
+    .edit-card {
+        animation: fadeInUp 0.6s ease-out backwards;
+    }
+
+    .edit-card {
+        animation-delay: 0.1s;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<!-- Back Button -->
+<a href="@Url.Action("Index", "Home")" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+    Quay lại trang chủ
+</a>
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1 class="page-title">Thông Tin Cá Nhân</h1>
+    <p class="page-subtitle">Quản lý và cập nhật thông tin tài khoản của bạn</p>
+</div>
+
+<!-- Success/Error Messages -->
+@if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+{
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        <span>@ViewBag.SuccessMessage</span>
+    </div>
+}
+
+<!-- Two Column Layout -->
+<div class="profile-layout">
+    <!-- Left: User Info Card -->
+    <div class="user-card">
+        <!-- Avatar Section -->
+        <div class="user-avatar-section">
+            <div class="user-avatar">
+                @if (!string.IsNullOrEmpty(Model.fullname))
+                {
+                    @Model.fullname.Substring(0, 1).ToUpper()
+                }
+                else
+                {
+                    @Model.username.Substring(0, 1).ToUpper()
+                }
+            </div>
+            <h2 class="user-name">
+                @if (!string.IsNullOrEmpty(Model.fullname))
+                {
+                    @Model.fullname
+                }
+                else
+                {
+                    @Model.username
+                }
+            </h2>
+            <div class="user-username">@@@Model.username</div>
+            <div class="user-email">
+                <i class="fas fa-envelope"></i>
+                @Model.email
+            </div>
+        </div>
+
+        <!-- Account Info -->
+        <div class="info-section">
+            <div class="info-section-title">Thông tin tài khoản</div>
+            
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="info-content">
+                    <div class="info-label">Trạng thái</div>
+                    <div class="info-value">
+                        @if (Model.trangthaiTK)
+                        {
+                            <span class="status-badge status-active">
+                                <i class="fas fa-check-circle"></i>
+                                Hoạt động
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="status-badge status-inactive">
+                                <i class="fas fa-times-circle"></i>
+                                Tạm khóa
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.sdt))
+            {
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Số điện thoại</div>
+                        <div class="info-value">@Model.sdt</div>
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.DiaChi))
+            {
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Địa chỉ</div>
+                        <div class="info-value">@Model.DiaChi</div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Activity Info -->
+        <div class="info-section">
+            <div class="info-section-title">Hoạt động</div>
+            
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="info-content">
+                    <div class="info-label">Đăng nhập cuối</div>
+                    <div class="info-value">
+                        @if (Model.last_log.HasValue)
+                        {
+                            @Model.last_log.Value.ToString("dd/MM/yyyy HH:mm")
+                        }
+                        else
+                        {
+                            <span style="color: #94a3b8;">Chưa có</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-calendar-plus"></i>
+                </div>
+                <div class="info-content">
+                    <div class="info-label">Ngày tạo</div>
+                    <div class="info-value">@Model.create_at.ToString("dd/MM/yyyy")</div>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-sync"></i>
+                </div>
+                <div class="info-content">
+                    <div class="info-label">Cập nhật lần cuối</div>
+                    <div class="info-value">@Model.update_at.ToString("dd/MM/yyyy HH:mm")</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="quick-actions-title">Thao tác nhanh</div>
+            
+            <a href="@Url.Action("MyBookings", "User")" class="quick-action-item">
+                <div class="quick-action-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="quick-action-text">
+                    <div class="quick-action-label">Lịch sử đặt sân</div>
+                    <div class="quick-action-desc">Xem các đơn đặt của bạn</div>
+                </div>
+                <i class="fas fa-chevron-right quick-action-arrow"></i>
+            </a>
+
+            <a href="@Url.Action("ChangePassword", "Account")" class="quick-action-item">
+                <div class="quick-action-icon">
+                    <i class="fas fa-key"></i>
+                </div>
+                <div class="quick-action-text">
+                    <div class="quick-action-label">Đổi mật khẩu</div>
+                    <div class="quick-action-desc">Cập nhật mật khẩu</div>
+                </div>
+                <i class="fas fa-chevron-right quick-action-arrow"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Right: Edit Form -->
+    <div class="edit-card">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="fas fa-user-edit"></i>
+            </div>
+            <h2 class="card-title">Cập Nhật Thông Tin</h2>
+        </div>
+
+        @using (Html.BeginForm("Profile", "User", FormMethod.Post, new { @id = "profileForm" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+
+            @Html.HiddenFor(model => model.IDuser)
+            @Html.HiddenFor(model => model.username)
+            @Html.HiddenFor(model => model.email)
+            @Html.HiddenFor(model => model.pass_hash)
+            @Html.HiddenFor(model => model.trangthaiTK)
+            @Html.HiddenFor(model => model.last_log)
+            @Html.HiddenFor(model => model.create_at)
+            @Html.HiddenFor(model => model.update_at)
+            @Html.HiddenFor(model => model.IDrole)
+
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-user"></i>
+                    Họ và tên đầy đủ
+                    <span class="required">*</span>
+                </label>
+                @Html.EditorFor(model => model.fullname, new { 
+                    htmlAttributes = new { 
+                        @class = "form-control", 
+                        placeholder = "Nhập họ và tên đầy đủ của bạn",
+                        required = "required"
+                    } 
+                })
+                @Html.ValidationMessageFor(model => model.fullname, "", new { @class = "text-danger" })
+                <div class="form-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Tên đầy đủ sẽ được hiển thị trong hệ thống
+                </div>
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-phone"></i>
+                    Số điện thoại
+                </label>
+                @Html.EditorFor(model => model.sdt, new { 
+                    htmlAttributes = new { 
+                        @class = "form-control", 
+                        placeholder = "Nhập số điện thoại (10 chữ số)",
+                        pattern = "[0-9]{10}",
+                        maxlength = "10"
+                    } 
+                })
+                @Html.ValidationMessageFor(model => model.sdt, "", new { @class = "text-danger" })
+                <div class="form-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Số điện thoại gồm 10 chữ số
+                </div>
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Địa chỉ
+                </label>
+                @Html.EditorFor(model => model.DiaChi, new { 
+                    htmlAttributes = new { 
+                        @class = "form-control", 
+                        placeholder = "Nhập địa chỉ đầy đủ của bạn"
+                    } 
+                })
+                @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger" })
+                <div class="form-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Địa chỉ chi tiết giúp chúng tôi hỗ trợ bạn tốt hơn
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="submit" class="btn-action btn-primary">
+                    <i class="fas fa-save"></i>
+                    Lưu thay đổi
+                </button>
+                <button type="reset" class="btn-action btn-secondary">
+                    <i class="fas fa-undo"></i>
+                    Đặt lại
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            // Form validation
+            $('#profileForm').on('submit', function(e) {
+                const fullname = $('input[name="fullname"]').val().trim();
+                const sdt = $('input[name="sdt"]').val().trim();
+
+                if (!fullname) {
+                    e.preventDefault();
+                    alert('Vui lòng nhập họ và tên!');
+                    return false;
+                }
+
+                if (sdt && !/^[0-9]{10}$/.test(sdt)) {
+                    e.preventDefault();
+                    alert('Số điện thoại phải gồm 10 chữ số!');
+                    return false;
+                }
+            });
+
+            // Animation on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.user-card, .edit-card').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Auto-hide success message
+            setTimeout(() => {
+                $('.alert-success').fadeOut(500, function() {
+                    $(this).remove();
+                });
+            }, 5000);
+        });
+    </script>
+}

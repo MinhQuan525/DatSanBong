@@ -1,0 +1,115 @@
+﻿@model IEnumerable<DatSanBong.Models.SuCo>
+@{
+    ViewBag.Title = "Quản lý báo cáo sự cố";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    h2 {
+        text-align: center;
+        color: #dc3545;
+        font-weight: 600;
+        margin-bottom: 30px;
+    }
+
+    .table {
+        font-size: 0.95rem;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+        .table thead {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+            .table thead th {
+                padding: 12px;
+                font-weight: 600;
+                border-bottom: none;
+            }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f8f9fa;
+    }
+
+    .table td {
+        padding: 10px 12px;
+        vertical-align: middle;
+        color: #333;
+    }
+
+    .table tbody tr:hover {
+        background-color: #ffecec;
+        cursor: pointer;
+    }
+
+    .btn-sm.btn-info {
+        font-size: 0.85rem;
+        border-radius: 6px;
+        padding: 6px 10px;
+        background-color: #17a2b8;
+        border: none;
+    }
+
+    .alert-success,
+    .alert-danger {
+        border-radius: 8px;
+        padding: 15px;
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+</style>
+<h2>Quản lý báo cáo sự cố</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Loại sự cố</th>
+            <th>Người báo cáo</th>
+            <th>Sân liên quan</th>
+            <th>Mô tả</th>
+            <th>Trạng thái</th>
+            <th>Ngày báo cáo</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IDSuCo</td>
+                <td>@item.LoaiSuCo</td>
+                <td>@(item.NguoiDung?.fullname ?? item.user_backup_info ?? "N/A")</td>
+                <td>@(item.SanBong?.TenSanBong ?? item.sanBong_backup_info ?? "N/A")</td>
+                <td>@item.MoTa</td>
+                <td>@item.TrangThai</td>
+                <td>@item.reported_at.Value.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    @Html.ActionLink("Chi tiết", "IncidentDetails", new { id = item.IDSuCo }, new { @class = "btn btn-sm btn-info" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

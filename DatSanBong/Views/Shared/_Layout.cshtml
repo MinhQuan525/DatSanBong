@@ -1,0 +1,807 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Đặt Sân Bóng Đá</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #3b82f6;
+            --secondary: #0ea5e9;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --navbar-height: 75px;
+            --primary-gradient: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+            --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+            color: #1e293b;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Animated background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 15% 50%, rgba(255,255,255,0.12) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(255,255,255,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(6,182,212,0.15) 0%, transparent 50%);
+            background-size: 100% 100%;
+            animation: gradientShift 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @@keyframes gradientShift {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.05); }
+        }
+
+        /* ===============================================
+           NAVIGATION BAR
+        =============================================== */
+        .navbar-modern {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: var(--navbar-height);
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(37, 99, 235, 0.08);
+            box-shadow: 0 4px 24px rgba(37, 99, 235, 0.12);
+            animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @@keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
+
+        .navbar-brand-modern {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #1e293b;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand-modern i {
+            font-size: 28px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @@keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .navbar-brand-modern span {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .navbar-brand-modern:hover {
+            transform: scale(1.03);
+        }
+
+        .navbar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 26px;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .navbar-toggle:hover {
+            background: rgba(37, 99, 235, 0.08);
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            list-style: none;
+        }
+
+        .navbar-menu.mobile {
+            display: none;
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            right: 0;
+            background: white;
+            flex-direction: column;
+            padding: 24px 20px;
+            box-shadow: 0 8px 32px rgba(37, 99, 235, 0.15);
+            max-height: calc(100vh - var(--navbar-height));
+            overflow-y: auto;
+        }
+
+        .navbar-menu.mobile.show {
+            display: flex;
+        }
+
+        .nav-item-modern {
+            position: relative;
+        }
+
+        .nav-link-modern {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        .nav-link-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .nav-link-modern:hover {
+            color: white;
+            background: var(--primary-gradient);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+        }
+
+        .nav-link-modern:hover::before {
+            left: 100%;
+        }
+
+        .nav-link-modern i {
+            font-size: 15px;
+        }
+
+        .nav-link-modern.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        /* User Greeting - Same blue style */
+        .nav-link-modern.user-greeting {
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 700;
+            padding: 10px 20px;
+            cursor: default;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .nav-link-modern.user-greeting:hover {
+            transform: none;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Logout - Same blue style */
+        .nav-link-modern.logout {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .nav-link-modern.logout:hover {
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Login button - Same blue style */
+        .nav-link-modern.btn-login {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 10px 24px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .nav-link-modern.btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        /* ===============================================
+           MAIN CONTENT
+        =============================================== */
+        .main-wrapper {
+            min-height: calc(100vh - var(--navbar-height) - 80px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 36px 32px;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 
+                0 20px 60px rgba(37, 99, 235, 0.12),
+                0 8px 32px rgba(14, 165, 233, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            border-radius: 24px 24px 0 0;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===============================================
+           FOOTER
+        =============================================== */
+        .footer-modern {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(37, 99, 235, 0.2);
+            color: white;
+            padding: 40px 0 24px;
+            margin-top: 60px;
+            position: relative;
+        }
+
+        .footer-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+        }
+
+        .footer-section h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-section h3 i {
+            color: var(--secondary);
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 14px;
+            line-height: 1.8;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--secondary);
+            padding-left: 6px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(37, 99, 235, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-icon:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 24px;
+            margin-top: 32px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+        }
+
+        .footer-bottom i.fa-heart {
+            color: var(--secondary);
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @@keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* ===============================================
+           RESPONSIVE DESIGN
+        =============================================== */
+        @@media (max-width: 1024px) {
+            .navbar-container {
+                padding: 0 24px;
+            }
+
+            .content-container {
+                padding: 32px 24px;
+            }
+
+            .content-card {
+                padding: 32px 24px;
+                border-radius: 20px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .navbar-toggle {
+                display: block;
+            }
+
+            .navbar-menu:not(.mobile) {
+                display: none;
+            }
+
+            .navbar-brand-modern {
+                font-size: 19px;
+            }
+
+            .navbar-brand-modern i {
+                font-size: 24px;
+            }
+
+            .content-container {
+                padding: 24px 16px;
+            }
+
+            .content-card {
+                padding: 24px 16px;
+                border-radius: 16px;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+                padding: 0 16px;
+            }
+        }
+
+        /* ===============================================
+           UTILITIES
+        =============================================== */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+        }
+
+        /* Loading Animation */
+        @@keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar-modern">
+        <div class="navbar-container">
+            <a href="@Url.Action("Index", "Home")" class="navbar-brand-modern">
+                <i class="fas fa-futbol"></i>
+                <span>Đặt Sân Bóng</span>
+            </a>
+
+            <button class="navbar-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Desktop Menu -->
+            <ul class="navbar-menu" id="desktopMenu">
+                <li class="nav-item-modern">
+                    <a href="@Url.Action("Index", "Home")" class="nav-link-modern">
+                        <i class="fas fa-home"></i>
+                        <span>Trang chủ</span>
+                    </a>
+                </li>
+                
+                @if (Session["UserRole"] != null)
+                {
+                    <li class="nav-item-modern">
+                        <a href="@Url.Action("MyBookings", "User")" class="nav-link-modern">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Lịch đặt sân</span>
+                        </a>
+                    </li>
+                    <li class="nav-item-modern">
+                        <a href="@Url.Action("Profile", "User")" class="nav-link-modern">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Thông tin</span>
+                        </a>
+                    </li>
+                    <li class="nav-item-modern">
+                        <a href="@Url.Action("ReportIncident", "User")" class="nav-link-modern">
+                            <i class="fas fa-flag"></i>
+                            <span>Báo cáo</span>
+                        </a>
+                    </li>
+                }
+
+                @if (Session["UserID"] != null)
+                {
+                    <li class="nav-item-modern">
+                        <span class="nav-link-modern user-greeting">
+                            <i class="fas fa-user"></i>
+                            @Session["Fullname"]
+                        </span>
+                    </li>
+                    <li class="nav-item-modern">
+                        <a href="@Url.Action("ChangePassword", "Account")" class="nav-link-modern">
+                            <i class="fas fa-key"></i>
+                            <span>Đổi MK</span>
+                        </a>
+                    </li>
+                    <li class="nav-item-modern">
+                        <a href="@Url.Action("Logout", "Account")" class="nav-link-modern logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Đăng xuất</span>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item-modern">
+                        <a href="@Url.Action("Login", "Account")" class="nav-link-modern btn-login">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Đăng nhập</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+
+            <!-- Mobile Menu -->
+            <ul class="navbar-menu mobile" id="mobileMenu">
+                <li class="nav-item-modern">
+                    <a href="@Url.Action("Index", "Home")" class="nav-link-modern">
+                        <i class="fas fa-home"></i>
+                        <span>Trang chủ</span>
+                    </a>
+                </li>
+                
+                @if (Session["UserRole"] != null)
+                {
+                    <li class="nav-item-modern">
+                        <a href="@Url.Action("MyBookings", "User")" class="nav-link-modern">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Lịch đặt sân</span>
+                        </a>
+                    </li>
+                    <li class="nav-item-modern">
+                        <a href="@Url.Action("Profile", "User")" class="nav-link-modern">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Thông tin cá nhân</span>
+                        </a>
+                    </li>
+                    <li class="nav-item-modern">
+                        <a href="@Url.Action("ReportIncident", "User")" class="nav-link-modern">
+                            <i class="fas fa-flag"></i>
+                            <span>Báo cáo sự cố</span>
+                        </a>
+                    </li>
+                }
+
+                @if (Session["UserID"] != null)
+                {
+                    <li class="nav-item-modern">
+                        <span class="nav-link-modern user-greeting">
+                            <i class="fas fa-user"></i>
+                            @Session["Fullname"]
+                        </span>
+                    </li>
+                    <li class="nav-item-modern">
+                        <a href="@Url.Action("ChangePassword", "Account")" class="nav-link-modern">
+                            <i class="fas fa-key"></i>
+                            <span>Đổi mật khẩu</span>
+                        </a>
+                    </li>
+                    <li class="nav-item-modern">
+                        <a href="@Url.Action("Logout", "Account")" class="nav-link-modern logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Đăng xuất</span>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item-modern">
+                        <a href="@Url.Action("Login", "Account")" class="nav-link-modern btn-login">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Đăng nhập</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <div class="content-container">
+            <div class="content-card">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-modern">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3><i class="fas fa-futbol"></i> Đặt Sân Bóng Đá</h3>
+                <p>Nền tảng đặt sân bóng đá trực tuyến hàng đầu Việt Nam. Nhanh chóng, tiện lợi, uy tín.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon" title="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3><i class="fas fa-link"></i> Liên Kết Nhanh</h3>
+                <div class="footer-links">
+                    <a href="@Url.Action("Index", "Home")"><i class="fas fa-chevron-right"></i> Trang chủ</a>
+                    <a href="@Url.Action("About", "Home")"><i class="fas fa-chevron-right"></i> Về chúng tôi</a>
+                    <a href="@Url.Action("Contact", "Home")"><i class="fas fa-chevron-right"></i> Liên hệ</a>
+                    <a href="#"><i class="fas fa-chevron-right"></i> Điều khoản sử dụng</a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3><i class="fas fa-headset"></i> Hỗ Trợ</h3>
+                <div class="footer-links">
+                    <a href="#"><i class="fas fa-chevron-right"></i> Câu hỏi thường gặp</a>
+                    <a href="#"><i class="fas fa-chevron-right"></i> Hướng dẫn đặt sân</a>
+                    <a href="#"><i class="fas fa-chevron-right"></i> Chính sách hoàn tiền</a>
+                    <a href="#"><i class="fas fa-chevron-right"></i> Báo cáo sự cố</a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3><i class="fas fa-address-card"></i> Liên Hệ</h3>
+                <div class="footer-links">
+                    <p><i class="fas fa-map-marker-alt"></i> TP. Hồ Chí Minh, Việt Nam</p>
+                    <p><i class="fas fa-phone"></i> 0123 456 789</p>
+                    <p><i class="fas fa-envelope"></i> contact@datsanbong.vn</p>
+                    <p><i class="fas fa-clock"></i> 24/7 - Luôn sẵn sàng</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; @DateTime.Now.Year Đặt Sân Bóng Đá. All rights reserved. Made with <i class="fas fa-heart"></i> in Vietnam</p>
+            </div>
+        </div>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    
+    <script>
+        // Mobile menu toggle
+        $(document).ready(function() {
+            $('#navToggle').on('click', function() {
+                $('#mobileMenu').toggleClass('show');
+                $(this).find('i').toggleClass('fa-bars fa-times');
+            });
+
+            // Close mobile menu on link click
+            $('#mobileMenu a').on('click', function() {
+                $('#mobileMenu').removeClass('show');
+                $('#navToggle i').removeClass('fa-times').addClass('fa-bars');
+            });
+
+            // Close mobile menu on outside click
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.navbar-modern').length) {
+                    $('#mobileMenu').removeClass('show');
+                    $('#navToggle i').removeClass('fa-times').addClass('fa-bars');
+                }
+            });
+
+            // Set active link based on current URL
+            const currentPath = window.location.pathname.toLowerCase();
+            $('.nav-link-modern').each(function() {
+                const href = $(this).attr('href');
+                if (href && href.toLowerCase() === currentPath) {
+                    $(this).addClass('active');
+                }
+            });
+
+            // Smooth scroll for anchor links
+            $('a[href^="#"]').on('click', function(e) {
+                e.preventDefault();
+                const target = $(this.hash);
+                if (target.length) {
+                    $('html, body').animate({
+                        scrollTop: target.offset().top - 75
+                    }, 800);
+                }
+            });
+        });
+
+        // Add scroll effect to navbar
+        let lastScroll = 0;
+        $(window).on('scroll', function() {
+            const currentScroll = $(this).scrollTop();
+            
+            if (currentScroll > 50) {
+                $('.navbar-modern').css({
+                    'box-shadow': '0 6px 32px rgba(37, 99, 235, 0.18)',
+                    'background': 'rgba(255, 255, 255, 0.98)'
+                });
+            } else {
+                $('.navbar-modern').css({
+                    'box-shadow': '0 4px 24px rgba(37, 99, 235, 0.12)',
+                    'background': 'rgba(255, 255, 255, 0.96)'
+                });
+            }
+            
+            lastScroll = currentScroll;
+        });
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

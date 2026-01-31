@@ -1,0 +1,743 @@
+﻿@model IEnumerable<DatSanBong.Models.SanBong>
+@{
+    ViewBag.Title = "Trang chủ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1e40af;
+        --secondary: #0ea5e9;
+        --accent: #06b6d4;
+    }
+
+    /* ===============================================
+       HERO SECTION
+    =============================================== */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(14, 165, 233, 0.05) 100%);
+        border-radius: 24px;
+        padding: 48px 40px;
+        margin-bottom: 48px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        background-size: 200% 100%;
+        animation: gradientFlow 3s ease-in-out infinite;
+    }
+
+    @@keyframes gradientFlow {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    .hero-content {
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 16px;
+        letter-spacing: -0.5px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.125rem;
+        color: #64748b;
+        margin-bottom: 32px;
+        font-weight: 500;
+    }
+
+    .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 24px;
+        margin-top: 32px;
+    }
+
+    .stat-item {
+        background: white;
+        padding: 24px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        margin-top: 8px;
+        font-weight: 600;
+    }
+
+    /* ===============================================
+       SEARCH SECTION
+    =============================================== */
+    .search-section {
+        background: white;
+        border-radius: 20px;
+        padding: 32px;
+        margin-bottom: 48px;
+        box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08);
+        border: 1px solid rgba(37, 99, 235, 0.1);
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .section-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 12px;
+        border: 2px solid #e2e8f0;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+        font-size: 0.9375rem;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .btn-search {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border: none;
+        border-radius: 12px;
+        padding: 12px 32px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-reset {
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        color: #64748b;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-reset:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: rgba(37, 99, 235, 0.05);
+    }
+
+    /* ===============================================
+       FIELDS SECTION
+    =============================================== */
+    .fields-section {
+        margin-bottom: 48px;
+    }
+
+    .fields-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+    }
+
+    .fields-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .fields-count {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    /* ===============================================
+       FIELD CARD
+    =============================================== */
+    .field-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+        border: 1px solid rgba(37, 99, 235, 0.05);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .field-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px rgba(37, 99, 235, 0.15);
+        border-color: rgba(37, 99, 235, 0.2);
+    }
+
+    .field-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        height: 240px;
+    }
+
+    .field-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .field-card:hover .field-image {
+        transform: scale(1.08);
+    }
+
+    .field-badge {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .field-rating {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        color: #f59e0b;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .field-body {
+        padding: 24px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .field-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+
+    .field-location {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        color: #64748b;
+        font-size: 0.875rem;
+        margin-bottom: 16px;
+        line-height: 1.6;
+    }
+
+    .field-location i {
+        color: var(--primary);
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    .field-info {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.875rem;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .info-value {
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    .price-tag {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(14, 165, 233, 0.1));
+        padding: 8px 12px;
+        border-radius: 10px;
+        display: inline-block;
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    .field-amenities {
+        margin-bottom: 20px;
+    }
+
+    .amenities-label {
+        font-weight: 600;
+        color: #475569;
+        font-size: 0.875rem;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .amenity-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .amenity-tag {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .amenity-tag:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .field-actions {
+        margin-top: auto;
+    }
+
+    .btn-view-details {
+        width: 100%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border: none;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-view-details:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        color: white;
+    }
+
+    /* ===============================================
+       EMPTY STATE
+    =============================================== */
+    .empty-state {
+        background: white;
+        border-radius: 20px;
+        padding: 64px 32px;
+        text-align: center;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+    }
+
+    .empty-icon {
+        font-size: 80px;
+        margin-bottom: 24px;
+        opacity: 0.3;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 12px;
+    }
+
+    .empty-text {
+        color: #64748b;
+        font-size: 1rem;
+        margin-bottom: 24px;
+    }
+
+    /* ===============================================
+       RESPONSIVE
+    =============================================== */
+    @@media (max-width: 768px) {
+        .hero-section {
+            padding: 32px 24px;
+        }
+
+        .hero-title {
+            font-size: 1.875rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+
+        .hero-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .search-section {
+            padding: 24px;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+        }
+
+        .fields-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .fields-title {
+            font-size: 1.5rem;
+        }
+
+        .btn-search,
+        .btn-reset {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .field-image-wrapper {
+            height: 200px;
+        }
+    }
+
+    /* ===============================================
+       ANIMATIONS
+    =============================================== */
+    .field-card {
+        animation: fadeInUp 0.6s ease-out backwards;
+    }
+
+    .field-card:nth-child(1) { animation-delay: 0.1s; }
+    .field-card:nth-child(2) { animation-delay: 0.2s; }
+    .field-card:nth-child(3) { animation-delay: 0.3s; }
+    .field-card:nth-child(4) { animation-delay: 0.4s; }
+    .field-card:nth-child(5) { animation-delay: 0.5s; }
+    .field-card:nth-child(6) { animation-delay: 0.6s; }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">⚽ Đặt Sân Bóng Nhanh Chóng & Tiện Lợi</h1>
+        <p class="hero-subtitle">Tìm và đặt sân bóng đá chất lượng cao với giá tốt nhất. Hệ thống đặt sân trực tuyến hiện đại và đáng tin cậy.</p>
+        
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-number">@Model.Count()</div>
+                <div class="stat-label">Sân Bóng</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1000+</div>
+                <div class="stat-label">Khách Hàng</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Hỗ Trợ</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4.8★</div>
+                <div class="stat-label">Đánh Giá</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Section -->
+<div class="search-section">
+    <div class="section-header">
+        <div class="section-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <h2 class="section-title">Tìm Kiếm Sân Bóng</h2>
+    </div>
+
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get, new { @class = "mb-0" }))
+    {
+        <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="searchName" class="form-label">
+                        <i class="fas fa-map-marker-alt"></i> Tìm kiếm theo tên hoặc địa chỉ
+                    </label>
+                    <input type="text" 
+                           name="searchName" 
+                           id="searchName" 
+                           class="form-control" 
+                           value="@ViewBag.CurrentSearchName" 
+                           placeholder="Nhập tên sân hoặc địa chỉ..." />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="loaiSanId" class="form-label">
+                        <i class="fas fa-futbol"></i> Loại sân bóng
+                    </label>
+                    @Html.DropDownList("loaiSanId", (SelectList)ViewBag.LoaiSanList, "Tất cả loại sân", new { @class = "form-select" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group d-flex gap-2">
+                    <button type="submit" class="btn-search">
+                        <i class="fas fa-search"></i>
+                        Tìm kiếm
+                    </button>
+                    @Html.ActionLink("Xóa", "Index", null, new { @class = "btn-reset" })
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Fields Section -->
+<div class="fields-section">
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🏟️</div>
+            <h3 class="empty-title">Không tìm thấy sân bóng</h3>
+            <p class="empty-text">Rất tiếc, không có sân bóng nào phù hợp với tiêu chí tìm kiếm của bạn.<br/>Vui lòng thử lại với từ khóa khác hoặc xóa bộ lọc.</p>
+            @Html.ActionLink("Xem tất cả sân bóng", "Index", null, new { @class = "btn-search" })
+        </div>
+    }
+    else
+    {
+        <div class="fields-header">
+            <h2 class="fields-title">
+                <i class="fas fa-list"></i>
+                Danh Sách Sân Bóng
+            </h2>
+            <span class="fields-count">@Model.Count() sân</span>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="field-card">
+                        <div class="field-image-wrapper">
+                            @if (!string.IsNullOrEmpty(item.AnhSan))
+                            {
+                                <img src="@Url.Content("~/Content/Images/" + item.AnhSan)" 
+                                     class="field-image" 
+                                     alt="@item.TenSanBong">
+                            }
+                            else
+                            {
+                                <img src="https://via.placeholder.com/400x240/2563eb/ffffff?text=⚽+@Uri.EscapeDataString(item.TenSanBong)" 
+                                     class="field-image" 
+                                     alt="@item.TenSanBong">
+                            }
+                            
+                            <div class="field-badge">
+                                <i class="fas fa-futbol"></i> @item.LoaiSanBong.LoaiSan
+                            </div>
+                            
+                            <div class="field-rating">
+                                <i class="fas fa-star"></i>
+                                @item.AverageDanhGia.ToString("F1")
+                                <span style="color: #94a3b8; font-size: 0.75rem;">(@item.TongLuotDanhGia)</span>
+                            </div>
+                        </div>
+
+                        <div class="field-body">
+                            <h3 class="field-title">@item.TenSanBong</h3>
+                            
+                            <div class="field-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>@item.DiaChi</span>
+                            </div>
+
+                            <div class="field-info">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        Giá thuê:
+                                    </span>
+                                    <span class="price-tag">@item.GiaThue.ToString("N0") VNĐ/giờ</span>
+                                </div>
+                            </div>
+
+                            <div class="field-amenities">
+                                <div class="amenities-label">
+                                    <i class="fas fa-check-circle"></i>
+                                    Tiện ích:
+                                </div>
+                                <div class="amenity-tags">
+                                    @if (item.TienIchSanBongs != null && item.TienIchSanBongs.Any())
+                                    {
+                                        foreach (var tienIch in item.TienIchSanBongs.Take(3))
+                                        {
+                                            <span class="amenity-tag">@tienIch.TenTienIch</span>
+                                        }
+                                        if (item.TienIchSanBongs.Count() > 3)
+                                        {
+                                            <span class="amenity-tag">+@(item.TienIchSanBongs.Count() - 3)</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span style="color: #94a3b8; font-size: 0.875rem;">Đang cập nhật</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="field-actions">
+                                @Html.ActionLink("Xem Chi Tiết", "FieldDetails", new { id = item.IDSanBong }, new { @class = "btn-view-details" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            // Add animation on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.field-card').forEach(card => {
+                observer.observe(card);
+            });
+
+            // Auto-focus search input
+            $('#searchName').focus();
+        });
+    </script>
+}

@@ -1,0 +1,173 @@
+﻿@model DatSanBong.Models.SuCo
+@{
+    ViewBag.Title = "Chi tiết báo cáo sự cố";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    h2 {
+        text-align: center;
+        color: #dc3545;
+        font-weight: 600;
+        margin-bottom: 30px;
+    }
+
+    h3 {
+        margin-top: 40px;
+        color: #007acc;
+        font-weight: 600;
+    }
+
+    dl.row dt {
+        font-weight: bold;
+        color: #555;
+        padding-top: 10px;
+    }
+
+    dl.row dd {
+        padding-bottom: 10px;
+        color: #333;
+        font-size: 0.95rem;
+    }
+
+    .alert-success,
+    .alert-danger {
+        border-radius: 8px;
+        font-size: 0.95rem;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        color: #444;
+        padding-top: 5px;
+    }
+
+    .form-select,
+    .form-control {
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        box-shadow: none;
+    }
+
+    .btn-primary {
+        background-color: #007acc;
+        border: none;
+        font-weight: 500;
+        border-radius: 6px;
+        padding: 10px 14px;
+    }
+
+    .btn-secondary {
+        border-radius: 6px;
+        padding: 10px 14px;
+        margin-left: 5px;
+    }
+
+    .col-md-6 {
+        background-color: #f8f9fa;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    }
+
+</style>
+<h2>Chi tiết báo cáo sự cố #@Model.IDSuCo</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Loại sự cố:</dt>
+        <dd class="col-sm-9">@Model.LoaiSuCo</dd>
+
+        <dt class="col-sm-3">Người báo cáo:</dt>
+        <dd class="col-sm-9">@(Model.NguoiDung?.fullname ?? Model.user_backup_info ?? "N/A")</dd>
+
+        <dt class="col-sm-3">Sân liên quan:</dt>
+        <dd class="col-sm-9">@(Model.SanBong?.TenSanBong ?? Model.sanBong_backup_info ?? "N/A")</dd>
+
+        <dt class="col-sm-3">Đơn đặt sân liên quan:</dt>
+        <dd class="col-sm-9">@(Model.DonDatSan?.IDBooking.ToString() ?? Model.booking_backup_info ?? "N/A")</dd>
+
+        <dt class="col-sm-3">Mô tả:</dt>
+        <dd class="col-sm-9">@Model.MoTa</dd>
+
+        <dt class="col-sm-3">Trạng thái hiện tại:</dt>
+        <dd class="col-sm-9">@Model.TrangThai</dd>
+
+        <dt class="col-sm-3">Người xử lý:</dt>
+        <dd class="col-sm-9">@(Model.NguoiDung1?.fullname ?? Model.admin_backup_info ?? "Chưa phân công")</dd>
+
+        <dt class="col-sm-3">Ghi chú giải quyết:</dt>
+        <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.resolution_notes) ? "Chưa có" : Model.resolution_notes)</dd>
+
+        <dt class="col-sm-3">Ngày báo cáo:</dt>
+        <dd class="col-sm-9">@Model.reported_at.Value.ToString("dd/MM/yyyy HH:mm")</dd>
+
+        <dt class="col-sm-3">Ngày giải quyết:</dt>
+        <dd class="col-sm-9">@(Model.resolved_at?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa giải quyết")</dd>
+    </dl>
+</div>
+
+<h3>Cập nhật báo cáo sự cố</h3>
+<div class="row">
+    <div class="col-md-6">
+        @using (Html.BeginForm("UpdateIncidentStatus", "Employee", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("id", Model.IDSuCo)
+
+            <div class="form-group mb-3">
+                @Html.Label("Trạng thái", new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    <select name="trangThai" class="form-select">
+                        <option value="Mới" @(Model.TrangThai == "Mới" ? "selected" : "")>Mới</option>
+                        <option value="Đang xử lý" @(Model.TrangThai == "Đang xử lý" ? "selected" : "")>Đang xử lý</option>
+                        <option value="Đã giải quyết" @(Model.TrangThai == "Đã giải quyết" ? "selected" : "")>Đã giải quyết</option>
+                        <option value="Không hợp lệ" @(Model.TrangThai == "Không hợp lệ" ? "selected" : "")>Không hợp lệ</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.Label("Người xử lý", new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.DropDownList("IDAdmin", (SelectList)ViewBag.AdminList, "--- Chọn người xử lý ---", new { @class = "form-select" })
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.Label("Ghi chú giải quyết", new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.TextArea("resolutionNotes", Model.resolution_notes, new { @class = "form-control", rows = 3 })
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <div class="col-md-offset-3 col-md-9">
+                    <input type="submit" value="Cập nhật" class="btn btn-primary" />
+                    @Html.ActionLink("Quay lại danh sách", "Incidents", null, new { @class = "btn btn-secondary ms-2" })
+                </div>
+            </div>
+        }
+    </div>
+</div>

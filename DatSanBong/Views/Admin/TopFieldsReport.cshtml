@@ -1,0 +1,198 @@
+﻿@{
+    ViewBag.Title = ViewBag.ReportTitle ?? "Báo cáo Top Sân bóng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --success: #10b981;
+        --warning: #f59e0b;
+    }
+
+    .report-header {
+        margin-bottom: 30px;
+    }
+
+    .report-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 20px;
+    }
+
+    .metric-selector {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-metric {
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 2px solid #e2e8f0;
+        background: white;
+        color: #64748b;
+        text-decoration: none;
+    }
+
+    .btn-metric:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-metric.active {
+        background: linear-gradient(135deg, var(--primary), #3b82f6);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    .chart-container {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 60px 20px;
+        color: #64748b;
+    }
+
+    .no-data i {
+        font-size: 64px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+</style>
+
+<div class="report-header">
+    <h1 class="report-title">
+        <i class="fas fa-trophy"></i>
+        @ViewBag.ReportTitle
+    </h1>
+    <div class="metric-selector">
+        <a href="@Url.Action("TopFieldsReport", new { metric = "bookings" })" 
+           class="btn-metric @(ViewBag.CurrentMetric == "bookings" ? "active" : "")">
+            <i class="fas fa-calendar-check"></i> Số lượt đặt
+        </a>
+        <a href="@Url.Action("TopFieldsReport", new { metric = "revenue" })" 
+           class="btn-metric @(ViewBag.CurrentMetric == "revenue" ? "active" : "")">
+            <i class="fas fa-dollar-sign"></i> Doanh thu
+        </a>
+    </div>
+</div>
+
+<div class="chart-container">
+    @if (ViewBag.Labels != null && ViewBag.Data != null)
+    {
+        <canvas id="topFieldsChart" height="100"></canvas>
+    }
+    else
+    {
+        <div class="no-data">
+            <i class="fas fa-trophy"></i>
+            <h3>Chưa có dữ liệu</h3>
+            <p>Không có dữ liệu sân bóng</p>
+        </div>
+    }
+</div>
+
+@section scripts {
+    @if (ViewBag.Labels != null && ViewBag.Data != null)
+    {
+        <script>
+            $(document).ready(function() {
+                var labels = @Html.Raw(ViewBag.Labels);
+                var data = @Html.Raw(ViewBag.Data);
+                var isRevenue = '@ViewBag.CurrentMetric' === 'revenue';
+
+                if (labels && data && labels.length > 0) {
+                    var ctx = document.getElementById('topFieldsChart').getContext('2d');
+                    var topFieldsChart = new Chart(ctx, {
+                        type: 'horizontalBar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: '@ViewBag.YAxisLabel',
+                                data: data,
+                                backgroundColor: isRevenue ? 
+                                    'rgba(16, 185, 129, 0.6)' : 
+                                    'rgba(37, 99, 235, 0.6)',
+                                borderColor: isRevenue ? 
+                                    'rgba(16, 185, 129, 1)' : 
+                                    'rgba(37, 99, 235, 1)',
+                                borderWidth: 2,
+                                borderRadius: 6
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: '@ViewBag.YAxisLabel',
+                                        font: {
+                                            size: 14,
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    ticks: {
+                                        callback: function(value) {
+                                            if (isRevenue) {
+                                                return value.toLocaleString('vi-VN') + ' ₫';
+                                            }
+                                            return value;
+                                        }
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Sân bóng',
+                                        font: {
+                                            size: 14,
+                                            weight: 'bold'
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            var label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed.x !== null) {
+                                                if (isRevenue) {
+                                                    label += context.parsed.x.toLocaleString('vi-VN') + ' ₫';
+                                                } else {
+                                                    label += context.parsed.x + ' lượt';
+                                                }
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
+    }
+}

@@ -1,0 +1,331 @@
+﻿@model IEnumerable<DatSanBong.Models.PhuongThucThanhToan>
+@{
+    ViewBag.Title = "Quản lý Phương thức thanh toán";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --secondary: #0ea5e9;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    .page-header {
+        margin-bottom: 32px;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 0.9375rem;
+    }
+
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .btn-add {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        color: white;
+        text-decoration: none;
+    }
+
+    .alert {
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInDown 0.4s ease-out;
+    }
+
+    @@keyframes slideInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert i {
+        font-size: 1.25rem;
+    }
+
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+        border-left: 4px solid var(--success);
+    }
+
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+        border-left: 4px solid var(--danger);
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .table {
+        margin: 0;
+        width: 100%;
+    }
+
+    .table thead {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+
+    .table thead th {
+        color: white;
+        font-weight: 700;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 16px 12px;
+        border: none;
+        white-space: nowrap;
+    }
+
+    .table tbody tr {
+        border-bottom: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .table tbody td {
+        padding: 16px 12px;
+        vertical-align: middle;
+        color: #475569;
+        font-size: 0.9375rem;
+    }
+
+    .payment-name {
+        font-weight: 700;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .payment-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #059669, var(--success));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    .payment-description {
+        max-width: 400px;
+        color: #64748b;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-action {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-edit {
+        background: rgba(245, 158, 11, 0.1);
+        color: #92400e;
+    }
+
+    .btn-edit:hover {
+        background: var(--warning);
+        color: white;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-delete {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+    }
+
+    .btn-delete:hover {
+        background: var(--danger);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #64748b;
+    }
+
+    .empty-state i {
+        font-size: 64px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+</style>
+
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="fas fa-credit-card"></i>
+        Quản Lý Phương Thức Thanh Toán
+    </h1>
+    <p class="page-subtitle">Quản lý các phương thức thanh toán trong hệ thống</p>
+</div>
+
+<div class="header-actions">
+    <div></div>
+    @Html.ActionLink("Thêm Phương thức mới", "CreatePaymentMethod", null, new { @class = "btn-add" })
+    <i class="fas fa-plus-circle"></i>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        <span>@TempData["SuccessMessage"]</span>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>@TempData["ErrorMessage"]</span>
+    </div>
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="table-card">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Phương Thức</th>
+                        <th>Mô Tả</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td data-label="ID">
+                                <span style="font-weight: 700; color: #1e293b;">#@item.IDPT</span>
+                            </td>
+                            <td data-label="Phương Thức">
+                                <div class="payment-name">
+                                    <div class="payment-icon">
+                                        <i class="fas fa-money-check-alt"></i>
+                                    </div>
+                                    @item.TenPT
+                                </div>
+                            </td>
+                            <td data-label="Mô Tả">
+                                @if (!string.IsNullOrEmpty(item.MoTa))
+                                {
+                                    <div class="payment-description">@item.MoTa</div>
+                                }
+                                else
+                                {
+                                    <span style="color: #94a3b8; font-style: italic;">Không có mô tả</span>
+                                }
+                            </td>
+                            <td data-label="Thao Tác">
+                                <div class="action-buttons">
+                                    @Html.ActionLink("Sửa", "EditPaymentMethod", new { id = item.IDPT }, new { @class = "btn-action btn-edit" })
+                                    @using (Html.BeginForm("DeletePaymentMethod", "Admin", new { id = item.IDPT }, FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Bạn có chắc chắn muốn xóa phương thức này?');" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-action btn-delete">
+                                            <i class="fas fa-trash-alt"></i>
+                                            Xóa
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="table-card">
+        <div class="empty-state">
+            <i class="fas fa-credit-card"></i>
+            <h3>Chưa có phương thức thanh toán nào</h3>
+            <p>Hãy thêm phương thức thanh toán mới</p>
+            @Html.ActionLink("Thêm phương thức", "CreatePaymentMethod", null, new { @class = "btn-add" })
+            <i class="fas fa-plus-circle"></i>
+        </div>
+    </div>
+}

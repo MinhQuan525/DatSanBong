@@ -1,0 +1,177 @@
+﻿@{
+    ViewBag.Title = "Báo cáo & Thống kê";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    .reports-header {
+        margin-bottom: 40px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 1rem;
+    }
+
+    .reports-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
+    }
+
+    .report-card {
+        background: white;
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .report-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .report-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        background: var(--card-color);
+        border-radius: 50%;
+        opacity: 0.1;
+        transform: translate(30%, -30%);
+    }
+
+    .report-card.revenue { --card-color: var(--success); }
+    .report-card.status { --card-color: var(--primary); }
+    .report-card.fields { --card-color: var(--warning); }
+    .report-card.users { --card-color: var(--danger); }
+
+    .report-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        background: var(--card-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 28px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .report-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 12px;
+    }
+
+    .report-description {
+        font-size: 0.9375rem;
+        color: #64748b;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .btn-view-report {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: var(--card-color);
+        color: white;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-view-report:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        color: white;
+        text-decoration: none;
+    }
+</style>
+
+<div class="reports-header">
+    <h1 class="page-title">
+        <i class="fas fa-chart-line"></i>
+        Báo Cáo & Thống Kê
+    </h1>
+    <p class="page-subtitle">Xem các báo cáo chi tiết về hoạt động và doanh thu của hệ thống</p>
+</div>
+
+<div class="reports-grid">
+    <div class="report-card revenue">
+        <div class="report-icon">
+            <i class="fas fa-dollar-sign"></i>
+        </div>
+        <h3 class="report-title">Báo Cáo Doanh Thu</h3>
+        <p class="report-description">
+            Xem báo cáo doanh thu chi tiết theo ngày, tháng, năm. Theo dõi xu hướng tăng trưởng và phân tích hiệu quả kinh doanh.
+        </p>
+        @Html.ActionLink("Xem báo cáo", "RevenueReport", null, new { @class = "btn-view-report" })
+        <i class="fas fa-arrow-right"></i>
+    </div>
+
+    <div class="report-card status">
+        <div class="report-icon">
+            <i class="fas fa-tasks"></i>
+        </div>
+        <h3 class="report-title">Trạng Thái Đơn Đặt Sân</h3>
+        <p class="report-description">
+            Thống kê số lượng đơn đặt sân theo từng trạng thái. Giúp quản lý và theo dõi quy trình xử lý đơn hiệu quả.
+        </p>
+        @Html.ActionLink("Xem báo cáo", "BookingStatusReport", null, new { @class = "btn-view-report" })
+        <i class="fas fa-arrow-right"></i>
+    </div>
+
+    <div class="report-card fields">
+        <div class="report-icon">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <h3 class="report-title">Top Sân Bóng</h3>
+        <p class="report-description">
+            Xem danh sách các sân bóng được đặt nhiều nhất hoặc có doanh thu cao nhất. Đánh giá hiệu suất từng sân.
+        </p>
+        @Html.ActionLink("Xem báo cáo", "TopFieldsReport", null, new { @class = "btn-view-report" })
+        <i class="fas fa-arrow-right"></i>
+    </div>
+
+    <div class="report-card users">
+        <div class="report-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <h3 class="report-title">Hoạt Động Người Dùng</h3>
+        <p class="report-description">
+            Thống kê số lượng người dùng mới, người dùng hoạt động và số lượt đặt sân trung bình của mỗi người dùng.
+        </p>
+        @Html.ActionLink("Xem báo cáo", "UserActivityReport", null, new { @class = "btn-view-report" })
+        <i class="fas fa-arrow-right"></i>
+    </div>
+</div>

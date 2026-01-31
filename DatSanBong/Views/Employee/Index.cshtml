@@ -1,0 +1,383 @@
+﻿@{
+    ViewBag.Title = "Trang nhân viên";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --secondary: #0ea5e9;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+    }
+
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        margin-bottom: 32px;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 0.9375rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-card.warning {
+        border-left-color: var(--warning);
+    }
+
+    .stat-card.danger {
+        border-left-color: var(--danger);
+    }
+
+    .stat-card.info {
+        border-left-color: var(--info);
+    }
+
+    .stat-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .stat-icon.warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning);
+    }
+
+    .stat-icon.danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+    }
+
+    .stat-icon.info {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--info);
+    }
+
+    .stat-title {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+
+    .stat-description {
+        color: #64748b;
+        font-size: 0.875rem;
+        margin-bottom: 16px;
+    }
+
+    .stat-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #f8fafc;
+        border-radius: 8px;
+        color: #475569;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+    }
+
+    .stat-link:hover {
+        background: var(--primary);
+        color: white;
+        text-decoration: none;
+        transform: translateX(4px);
+    }
+
+    .fields-section {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .section-title i {
+        color: var(--primary);
+    }
+
+    .fields-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .field-card {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 20px;
+        border: 2px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .field-card:hover {
+        border-color: var(--primary);
+        background: white;
+        transform: translateY(-2px);
+    }
+
+    .field-name {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 1.125rem;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .field-name i {
+        color: var(--success);
+    }
+
+    .field-address {
+        color: #64748b;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .field-address i {
+        margin-top: 2px;
+        color: #94a3b8;
+    }
+
+    .field-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--primary);
+        border-radius: 6px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #64748b;
+    }
+
+    .empty-state i {
+        font-size: 64px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+
+    .welcome-box {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(14, 165, 233, 0.05));
+        border-left: 4px solid var(--primary);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 32px;
+    }
+
+    .welcome-title {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 1.125rem;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .welcome-title i {
+        color: var(--primary);
+    }
+
+    .welcome-text {
+        color: #64748b;
+        font-size: 0.9375rem;
+        margin: 0;
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-tachometer-alt"></i>
+            Dashboard Nhân Viên
+        </h1>
+        <p class="page-subtitle">Xin chào, @Session["Fullname"]! Tổng quan công việc của bạn</p>
+    </div>
+
+    <!-- Welcome Box -->
+    <div class="welcome-box">
+        <div class="welcome-title">
+            <i class="fas fa-info-circle"></i>
+            Hướng dẫn sử dụng
+        </div>
+        <p class="welcome-text">
+            Bạn đang quản lý @(ViewBag.ManagedFields != null ? ((List<DatSanBong.Models.SanBong>)ViewBag.ManagedFields).Count : 0) sân bóng. 
+            Hãy kiểm tra đơn đặt sân chờ duyệt và xử lý các báo cáo sự cố kịp thời.
+        </p>
+    </div>
+
+    <!-- Statistics Grid -->
+    <div class="stats-grid">
+        <!-- Pending Bookings -->
+        <div class="stat-card warning">
+            <div class="stat-header">
+                <div class="stat-icon warning">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-title">Đơn Chờ Duyệt</div>
+            </div>
+            <div class="stat-value">@ViewBag.PendingBookings</div>
+            <div class="stat-description">Đơn đặt sân cần xử lý</div>
+            @Html.ActionLink("Xem danh sách", "Bookings", new { statusFilter = "Chờ duyệt" }, new { @class = "stat-link" })
+            <i class="fas fa-arrow-right"></i>
+        </div>
+
+        <!-- New Incidents -->
+        <div class="stat-card danger">
+            <div class="stat-header">
+                <div class="stat-icon danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-title">Sự Cố Mới</div>
+            </div>
+            <div class="stat-value">@ViewBag.NewIncidents</div>
+            <div class="stat-description">Báo cáo cần xử lý</div>
+            @Html.ActionLink("Xem danh sách", "Incidents", null, new { @class = "stat-link" })
+            <i class="fas fa-arrow-right"></i>
+        </div>
+
+        <!-- My Assignments -->
+        <div class="stat-card info">
+            <div class="stat-header">
+                <div class="stat-icon info">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-title">Lịch Phân Công</div>
+            </div>
+            <div class="stat-value">@(ViewBag.ManagedFields != null ? ((List<DatSanBong.Models.SanBong>)ViewBag.ManagedFields).Count : 0)</div>
+            <div class="stat-description">Sân bóng được phân công</div>
+            @Html.ActionLink("Xem lịch", "MyAssignments", null, new { @class = "stat-link" })
+            <i class="fas fa-arrow-right"></i>
+        </div>
+    </div>
+
+    <!-- Managed Fields Section -->
+    <div class="fields-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i>
+            Sân Bóng Được Phân Công
+        </h2>
+
+        @if (ViewBag.ManagedFields != null && ((List<DatSanBong.Models.SanBong>)ViewBag.ManagedFields).Count > 0)
+        {
+            <div class="fields-grid">
+                @foreach (var field in (List<DatSanBong.Models.SanBong>)ViewBag.ManagedFields)
+                {
+                    <div class="field-card">
+                        <div class="field-name">
+                            <i class="fas fa-futbol"></i>
+                            @field.TenSanBong
+                        </div>
+                        <div class="field-address">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>@field.DiaChi</span>
+                        </div>
+                        <div class="field-type">
+                            <i class="fas fa-layer-group"></i>
+                            @field.LoaiSanBong.LoaiSan
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-futbol"></i>
+                <h3>Chưa được phân công sân nào</h3>
+                <p>Liên hệ quản trị viên để được phân công quản lý sân bóng</p>
+            </div>
+        }
+    </div>
+</div>

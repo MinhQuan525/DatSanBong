@@ -1,0 +1,425 @@
+﻿@model IEnumerable<DatSanBong.Models.Review>
+@{
+    ViewBag.Title = "Quản lý đánh giá";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --secondary: #0ea5e9;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --star: #fbbf24;
+    }
+
+    .page-header {
+        margin-bottom: 32px;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 0.9375rem;
+    }
+
+    .alert {
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInDown 0.4s ease-out;
+    }
+
+    @@keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .alert i {
+        font-size: 1.25rem;
+    }
+
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+        border-left: 4px solid var(--success);
+    }
+
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+        border-left: 4px solid var(--danger);
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .table {
+        margin: 0;
+        width: 100%;
+    }
+
+    .table thead {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+
+    .table thead th {
+        color: white;
+        font-weight: 700;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 16px 12px;
+        border: none;
+        white-space: nowrap;
+    }
+
+    .table tbody tr {
+        border-bottom: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .table tbody td {
+        padding: 16px 12px;
+        vertical-align: middle;
+        color: #475569;
+        font-size: 0.9375rem;
+    }
+
+    .rating-stars {
+        display: flex;
+        gap: 4px;
+    }
+
+    .rating-stars i {
+        color: var(--star);
+        font-size: 1rem;
+    }
+
+    .rating-value {
+        font-weight: 700;
+        color: #1e293b;
+        margin-left: 8px;
+    }
+
+    .review-comment {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #64748b;
+        font-style: italic;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+    }
+
+    .badge-warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: #92400e;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-action {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-approve {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+    }
+
+    .btn-approve:hover {
+        background: var(--success);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-unapprove {
+        background: rgba(245, 158, 11, 0.1);
+        color: #92400e;
+    }
+
+    .btn-unapprove:hover {
+        background: var(--warning);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-delete {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+    }
+
+    .btn-delete:hover {
+        background: var(--danger);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #64748b;
+    }
+
+    .empty-state i {
+        font-size: 64px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+
+    @@media (max-width: 768px) {
+        .table thead {
+            display: none;
+        }
+
+        .table tbody tr {
+            display: block;
+            margin-bottom: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .table tbody td {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border: none;
+        }
+
+        .table tbody td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .action-buttons {
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .btn-action {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="fas fa-star"></i>
+        Quản Lý Đánh Giá
+    </h1>
+    <p class="page-subtitle">Duyệt và quản lý đánh giá từ người dùng về các sân bóng</p>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        <span>@TempData["SuccessMessage"]</span>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>@TempData["ErrorMessage"]</span>
+    </div>
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="table-card">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Sân Bóng</th>
+                        <th>Người Đánh Giá</th>
+                        <th>Đánh Giá</th>
+                        <th>Nhận Xét</th>
+                        <th>Ngày Tạo</th>
+                        <th>Trạng Thái</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td data-label="ID">
+                                <span style="font-weight: 700; color: #1e293b;">#@item.IDreview</span>
+                            </td>
+                            <td data-label="Sân Bóng">
+                                <div style="font-weight: 600; color: #1e293b;">@item.SanBong.TenSanBong</div>
+                            </td>
+                            <td data-label="Người Đánh Giá">
+                                <div style="font-weight: 600;">@item.NguoiDung.fullname</div>
+                                <div style="font-size: 0.875rem; color: #64748b;">@item.NguoiDung.email</div>
+                            </td>
+                            <td data-label="Đánh Giá">
+                                <div class="rating-stars">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= item.rating)
+                                        {
+                                            <i class="fas fa-star"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="far fa-star" style="color: #e2e8f0;"></i>
+                                        }
+                                    }
+                                    <span class="rating-value">@item.rating/5</span>
+                                </div>
+                            </td>
+                            <td data-label="Nhận Xét">
+                                @if (!string.IsNullOrEmpty(item.comment))
+                                {
+                                    <div class="review-comment" title="@item.comment">
+                                        "@item.comment"
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span style="color: #94a3b8; font-style: italic;">Không có nhận xét</span>
+                                }
+                            </td>
+                            <td data-label="Ngày Tạo">
+                                <div style="font-weight: 600;">@item.created_at.Value.ToString("dd/MM/yyyy")</div>
+                                <div style="font-size: 0.875rem; color: #64748b;">@item.created_at.Value.ToString("HH:mm")</div>
+                            </td>
+                            <td data-label="Trạng Thái">
+                                @if (item.is_approved ?? false)
+                                {
+                                    <span class="badge badge-success">
+                                        <i class="fas fa-check-circle"></i>
+                                        Đã duyệt
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-warning">
+                                        <i class="fas fa-clock"></i>
+                                        Chờ duyệt
+                                    </span>
+                                }
+                            </td>
+                            <td data-label="Thao Tác">
+                                <div class="action-buttons">
+                                    @using (Html.BeginForm("ToggleReviewApproval", "Admin", new { id = item.IDreview }, FormMethod.Post, new { @class = "d-inline" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        if (item.is_approved ?? false)
+                                        {
+                                            <button type="submit" class="btn-action btn-unapprove" title="Bỏ duyệt">
+                                                <i class="fas fa-times-circle"></i>
+                                                Bỏ duyệt
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn-action btn-approve" title="Duyệt">
+                                                <i class="fas fa-check-circle"></i>
+                                                Duyệt
+                                            </button>
+                                        }
+                                    }
+                                    @using (Html.BeginForm("DeleteReview", "Admin", new { id = item.IDreview }, FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Bạn có chắc chắn muốn xóa đánh giá này?');" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-action btn-delete" title="Xóa">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="table-card">
+        <div class="empty-state">
+            <i class="fas fa-star"></i>
+            <h3>Chưa có đánh giá nào</h3>
+            <p>Chưa có người dùng nào đánh giá sân bóng</p>
+        </div>
+    </div>
+}

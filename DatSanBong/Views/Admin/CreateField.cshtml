@@ -1,0 +1,350 @@
+﻿@model DatSanBong.Models.SanBong
+@{
+    ViewBag.Title = "Thêm sân bóng mới";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .file-upload-container {
+        border: 2px dashed #ddd;
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        background-color: #f9f9f9;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .file-upload-container:hover {
+            border-color: #007acc;
+            background-color: #f0f8ff;
+        }
+
+        .file-upload-container.drag-over {
+            border-color: #007acc;
+            background-color: #e6f3ff;
+            transform: scale(1.02);
+        }
+
+    .upload-icon {
+        font-size: 3rem;
+        color: #999;
+        margin-bottom: 15px;
+    }
+
+    .upload-text {
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .upload-hint {
+        font-size: 0.9rem;
+        color: #999;
+    }
+
+    .file-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .preview-container {
+        margin-top: 20px;
+        display: none;
+    }
+
+    .image-preview {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .remove-image {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+        .remove-image:hover {
+            background: #c82333;
+        }
+
+    .form-group.required .control-label:after {
+        content: " *";
+        color: #dc3545;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
+
+    .card-header {
+        background: linear-gradient(45deg, #007acc, #0056b3);
+        color: white;
+        border-radius: 10px 10px 0 0 !important;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #007acc, #0056b3);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+    }
+
+    .btn-secondary {
+        background: linear-gradient(45deg, #6c757d, #545b62);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+    }
+
+    .amenity-checkbox {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .amenity-checkbox:hover {
+            background: #f8f9fa;
+            border-color: #007acc;
+        }
+
+        .amenity-checkbox input:checked + label {
+            color: #007acc;
+            font-weight: 600;
+        }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Thêm sân bóng mới
+                    </h2>
+                </div>
+
+                <div class="card-body">
+                    @using (Html.BeginForm("CreateField", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <!-- Thông tin cơ bản -->
+                                <div class="form-group required mb-4">
+                                    @Html.LabelFor(model => model.TenSanBong, "Tên sân bóng", new { @class = "form-label fw-bold" })
+                                    @Html.EditorFor(model => model.TenSanBong, new { htmlAttributes = new { @class = "form-control", required = "required", placeholder = "VD: Sân bóng ABC" } })
+                                    @Html.ValidationMessageFor(model => model.TenSanBong, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group required mb-4">
+                                    @Html.LabelFor(model => model.DiaChi, "Địa chỉ", new { @class = "form-label fw-bold" })
+                                    @Html.EditorFor(model => model.DiaChi, new { htmlAttributes = new { @class = "form-control", required = "required", placeholder = "VD: 123 Đường ABC, Quận XYZ" } })
+                                    @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group required mb-4">
+                                            @Html.LabelFor(model => model.IDLoaiSan, "Loại sân", new { @class = "form-label fw-bold" })
+                                            @Html.DropDownListFor(model => model.IDLoaiSan, (SelectList)ViewBag.IDLoaiSan, "--- Chọn loại sân ---", new { @class = "form-select", required = "required" })
+                                            @Html.ValidationMessageFor(model => model.IDLoaiSan, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group required mb-4">
+                                            @Html.LabelFor(model => model.GiaThue, "Giá thuê (VNĐ/giờ)", new { @class = "form-label fw-bold" })
+                                            @Html.EditorFor(model => model.GiaThue, new { htmlAttributes = new { @class = "form-control", type = "number", step = "1000", min = "0", required = "required", placeholder = "VD: 200000" } })
+                                            @Html.ValidationMessageFor(model => model.GiaThue, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    @Html.LabelFor(model => model.MoTaKichThuoc, "Mô tả kích thước", new { @class = "form-label fw-bold" })
+                                    @Html.EditorFor(model => model.MoTaKichThuoc, new { htmlAttributes = new { @class = "form-control", placeholder = "VD: 30m x 20m" } })
+                                    @Html.ValidationMessageFor(model => model.MoTaKichThuoc, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    @Html.LabelFor(model => model.MoTaSan, "Mô tả sân", new { @class = "form-label fw-bold" })
+                                    @Html.TextAreaFor(model => model.MoTaSan, new { @class = "form-control", rows = 4, placeholder = "Nhập mô tả chi tiết về sân bóng..." })
+                                    @Html.ValidationMessageFor(model => model.MoTaSan, "", new { @class = "text-danger" })
+                                </div>
+
+                                <!-- Tiện ích -->
+                                <div class="form-group mb-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-gear-fill me-1"></i>
+                                        Tiện ích
+                                    </label>
+                                    <div class="row">
+                                        @foreach (var item in ViewBag.TienIchList)
+                                        {
+                                            <div class="col-md-6 col-lg-4">
+                                                <div class="amenity-checkbox">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="selectedTienIchIds" value="@item.IDTienIch" id="tienIch_@item.IDTienIch">
+                                                        <label class="form-check-label" for="tienIch_@item.IDTienIch">
+                                                            @item.TenTienIch
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <!-- Upload ảnh -->
+                                <div class="form-group mb-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-image me-1"></i>
+                                        Ảnh sân bóng
+                                        <span class="text-danger">*</span>
+                                    </label>
+
+                                    <div class="file-upload-container" id="fileUploadContainer">
+                                        <div class="upload-icon">
+                                            <i class="bi bi-cloud-upload"></i>
+                                        </div>
+                                        <div class="upload-text">Kéo thả ảnh vào đây hoặc click để chọn</div>
+                                        <div class="upload-hint">Hỗ trợ: JPG, PNG, GIF (Tối đa 5MB)</div>
+                                        <input type="file" name="AnhSan" accept="image/*" class="file-input" id="fileInput" required />
+                                    </div>
+
+                                    <div class="preview-container" id="previewContainer">
+                                        <img id="imagePreview" class="image-preview" />
+                                        <br>
+                                        <button type="button" class="remove-image" id="removeImage">
+                                            <i class="bi bi-trash"></i> Xóa ảnh
+                                        </button>
+                                    </div>
+
+                                    @Html.ValidationMessage("AnhSan", "", new { @class = "text-danger" })
+                                </div>
+
+                                <!-- Thông tin thêm -->
+                                <div class="alert alert-info">
+                                    <h6><i class="bi bi-info-circle me-1"></i> Lưu ý:</h6>
+                                    <ul class="mb-0">
+                                        <li>Tên sân và địa chỉ phải là duy nhất</li>
+                                        <li>Ảnh sân sẽ hiển thị cho khách hàng</li>
+                                        <li>Chọn tiện ích phù hợp với sân</li>
+                                        <li>Sân sẽ được kích hoạt ngay sau khi tạo</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="form-group text-center mt-4">
+                            <button type="submit" class="btn btn-primary me-3">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Tạo mới
+                            </button>
+                            @Html.ActionLink("Quay lại danh sách", "Fields", null, new { @class = "btn btn-secondary" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('fileInput');
+    const fileUploadContainer = document.getElementById('fileUploadContainer');
+    const previewContainer = document.getElementById('previewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const removeImageBtn = document.getElementById('removeImage');
+
+    // Xử lý khi chọn file
+    fileInput.addEventListener('change', function(e) {
+        handleFileSelect(e.target.files[0]);
+    });
+
+    // Xử lý drag & drop
+    fileUploadContainer.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        fileUploadContainer.classList.add('drag-over');
+    });
+
+    fileUploadContainer.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        fileUploadContainer.classList.remove('drag-over');
+    });
+
+    fileUploadContainer.addEventListener('drop', function(e) {
+        e.preventDefault();
+        fileUploadContainer.classList.remove('drag-over');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.type.startsWith('image/')) {
+                // Gán file vào input
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                fileInput.files = dt.files;
+
+                handleFileSelect(file);
+            } else {
+                alert('Vui lòng chỉ chọn file ảnh!');
+            }
+        }
+    });
+
+    // Xử lý xóa ảnh
+    removeImageBtn.addEventListener('click', function() {
+        fileInput.value = '';
+        previewContainer.style.display = 'none';
+        fileUploadContainer.style.display = 'block';
+    });
+
+    function handleFileSelect(file) {
+        if (file && file.type.startsWith('image/')) {
+            // Kiểm tra kích thước file (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Kích thước file không được vượt quá 5MB!');
+                fileInput.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                previewContainer.style.display = 'block';
+                fileUploadContainer.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+});
+</script>

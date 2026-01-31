@@ -1,0 +1,1193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DatSanBongDaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="DonDatSan">
+          <Key>
+            <PropertyRef Name="IDBooking" />
+          </Key>
+          <Property Name="IDBooking" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NgayBooking" Type="date" Nullable="false" />
+          <Property Name="start_time" Type="time" Precision="7" Nullable="false" />
+          <Property Name="end_time" Type="time" Precision="7" Nullable="false" />
+          <Property Name="TongTien" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="TTThanhToan" Type="bit" />
+          <Property Name="admin_notes" Type="nvarchar(max)" />
+          <Property Name="LyDoHuy" Type="nvarchar(max)" />
+          <Property Name="created_at" Type="datetime" />
+          <Property Name="updated_at" Type="datetime" />
+          <Property Name="IDuser" Type="int" Nullable="false" />
+          <Property Name="IDPT" Type="int" />
+          <Property Name="IDstatus" Type="int" />
+          <Property Name="IDSanBong" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LoaiSanBong">
+          <Key>
+            <PropertyRef Name="IDLoaiSan" />
+          </Key>
+          <Property Name="IDLoaiSan" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LoaiSan" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="min_players" Type="int" Nullable="false" />
+          <Property Name="max_players" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NguoiDung">
+          <Key>
+            <PropertyRef Name="IDuser" />
+          </Key>
+          <Property Name="IDuser" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="username" Type="nvarchar" MaxLength="50" />
+          <Property Name="email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="pass_hash" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="fullname" Type="nvarchar" MaxLength="100" />
+          <Property Name="sdt" Type="nvarchar" MaxLength="20" />
+          <Property Name="DiaChi" Type="nvarchar" MaxLength="255" />
+          <Property Name="trangthaiTK" Type="bit" />
+          <Property Name="last_log" Type="datetime" />
+          <Property Name="create_at" Type="datetime" />
+          <Property Name="update_at" Type="datetime" />
+          <Property Name="IDrole" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PhanCongNhanVien">
+          <Key>
+            <PropertyRef Name="IDPhanCong" />
+          </Key>
+          <Property Name="IDPhanCong" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NgayPhanCong" Type="date" Nullable="false" />
+          <Property Name="ChiTiet" Type="nvarchar(max)" />
+          <Property Name="created_at" Type="datetime" />
+          <Property Name="updated_at" Type="datetime" />
+          <Property Name="IDuser" Type="int" Nullable="false" />
+          <Property Name="IDSanBong" Type="int" Nullable="false" />
+          <Property Name="IDAdmin" Type="int" />
+        </EntityType>
+        <EntityType Name="PhuongThucThanhToan">
+          <Key>
+            <PropertyRef Name="IDPT" />
+          </Key>
+          <Property Name="IDPT" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenPT" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MoTa" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Reviews">
+          <Key>
+            <PropertyRef Name="IDreview" />
+          </Key>
+          <Property Name="IDreview" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rating" Type="tinyint" Nullable="false" />
+          <Property Name="created_at" Type="datetime" />
+          <Property Name="updated_at" Type="datetime" />
+          <Property Name="is_approved" Type="bit" />
+          <Property Name="comment" Type="nvarchar(max)" />
+          <Property Name="IDSanBong" Type="int" Nullable="false" />
+          <Property Name="IDuser" Type="int" Nullable="false" />
+          <Property Name="IDBooking" Type="int" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="IDrole" />
+          </Key>
+          <Property Name="IDrole" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Role_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="SanBong">
+          <Key>
+            <PropertyRef Name="IDSanBong" />
+          </Key>
+          <Property Name="IDSanBong" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenSanBong" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="DiaChi" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="MoTaKichThuoc" Type="nvarchar" MaxLength="100" />
+          <Property Name="GiaThue" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="MoTaSan" Type="nvarchar(max)" />
+          <Property Name="AnhSan" Type="nvarchar" MaxLength="255" />
+          <Property Name="TrangThaiSan_" Type="bit" />
+          <Property Name="AverageDanhGia" Type="decimal" Precision="3" Scale="2" />
+          <Property Name="TongLuotDanhGia" Type="int" />
+          <Property Name="created_at" Type="datetime" />
+          <Property Name="updated_at" Type="datetime" />
+          <Property Name="IDLoaiSan" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SanBong_TienIch">
+          <Key>
+            <PropertyRef Name="IDTienIch" />
+            <PropertyRef Name="IDSanBong" />
+          </Key>
+          <Property Name="IDTienIch" Type="int" Nullable="false" />
+          <Property Name="IDSanBong" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SuCo">
+          <Key>
+            <PropertyRef Name="IDSuCo" />
+          </Key>
+          <Property Name="IDSuCo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LoaiSuCo" Type="nvarchar" MaxLength="100" />
+          <Property Name="TrangThai" Type="nvarchar" MaxLength="50" />
+          <Property Name="resolution_notes" Type="nvarchar(max)" />
+          <Property Name="reported_at" Type="datetime" />
+          <Property Name="resolved_at" Type="datetime" />
+          <Property Name="MoTa" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="IDuser" Type="int" />
+          <Property Name="IDBooking" Type="int" />
+          <Property Name="IDSanBong" Type="int" />
+          <Property Name="IDAdmin" Type="int" />
+          <Property Name="user_backup_info" Type="nvarchar" MaxLength="255" />
+          <Property Name="booking_backup_info" Type="nvarchar" MaxLength="255" />
+          <Property Name="sanBong_backup_info" Type="nvarchar" MaxLength="255" />
+          <Property Name="admin_backup_info" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="ThongBao">
+          <Key>
+            <PropertyRef Name="IDnoti" />
+          </Key>
+          <Property Name="IDnoti" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="message" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="is_read" Type="bit" />
+          <Property Name="type" Type="nvarchar" MaxLength="50" />
+          <Property Name="sent_at" Type="datetime" />
+          <Property Name="IDuser" Type="int" />
+        </EntityType>
+        <EntityType Name="TienIchSanBong">
+          <Key>
+            <PropertyRef Name="IDTienIch" />
+          </Key>
+          <Property Name="IDTienIch" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenTienIch" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="MoTa" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="TrangThaiDonDat">
+          <Key>
+            <PropertyRef Name="IDstatus" />
+          </Key>
+          <Property Name="IDstatus" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Tenstatus" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MoTa" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <Association Name="FK__DonDatSan__IDPT__619B8048">
+          <End Role="PhuongThucThanhToan" Type="Self.PhuongThucThanhToan" Multiplicity="0..1" />
+          <End Role="DonDatSan" Type="Self.DonDatSan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PhuongThucThanhToan">
+              <PropertyRef Name="IDPT" />
+            </Principal>
+            <Dependent Role="DonDatSan">
+              <PropertyRef Name="IDPT" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DonDatSan__IDSan__6383C8BA">
+          <End Role="SanBong" Type="Self.SanBong" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DonDatSan" Type="Self.DonDatSan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanBong">
+              <PropertyRef Name="IDSanBong" />
+            </Principal>
+            <Dependent Role="DonDatSan">
+              <PropertyRef Name="IDSanBong" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DonDatSan__IDsta__628FA481">
+          <End Role="TrangThaiDonDat" Type="Self.TrangThaiDonDat" Multiplicity="0..1" />
+          <End Role="DonDatSan" Type="Self.DonDatSan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TrangThaiDonDat">
+              <PropertyRef Name="IDstatus" />
+            </Principal>
+            <Dependent Role="DonDatSan">
+              <PropertyRef Name="IDstatus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DonDatSan__IDuse__60A75C0F">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="1" />
+          <End Role="DonDatSan" Type="Self.DonDatSan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="DonDatSan">
+              <PropertyRef Name="IDuser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__NguoiDung__IDrol__4D94879B">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="IDrole" />
+            </Principal>
+            <Dependent Role="NguoiDung">
+              <PropertyRef Name="IDrole" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PhanCongN__IDAdm__00200768">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="0..1" />
+          <End Role="PhanCongNhanVien" Type="Self.PhanCongNhanVien" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="PhanCongNhanVien">
+              <PropertyRef Name="IDAdmin" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PhanCongN__IDSan__7F2BE32F">
+          <End Role="SanBong" Type="Self.SanBong" Multiplicity="1" />
+          <End Role="PhanCongNhanVien" Type="Self.PhanCongNhanVien" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanBong">
+              <PropertyRef Name="IDSanBong" />
+            </Principal>
+            <Dependent Role="PhanCongNhanVien">
+              <PropertyRef Name="IDSanBong" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PhanCongN__IDuse__7E37BEF6">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="1" />
+          <End Role="PhanCongNhanVien" Type="Self.PhanCongNhanVien" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="PhanCongNhanVien">
+              <PropertyRef Name="IDuser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Reviews__IDBooki__6D0D32F4">
+          <End Role="DonDatSan" Type="Self.DonDatSan" Multiplicity="0..1" />
+          <End Role="Reviews" Type="Self.Reviews" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DonDatSan">
+              <PropertyRef Name="IDBooking" />
+            </Principal>
+            <Dependent Role="Reviews">
+              <PropertyRef Name="IDBooking" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Reviews__IDSanBo__6B24EA82">
+          <End Role="SanBong" Type="Self.SanBong" Multiplicity="1" />
+          <End Role="Reviews" Type="Self.Reviews" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanBong">
+              <PropertyRef Name="IDSanBong" />
+            </Principal>
+            <Dependent Role="Reviews">
+              <PropertyRef Name="IDSanBong" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Reviews__IDuser__6C190EBB">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="1" />
+          <End Role="Reviews" Type="Self.Reviews" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="Reviews">
+              <PropertyRef Name="IDuser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SanBong__IDLoaiS__59063A47">
+          <End Role="LoaiSanBong" Type="Self.LoaiSanBong" Multiplicity="1" />
+          <End Role="SanBong" Type="Self.SanBong" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LoaiSanBong">
+              <PropertyRef Name="IDLoaiSan" />
+            </Principal>
+            <Dependent Role="SanBong">
+              <PropertyRef Name="IDLoaiSan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SanBong_T__IDSan__03F0984C">
+          <End Role="SanBong" Type="Self.SanBong" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SanBong_TienIch" Type="Self.SanBong_TienIch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanBong">
+              <PropertyRef Name="IDSanBong" />
+            </Principal>
+            <Dependent Role="SanBong_TienIch">
+              <PropertyRef Name="IDSanBong" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SanBong_T__IDTie__02FC7413">
+          <End Role="TienIchSanBong" Type="Self.TienIchSanBong" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SanBong_TienIch" Type="Self.SanBong_TienIch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TienIchSanBong">
+              <PropertyRef Name="IDTienIch" />
+            </Principal>
+            <Dependent Role="SanBong_TienIch">
+              <PropertyRef Name="IDTienIch" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SuCo__IDAdmin__797309D9">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="0..1" />
+          <End Role="SuCo" Type="Self.SuCo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="SuCo">
+              <PropertyRef Name="IDAdmin" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SuCo__IDBooking__778AC167">
+          <End Role="DonDatSan" Type="Self.DonDatSan" Multiplicity="0..1" />
+          <End Role="SuCo" Type="Self.SuCo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DonDatSan">
+              <PropertyRef Name="IDBooking" />
+            </Principal>
+            <Dependent Role="SuCo">
+              <PropertyRef Name="IDBooking" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SuCo__IDSanBong__787EE5A0">
+          <End Role="SanBong" Type="Self.SanBong" Multiplicity="0..1" />
+          <End Role="SuCo" Type="Self.SuCo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanBong">
+              <PropertyRef Name="IDSanBong" />
+            </Principal>
+            <Dependent Role="SuCo">
+              <PropertyRef Name="IDSanBong" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SuCo__IDuser__76969D2E">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="0..1" />
+          <End Role="SuCo" Type="Self.SuCo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="SuCo">
+              <PropertyRef Name="IDuser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ThongBao__IDuser__71D1E811">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ThongBao" Type="Self.ThongBao" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="ThongBao">
+              <PropertyRef Name="IDuser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DatSanBongDaModelStoreContainer">
+          <EntitySet Name="DonDatSan" EntityType="Self.DonDatSan" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LoaiSanBong" EntityType="Self.LoaiSanBong" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NguoiDung" EntityType="Self.NguoiDung" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhanCongNhanVien" EntityType="Self.PhanCongNhanVien" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhuongThucThanhToan" EntityType="Self.PhuongThucThanhToan" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reviews" EntityType="Self.Reviews" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SanBong" EntityType="Self.SanBong" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SanBong_TienIch" EntityType="Self.SanBong_TienIch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SuCo" EntityType="Self.SuCo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ThongBao" EntityType="Self.ThongBao" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TienIchSanBong" EntityType="Self.TienIchSanBong" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TrangThaiDonDat" EntityType="Self.TrangThaiDonDat" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__DonDatSan__IDPT__619B8048" Association="Self.FK__DonDatSan__IDPT__619B8048">
+            <End Role="PhuongThucThanhToan" EntitySet="PhuongThucThanhToan" />
+            <End Role="DonDatSan" EntitySet="DonDatSan" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DonDatSan__IDSan__6383C8BA" Association="Self.FK__DonDatSan__IDSan__6383C8BA">
+            <End Role="SanBong" EntitySet="SanBong" />
+            <End Role="DonDatSan" EntitySet="DonDatSan" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DonDatSan__IDsta__628FA481" Association="Self.FK__DonDatSan__IDsta__628FA481">
+            <End Role="TrangThaiDonDat" EntitySet="TrangThaiDonDat" />
+            <End Role="DonDatSan" EntitySet="DonDatSan" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DonDatSan__IDuse__60A75C0F" Association="Self.FK__DonDatSan__IDuse__60A75C0F">
+            <End Role="NguoiDung" EntitySet="NguoiDung" />
+            <End Role="DonDatSan" EntitySet="DonDatSan" />
+          </AssociationSet>
+          <AssociationSet Name="FK__NguoiDung__IDrol__4D94879B" Association="Self.FK__NguoiDung__IDrol__4D94879B">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="NguoiDung" EntitySet="NguoiDung" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PhanCongN__IDAdm__00200768" Association="Self.FK__PhanCongN__IDAdm__00200768">
+            <End Role="NguoiDung" EntitySet="NguoiDung" />
+            <End Role="PhanCongNhanVien" EntitySet="PhanCongNhanVien" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PhanCongN__IDSan__7F2BE32F" Association="Self.FK__PhanCongN__IDSan__7F2BE32F">
+            <End Role="SanBong" EntitySet="SanBong" />
+            <End Role="PhanCongNhanVien" EntitySet="PhanCongNhanVien" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PhanCongN__IDuse__7E37BEF6" Association="Self.FK__PhanCongN__IDuse__7E37BEF6">
+            <End Role="NguoiDung" EntitySet="NguoiDung" />
+            <End Role="PhanCongNhanVien" EntitySet="PhanCongNhanVien" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Reviews__IDBooki__6D0D32F4" Association="Self.FK__Reviews__IDBooki__6D0D32F4">
+            <End Role="DonDatSan" EntitySet="DonDatSan" />
+            <End Role="Reviews" EntitySet="Reviews" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Reviews__IDSanBo__6B24EA82" Association="Self.FK__Reviews__IDSanBo__6B24EA82">
+            <End Role="SanBong" EntitySet="SanBong" />
+            <End Role="Reviews" EntitySet="Reviews" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Reviews__IDuser__6C190EBB" Association="Self.FK__Reviews__IDuser__6C190EBB">
+            <End Role="NguoiDung" EntitySet="NguoiDung" />
+            <End Role="Reviews" EntitySet="Reviews" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SanBong__IDLoaiS__59063A47" Association="Self.FK__SanBong__IDLoaiS__59063A47">
+            <End Role="LoaiSanBong" EntitySet="LoaiSanBong" />
+            <End Role="SanBong" EntitySet="SanBong" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SanBong_T__IDSan__03F0984C" Association="Self.FK__SanBong_T__IDSan__03F0984C">
+            <End Role="SanBong" EntitySet="SanBong" />
+            <End Role="SanBong_TienIch" EntitySet="SanBong_TienIch" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SanBong_T__IDTie__02FC7413" Association="Self.FK__SanBong_T__IDTie__02FC7413">
+            <End Role="TienIchSanBong" EntitySet="TienIchSanBong" />
+            <End Role="SanBong_TienIch" EntitySet="SanBong_TienIch" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SuCo__IDAdmin__797309D9" Association="Self.FK__SuCo__IDAdmin__797309D9">
+            <End Role="NguoiDung" EntitySet="NguoiDung" />
+            <End Role="SuCo" EntitySet="SuCo" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SuCo__IDBooking__778AC167" Association="Self.FK__SuCo__IDBooking__778AC167">
+            <End Role="DonDatSan" EntitySet="DonDatSan" />
+            <End Role="SuCo" EntitySet="SuCo" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SuCo__IDSanBong__787EE5A0" Association="Self.FK__SuCo__IDSanBong__787EE5A0">
+            <End Role="SanBong" EntitySet="SanBong" />
+            <End Role="SuCo" EntitySet="SuCo" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SuCo__IDuser__76969D2E" Association="Self.FK__SuCo__IDuser__76969D2E">
+            <End Role="NguoiDung" EntitySet="NguoiDung" />
+            <End Role="SuCo" EntitySet="SuCo" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ThongBao__IDuser__71D1E811" Association="Self.FK__ThongBao__IDuser__71D1E811">
+            <End Role="NguoiDung" EntitySet="NguoiDung" />
+            <End Role="ThongBao" EntitySet="ThongBao" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DatSanBongDaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="DonDatSan">
+          <Key>
+            <PropertyRef Name="IDBooking" />
+          </Key>
+          <Property Name="IDBooking" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NgayBooking" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="start_time" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="end_time" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="TongTien" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="TTThanhToan" Type="Boolean" />
+          <Property Name="admin_notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LyDoHuy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="created_at" Type="DateTime" Precision="3" />
+          <Property Name="updated_at" Type="DateTime" Precision="3" />
+          <Property Name="IDuser" Type="Int32" Nullable="false" />
+          <Property Name="IDPT" Type="Int32" />
+          <Property Name="IDstatus" Type="Int32" />
+          <Property Name="IDSanBong" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="PhuongThucThanhToan" Relationship="Self.FK__DonDatSan__IDPT__619B8048" FromRole="DonDatSan" ToRole="PhuongThucThanhToan" />
+          <NavigationProperty Name="SanBong" Relationship="Self.FK__DonDatSan__IDSan__6383C8BA" FromRole="DonDatSan" ToRole="SanBong" />
+          <NavigationProperty Name="TrangThaiDonDat" Relationship="Self.FK__DonDatSan__IDsta__628FA481" FromRole="DonDatSan" ToRole="TrangThaiDonDat" />
+          <NavigationProperty Name="NguoiDung" Relationship="Self.FK__DonDatSan__IDuse__60A75C0F" FromRole="DonDatSan" ToRole="NguoiDung" />
+          <NavigationProperty Name="Reviews" Relationship="Self.FK__Reviews__IDBooki__6D0D32F4" FromRole="DonDatSan" ToRole="Reviews" />
+          <NavigationProperty Name="SuCoes" Relationship="Self.FK__SuCo__IDBooking__778AC167" FromRole="DonDatSan" ToRole="SuCo" />
+        </EntityType>
+        <EntityType Name="LoaiSanBong">
+          <Key>
+            <PropertyRef Name="IDLoaiSan" />
+          </Key>
+          <Property Name="IDLoaiSan" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LoaiSan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="min_players" Type="Int32" Nullable="false" />
+          <Property Name="max_players" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SanBongs" Relationship="Self.FK__SanBong__IDLoaiS__59063A47" FromRole="LoaiSanBong" ToRole="SanBong" />
+        </EntityType>
+        <EntityType Name="NguoiDung">
+          <Key>
+            <PropertyRef Name="IDuser" />
+          </Key>
+          <Property Name="IDuser" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="pass_hash" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="fullname" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="sdt" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DiaChi" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="trangthaiTK" Type="Boolean" />
+          <Property Name="last_log" Type="DateTime" Precision="3" />
+          <Property Name="create_at" Type="DateTime" Precision="3" />
+          <Property Name="update_at" Type="DateTime" Precision="3" />
+          <Property Name="IDrole" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="DonDatSans" Relationship="Self.FK__DonDatSan__IDuse__60A75C0F" FromRole="NguoiDung" ToRole="DonDatSan" />
+          <NavigationProperty Name="Role" Relationship="Self.FK__NguoiDung__IDrol__4D94879B" FromRole="NguoiDung" ToRole="Roles" />
+          <NavigationProperty Name="PhanCongNhanViens" Relationship="Self.FK__PhanCongN__IDAdm__00200768" FromRole="NguoiDung" ToRole="PhanCongNhanVien" />
+          <NavigationProperty Name="PhanCongNhanViens1" Relationship="Self.FK__PhanCongN__IDuse__7E37BEF6" FromRole="NguoiDung" ToRole="PhanCongNhanVien" />
+          <NavigationProperty Name="Reviews" Relationship="Self.FK__Reviews__IDuser__6C190EBB" FromRole="NguoiDung" ToRole="Reviews" />
+          <NavigationProperty Name="SuCoes" Relationship="Self.FK__SuCo__IDAdmin__797309D9" FromRole="NguoiDung" ToRole="SuCo" />
+          <NavigationProperty Name="SuCoes1" Relationship="Self.FK__SuCo__IDuser__76969D2E" FromRole="NguoiDung" ToRole="SuCo" />
+          <NavigationProperty Name="ThongBaos" Relationship="Self.FK__ThongBao__IDuser__71D1E811" FromRole="NguoiDung" ToRole="ThongBao" />
+        </EntityType>
+        <EntityType Name="PhanCongNhanVien">
+          <Key>
+            <PropertyRef Name="IDPhanCong" />
+          </Key>
+          <Property Name="IDPhanCong" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NgayPhanCong" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ChiTiet" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="created_at" Type="DateTime" Precision="3" />
+          <Property Name="updated_at" Type="DateTime" Precision="3" />
+          <Property Name="IDuser" Type="Int32" Nullable="false" />
+          <Property Name="IDSanBong" Type="Int32" Nullable="false" />
+          <Property Name="IDAdmin" Type="Int32" />
+          <NavigationProperty Name="NguoiDung" Relationship="Self.FK__PhanCongN__IDAdm__00200768" FromRole="PhanCongNhanVien" ToRole="NguoiDung" />
+          <NavigationProperty Name="NguoiDung1" Relationship="Self.FK__PhanCongN__IDuse__7E37BEF6" FromRole="PhanCongNhanVien" ToRole="NguoiDung" />
+          <NavigationProperty Name="SanBong" Relationship="Self.FK__PhanCongN__IDSan__7F2BE32F" FromRole="PhanCongNhanVien" ToRole="SanBong" />
+        </EntityType>
+        <EntityType Name="PhuongThucThanhToan">
+          <Key>
+            <PropertyRef Name="IDPT" />
+          </Key>
+          <Property Name="IDPT" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenPT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MoTa" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DonDatSans" Relationship="Self.FK__DonDatSan__IDPT__619B8048" FromRole="PhuongThucThanhToan" ToRole="DonDatSan" />
+        </EntityType>
+        <EntityType Name="Review">
+          <Key>
+            <PropertyRef Name="IDreview" />
+          </Key>
+          <Property Name="IDreview" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="rating" Type="Byte" Nullable="false" />
+          <Property Name="created_at" Type="DateTime" Precision="3" />
+          <Property Name="updated_at" Type="DateTime" Precision="3" />
+          <Property Name="is_approved" Type="Boolean" />
+          <Property Name="comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IDSanBong" Type="Int32" Nullable="false" />
+          <Property Name="IDuser" Type="Int32" Nullable="false" />
+          <Property Name="IDBooking" Type="Int32" />
+          <NavigationProperty Name="DonDatSan" Relationship="Self.FK__Reviews__IDBooki__6D0D32F4" FromRole="Reviews" ToRole="DonDatSan" />
+          <NavigationProperty Name="NguoiDung" Relationship="Self.FK__Reviews__IDuser__6C190EBB" FromRole="Reviews" ToRole="NguoiDung" />
+          <NavigationProperty Name="SanBong" Relationship="Self.FK__Reviews__IDSanBo__6B24EA82" FromRole="Reviews" ToRole="SanBong" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="IDrole" />
+          </Key>
+          <Property Name="IDrole" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Role_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="NguoiDungs" Relationship="Self.FK__NguoiDung__IDrol__4D94879B" FromRole="Roles" ToRole="NguoiDung" />
+        </EntityType>
+        <EntityType Name="SanBong">
+          <Key>
+            <PropertyRef Name="IDSanBong" />
+          </Key>
+          <Property Name="IDSanBong" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenSanBong" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DiaChi" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MoTaKichThuoc" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="GiaThue" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="MoTaSan" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AnhSan" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TrangThaiSan_" Type="Boolean" />
+          <Property Name="AverageDanhGia" Type="Decimal" Precision="3" Scale="2" />
+          <Property Name="TongLuotDanhGia" Type="Int32" />
+          <Property Name="created_at" Type="DateTime" Precision="3" />
+          <Property Name="updated_at" Type="DateTime" Precision="3" />
+          <Property Name="IDLoaiSan" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="DonDatSans" Relationship="Self.FK__DonDatSan__IDSan__6383C8BA" FromRole="SanBong" ToRole="DonDatSan" />
+          <NavigationProperty Name="LoaiSanBong" Relationship="Self.FK__SanBong__IDLoaiS__59063A47" FromRole="SanBong" ToRole="LoaiSanBong" />
+          <NavigationProperty Name="PhanCongNhanViens" Relationship="Self.FK__PhanCongN__IDSan__7F2BE32F" FromRole="SanBong" ToRole="PhanCongNhanVien" />
+          <NavigationProperty Name="Reviews" Relationship="Self.FK__Reviews__IDSanBo__6B24EA82" FromRole="SanBong" ToRole="Reviews" />
+          <NavigationProperty Name="SuCoes" Relationship="Self.FK__SuCo__IDSanBong__787EE5A0" FromRole="SanBong" ToRole="SuCo" />
+          <NavigationProperty Name="TienIchSanBongs" Relationship="Self.SanBong_TienIch" FromRole="SanBong" ToRole="TienIchSanBong" />
+        </EntityType>
+        <EntityType Name="SuCo">
+          <Key>
+            <PropertyRef Name="IDSuCo" />
+          </Key>
+          <Property Name="IDSuCo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LoaiSuCo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TrangThai" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="resolution_notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="reported_at" Type="DateTime" Precision="3" />
+          <Property Name="resolved_at" Type="DateTime" Precision="3" />
+          <Property Name="MoTa" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IDuser" Type="Int32" />
+          <Property Name="IDBooking" Type="Int32" />
+          <Property Name="IDSanBong" Type="Int32" />
+          <Property Name="IDAdmin" Type="Int32" />
+          <Property Name="user_backup_info" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="booking_backup_info" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="sanBong_backup_info" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="admin_backup_info" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DonDatSan" Relationship="Self.FK__SuCo__IDBooking__778AC167" FromRole="SuCo" ToRole="DonDatSan" />
+          <NavigationProperty Name="NguoiDung" Relationship="Self.FK__SuCo__IDAdmin__797309D9" FromRole="SuCo" ToRole="NguoiDung" />
+          <NavigationProperty Name="NguoiDung1" Relationship="Self.FK__SuCo__IDuser__76969D2E" FromRole="SuCo" ToRole="NguoiDung" />
+          <NavigationProperty Name="SanBong" Relationship="Self.FK__SuCo__IDSanBong__787EE5A0" FromRole="SuCo" ToRole="SanBong" />
+        </EntityType>
+        <EntityType Name="ThongBao">
+          <Key>
+            <PropertyRef Name="IDnoti" />
+          </Key>
+          <Property Name="IDnoti" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="is_read" Type="Boolean" />
+          <Property Name="type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="sent_at" Type="DateTime" Precision="3" />
+          <Property Name="IDuser" Type="Int32" />
+          <NavigationProperty Name="NguoiDung" Relationship="Self.FK__ThongBao__IDuser__71D1E811" FromRole="ThongBao" ToRole="NguoiDung" />
+        </EntityType>
+        <EntityType Name="TienIchSanBong">
+          <Key>
+            <PropertyRef Name="IDTienIch" />
+          </Key>
+          <Property Name="IDTienIch" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenTienIch" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MoTa" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SanBongs" Relationship="Self.SanBong_TienIch" FromRole="TienIchSanBong" ToRole="SanBong" />
+        </EntityType>
+        <EntityType Name="TrangThaiDonDat">
+          <Key>
+            <PropertyRef Name="IDstatus" />
+          </Key>
+          <Property Name="IDstatus" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Tenstatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MoTa" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DonDatSans" Relationship="Self.FK__DonDatSan__IDsta__628FA481" FromRole="TrangThaiDonDat" ToRole="DonDatSan" />
+        </EntityType>
+        <Association Name="FK__DonDatSan__IDPT__619B8048">
+          <End Role="PhuongThucThanhToan" Type="Self.PhuongThucThanhToan" Multiplicity="0..1" />
+          <End Role="DonDatSan" Type="Self.DonDatSan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PhuongThucThanhToan">
+              <PropertyRef Name="IDPT" />
+            </Principal>
+            <Dependent Role="DonDatSan">
+              <PropertyRef Name="IDPT" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DonDatSan__IDSan__6383C8BA">
+          <End Role="SanBong" Type="Self.SanBong" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DonDatSan" Type="Self.DonDatSan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanBong">
+              <PropertyRef Name="IDSanBong" />
+            </Principal>
+            <Dependent Role="DonDatSan">
+              <PropertyRef Name="IDSanBong" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DonDatSan__IDsta__628FA481">
+          <End Role="TrangThaiDonDat" Type="Self.TrangThaiDonDat" Multiplicity="0..1" />
+          <End Role="DonDatSan" Type="Self.DonDatSan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TrangThaiDonDat">
+              <PropertyRef Name="IDstatus" />
+            </Principal>
+            <Dependent Role="DonDatSan">
+              <PropertyRef Name="IDstatus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DonDatSan__IDuse__60A75C0F">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="1" />
+          <End Role="DonDatSan" Type="Self.DonDatSan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="DonDatSan">
+              <PropertyRef Name="IDuser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Reviews__IDBooki__6D0D32F4">
+          <End Role="DonDatSan" Type="Self.DonDatSan" Multiplicity="0..1" />
+          <End Role="Reviews" Type="Self.Review" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DonDatSan">
+              <PropertyRef Name="IDBooking" />
+            </Principal>
+            <Dependent Role="Reviews">
+              <PropertyRef Name="IDBooking" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SuCo__IDBooking__778AC167">
+          <End Role="DonDatSan" Type="Self.DonDatSan" Multiplicity="0..1" />
+          <End Role="SuCo" Type="Self.SuCo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DonDatSan">
+              <PropertyRef Name="IDBooking" />
+            </Principal>
+            <Dependent Role="SuCo">
+              <PropertyRef Name="IDBooking" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SanBong__IDLoaiS__59063A47">
+          <End Role="LoaiSanBong" Type="Self.LoaiSanBong" Multiplicity="1" />
+          <End Role="SanBong" Type="Self.SanBong" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LoaiSanBong">
+              <PropertyRef Name="IDLoaiSan" />
+            </Principal>
+            <Dependent Role="SanBong">
+              <PropertyRef Name="IDLoaiSan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__NguoiDung__IDrol__4D94879B">
+          <End Role="Roles" Type="Self.Role" Multiplicity="1" />
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="IDrole" />
+            </Principal>
+            <Dependent Role="NguoiDung">
+              <PropertyRef Name="IDrole" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PhanCongN__IDAdm__00200768">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="0..1" />
+          <End Role="PhanCongNhanVien" Type="Self.PhanCongNhanVien" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="PhanCongNhanVien">
+              <PropertyRef Name="IDAdmin" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PhanCongN__IDuse__7E37BEF6">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="1" />
+          <End Role="PhanCongNhanVien" Type="Self.PhanCongNhanVien" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="PhanCongNhanVien">
+              <PropertyRef Name="IDuser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Reviews__IDuser__6C190EBB">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="1" />
+          <End Role="Reviews" Type="Self.Review" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="Reviews">
+              <PropertyRef Name="IDuser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SuCo__IDAdmin__797309D9">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="0..1" />
+          <End Role="SuCo" Type="Self.SuCo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="SuCo">
+              <PropertyRef Name="IDAdmin" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SuCo__IDuser__76969D2E">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="0..1" />
+          <End Role="SuCo" Type="Self.SuCo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="SuCo">
+              <PropertyRef Name="IDuser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ThongBao__IDuser__71D1E811">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ThongBao" Type="Self.ThongBao" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDuser" />
+            </Principal>
+            <Dependent Role="ThongBao">
+              <PropertyRef Name="IDuser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PhanCongN__IDSan__7F2BE32F">
+          <End Role="SanBong" Type="Self.SanBong" Multiplicity="1" />
+          <End Role="PhanCongNhanVien" Type="Self.PhanCongNhanVien" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanBong">
+              <PropertyRef Name="IDSanBong" />
+            </Principal>
+            <Dependent Role="PhanCongNhanVien">
+              <PropertyRef Name="IDSanBong" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Reviews__IDSanBo__6B24EA82">
+          <End Role="SanBong" Type="Self.SanBong" Multiplicity="1" />
+          <End Role="Reviews" Type="Self.Review" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanBong">
+              <PropertyRef Name="IDSanBong" />
+            </Principal>
+            <Dependent Role="Reviews">
+              <PropertyRef Name="IDSanBong" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SuCo__IDSanBong__787EE5A0">
+          <End Role="SanBong" Type="Self.SanBong" Multiplicity="0..1" />
+          <End Role="SuCo" Type="Self.SuCo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanBong">
+              <PropertyRef Name="IDSanBong" />
+            </Principal>
+            <Dependent Role="SuCo">
+              <PropertyRef Name="IDSanBong" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SanBong_TienIch">
+          <End Role="SanBong" Type="Self.SanBong" Multiplicity="*" />
+          <End Role="TienIchSanBong" Type="Self.TienIchSanBong" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="DatSanBongDaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="DonDatSans" EntityType="Self.DonDatSan" />
+          <EntitySet Name="LoaiSanBongs" EntityType="Self.LoaiSanBong" />
+          <EntitySet Name="NguoiDungs" EntityType="Self.NguoiDung" />
+          <EntitySet Name="PhanCongNhanViens" EntityType="Self.PhanCongNhanVien" />
+          <EntitySet Name="PhuongThucThanhToans" EntityType="Self.PhuongThucThanhToan" />
+          <EntitySet Name="Reviews" EntityType="Self.Review" />
+          <EntitySet Name="Roles" EntityType="Self.Role" />
+          <EntitySet Name="SanBongs" EntityType="Self.SanBong" />
+          <EntitySet Name="SuCoes" EntityType="Self.SuCo" />
+          <EntitySet Name="ThongBaos" EntityType="Self.ThongBao" />
+          <EntitySet Name="TienIchSanBongs" EntityType="Self.TienIchSanBong" />
+          <EntitySet Name="TrangThaiDonDats" EntityType="Self.TrangThaiDonDat" />
+          <AssociationSet Name="FK__DonDatSan__IDPT__619B8048" Association="Self.FK__DonDatSan__IDPT__619B8048">
+            <End Role="PhuongThucThanhToan" EntitySet="PhuongThucThanhToans" />
+            <End Role="DonDatSan" EntitySet="DonDatSans" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DonDatSan__IDSan__6383C8BA" Association="Self.FK__DonDatSan__IDSan__6383C8BA">
+            <End Role="SanBong" EntitySet="SanBongs" />
+            <End Role="DonDatSan" EntitySet="DonDatSans" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DonDatSan__IDsta__628FA481" Association="Self.FK__DonDatSan__IDsta__628FA481">
+            <End Role="TrangThaiDonDat" EntitySet="TrangThaiDonDats" />
+            <End Role="DonDatSan" EntitySet="DonDatSans" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DonDatSan__IDuse__60A75C0F" Association="Self.FK__DonDatSan__IDuse__60A75C0F">
+            <End Role="NguoiDung" EntitySet="NguoiDungs" />
+            <End Role="DonDatSan" EntitySet="DonDatSans" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Reviews__IDBooki__6D0D32F4" Association="Self.FK__Reviews__IDBooki__6D0D32F4">
+            <End Role="DonDatSan" EntitySet="DonDatSans" />
+            <End Role="Reviews" EntitySet="Reviews" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SuCo__IDBooking__778AC167" Association="Self.FK__SuCo__IDBooking__778AC167">
+            <End Role="DonDatSan" EntitySet="DonDatSans" />
+            <End Role="SuCo" EntitySet="SuCoes" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SanBong__IDLoaiS__59063A47" Association="Self.FK__SanBong__IDLoaiS__59063A47">
+            <End Role="LoaiSanBong" EntitySet="LoaiSanBongs" />
+            <End Role="SanBong" EntitySet="SanBongs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__NguoiDung__IDrol__4D94879B" Association="Self.FK__NguoiDung__IDrol__4D94879B">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="NguoiDung" EntitySet="NguoiDungs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PhanCongN__IDAdm__00200768" Association="Self.FK__PhanCongN__IDAdm__00200768">
+            <End Role="NguoiDung" EntitySet="NguoiDungs" />
+            <End Role="PhanCongNhanVien" EntitySet="PhanCongNhanViens" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PhanCongN__IDuse__7E37BEF6" Association="Self.FK__PhanCongN__IDuse__7E37BEF6">
+            <End Role="NguoiDung" EntitySet="NguoiDungs" />
+            <End Role="PhanCongNhanVien" EntitySet="PhanCongNhanViens" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Reviews__IDuser__6C190EBB" Association="Self.FK__Reviews__IDuser__6C190EBB">
+            <End Role="NguoiDung" EntitySet="NguoiDungs" />
+            <End Role="Reviews" EntitySet="Reviews" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SuCo__IDAdmin__797309D9" Association="Self.FK__SuCo__IDAdmin__797309D9">
+            <End Role="NguoiDung" EntitySet="NguoiDungs" />
+            <End Role="SuCo" EntitySet="SuCoes" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SuCo__IDuser__76969D2E" Association="Self.FK__SuCo__IDuser__76969D2E">
+            <End Role="NguoiDung" EntitySet="NguoiDungs" />
+            <End Role="SuCo" EntitySet="SuCoes" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ThongBao__IDuser__71D1E811" Association="Self.FK__ThongBao__IDuser__71D1E811">
+            <End Role="NguoiDung" EntitySet="NguoiDungs" />
+            <End Role="ThongBao" EntitySet="ThongBaos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PhanCongN__IDSan__7F2BE32F" Association="Self.FK__PhanCongN__IDSan__7F2BE32F">
+            <End Role="SanBong" EntitySet="SanBongs" />
+            <End Role="PhanCongNhanVien" EntitySet="PhanCongNhanViens" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Reviews__IDSanBo__6B24EA82" Association="Self.FK__Reviews__IDSanBo__6B24EA82">
+            <End Role="SanBong" EntitySet="SanBongs" />
+            <End Role="Reviews" EntitySet="Reviews" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SuCo__IDSanBong__787EE5A0" Association="Self.FK__SuCo__IDSanBong__787EE5A0">
+            <End Role="SanBong" EntitySet="SanBongs" />
+            <End Role="SuCo" EntitySet="SuCoes" />
+          </AssociationSet>
+          <AssociationSet Name="SanBong_TienIch" Association="Self.SanBong_TienIch">
+            <End Role="SanBong" EntitySet="SanBongs" />
+            <End Role="TienIchSanBong" EntitySet="TienIchSanBongs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DatSanBongDaModelStoreContainer" CdmEntityContainer="DatSanBongDaEntities">
+          <EntitySetMapping Name="DonDatSans">
+            <EntityTypeMapping TypeName="DatSanBongDaModel.DonDatSan">
+              <MappingFragment StoreEntitySet="DonDatSan">
+                <ScalarProperty Name="IDBooking" ColumnName="IDBooking" />
+                <ScalarProperty Name="NgayBooking" ColumnName="NgayBooking" />
+                <ScalarProperty Name="start_time" ColumnName="start_time" />
+                <ScalarProperty Name="end_time" ColumnName="end_time" />
+                <ScalarProperty Name="TongTien" ColumnName="TongTien" />
+                <ScalarProperty Name="TTThanhToan" ColumnName="TTThanhToan" />
+                <ScalarProperty Name="admin_notes" ColumnName="admin_notes" />
+                <ScalarProperty Name="LyDoHuy" ColumnName="LyDoHuy" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="updated_at" ColumnName="updated_at" />
+                <ScalarProperty Name="IDuser" ColumnName="IDuser" />
+                <ScalarProperty Name="IDPT" ColumnName="IDPT" />
+                <ScalarProperty Name="IDstatus" ColumnName="IDstatus" />
+                <ScalarProperty Name="IDSanBong" ColumnName="IDSanBong" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LoaiSanBongs">
+            <EntityTypeMapping TypeName="DatSanBongDaModel.LoaiSanBong">
+              <MappingFragment StoreEntitySet="LoaiSanBong">
+                <ScalarProperty Name="IDLoaiSan" ColumnName="IDLoaiSan" />
+                <ScalarProperty Name="LoaiSan" ColumnName="LoaiSan" />
+                <ScalarProperty Name="min_players" ColumnName="min_players" />
+                <ScalarProperty Name="max_players" ColumnName="max_players" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NguoiDungs">
+            <EntityTypeMapping TypeName="DatSanBongDaModel.NguoiDung">
+              <MappingFragment StoreEntitySet="NguoiDung">
+                <ScalarProperty Name="IDuser" ColumnName="IDuser" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="pass_hash" ColumnName="pass_hash" />
+                <ScalarProperty Name="fullname" ColumnName="fullname" />
+                <ScalarProperty Name="sdt" ColumnName="sdt" />
+                <ScalarProperty Name="DiaChi" ColumnName="DiaChi" />
+                <ScalarProperty Name="trangthaiTK" ColumnName="trangthaiTK" />
+                <ScalarProperty Name="last_log" ColumnName="last_log" />
+                <ScalarProperty Name="create_at" ColumnName="create_at" />
+                <ScalarProperty Name="update_at" ColumnName="update_at" />
+                <ScalarProperty Name="IDrole" ColumnName="IDrole" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhanCongNhanViens">
+            <EntityTypeMapping TypeName="DatSanBongDaModel.PhanCongNhanVien">
+              <MappingFragment StoreEntitySet="PhanCongNhanVien">
+                <ScalarProperty Name="IDPhanCong" ColumnName="IDPhanCong" />
+                <ScalarProperty Name="NgayPhanCong" ColumnName="NgayPhanCong" />
+                <ScalarProperty Name="ChiTiet" ColumnName="ChiTiet" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="updated_at" ColumnName="updated_at" />
+                <ScalarProperty Name="IDuser" ColumnName="IDuser" />
+                <ScalarProperty Name="IDSanBong" ColumnName="IDSanBong" />
+                <ScalarProperty Name="IDAdmin" ColumnName="IDAdmin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhuongThucThanhToans">
+            <EntityTypeMapping TypeName="DatSanBongDaModel.PhuongThucThanhToan">
+              <MappingFragment StoreEntitySet="PhuongThucThanhToan">
+                <ScalarProperty Name="IDPT" ColumnName="IDPT" />
+                <ScalarProperty Name="TenPT" ColumnName="TenPT" />
+                <ScalarProperty Name="MoTa" ColumnName="MoTa" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Reviews">
+            <EntityTypeMapping TypeName="DatSanBongDaModel.Review">
+              <MappingFragment StoreEntitySet="Reviews">
+                <ScalarProperty Name="IDreview" ColumnName="IDreview" />
+                <ScalarProperty Name="rating" ColumnName="rating" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="updated_at" ColumnName="updated_at" />
+                <ScalarProperty Name="is_approved" ColumnName="is_approved" />
+                <ScalarProperty Name="comment" ColumnName="comment" />
+                <ScalarProperty Name="IDSanBong" ColumnName="IDSanBong" />
+                <ScalarProperty Name="IDuser" ColumnName="IDuser" />
+                <ScalarProperty Name="IDBooking" ColumnName="IDBooking" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="DatSanBongDaModel.Role">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="IDrole" ColumnName="IDrole" />
+                <ScalarProperty Name="Role_name" ColumnName="Role_name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SanBongs">
+            <EntityTypeMapping TypeName="DatSanBongDaModel.SanBong">
+              <MappingFragment StoreEntitySet="SanBong">
+                <ScalarProperty Name="IDSanBong" ColumnName="IDSanBong" />
+                <ScalarProperty Name="TenSanBong" ColumnName="TenSanBong" />
+                <ScalarProperty Name="DiaChi" ColumnName="DiaChi" />
+                <ScalarProperty Name="MoTaKichThuoc" ColumnName="MoTaKichThuoc" />
+                <ScalarProperty Name="GiaThue" ColumnName="GiaThue" />
+                <ScalarProperty Name="MoTaSan" ColumnName="MoTaSan" />
+                <ScalarProperty Name="AnhSan" ColumnName="AnhSan" />
+                <ScalarProperty Name="TrangThaiSan_" ColumnName="TrangThaiSan_" />
+                <ScalarProperty Name="AverageDanhGia" ColumnName="AverageDanhGia" />
+                <ScalarProperty Name="TongLuotDanhGia" ColumnName="TongLuotDanhGia" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="updated_at" ColumnName="updated_at" />
+                <ScalarProperty Name="IDLoaiSan" ColumnName="IDLoaiSan" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SuCoes">
+            <EntityTypeMapping TypeName="DatSanBongDaModel.SuCo">
+              <MappingFragment StoreEntitySet="SuCo">
+                <ScalarProperty Name="IDSuCo" ColumnName="IDSuCo" />
+                <ScalarProperty Name="LoaiSuCo" ColumnName="LoaiSuCo" />
+                <ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
+                <ScalarProperty Name="resolution_notes" ColumnName="resolution_notes" />
+                <ScalarProperty Name="reported_at" ColumnName="reported_at" />
+                <ScalarProperty Name="resolved_at" ColumnName="resolved_at" />
+                <ScalarProperty Name="MoTa" ColumnName="MoTa" />
+                <ScalarProperty Name="IDuser" ColumnName="IDuser" />
+                <ScalarProperty Name="IDBooking" ColumnName="IDBooking" />
+                <ScalarProperty Name="IDSanBong" ColumnName="IDSanBong" />
+                <ScalarProperty Name="IDAdmin" ColumnName="IDAdmin" />
+                <ScalarProperty Name="user_backup_info" ColumnName="user_backup_info" />
+                <ScalarProperty Name="booking_backup_info" ColumnName="booking_backup_info" />
+                <ScalarProperty Name="sanBong_backup_info" ColumnName="sanBong_backup_info" />
+                <ScalarProperty Name="admin_backup_info" ColumnName="admin_backup_info" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ThongBaos">
+            <EntityTypeMapping TypeName="DatSanBongDaModel.ThongBao">
+              <MappingFragment StoreEntitySet="ThongBao">
+                <ScalarProperty Name="IDnoti" ColumnName="IDnoti" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="message" ColumnName="message" />
+                <ScalarProperty Name="is_read" ColumnName="is_read" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="sent_at" ColumnName="sent_at" />
+                <ScalarProperty Name="IDuser" ColumnName="IDuser" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TienIchSanBongs">
+            <EntityTypeMapping TypeName="DatSanBongDaModel.TienIchSanBong">
+              <MappingFragment StoreEntitySet="TienIchSanBong">
+                <ScalarProperty Name="IDTienIch" ColumnName="IDTienIch" />
+                <ScalarProperty Name="TenTienIch" ColumnName="TenTienIch" />
+                <ScalarProperty Name="MoTa" ColumnName="MoTa" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TrangThaiDonDats">
+            <EntityTypeMapping TypeName="DatSanBongDaModel.TrangThaiDonDat">
+              <MappingFragment StoreEntitySet="TrangThaiDonDat">
+                <ScalarProperty Name="IDstatus" ColumnName="IDstatus" />
+                <ScalarProperty Name="Tenstatus" ColumnName="Tenstatus" />
+                <ScalarProperty Name="MoTa" ColumnName="MoTa" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="SanBong_TienIch" TypeName="DatSanBongDaModel.SanBong_TienIch" StoreEntitySet="SanBong_TienIch">
+            <EndProperty Name="SanBong">
+              <ScalarProperty Name="IDSanBong" ColumnName="IDSanBong" />
+            </EndProperty>
+            <EndProperty Name="TienIchSanBong">
+              <ScalarProperty Name="IDTienIch" ColumnName="IDTienIch" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

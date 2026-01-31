@@ -1,0 +1,829 @@
+﻿@model DatSanBong.Models.DonDatSan
+@{
+    ViewBag.Title = "Đặt sân bóng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1e40af;
+        --secondary: #0ea5e9;
+        --accent: #06b6d4;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    /* ===============================================
+       STEPPER PROGRESS
+    =============================================== */
+    .booking-stepper {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 48px;
+        position: relative;
+        padding: 0 24px;
+    }
+
+    .booking-stepper::before {
+        content: '';
+        position: absolute;
+        top: 24px;
+        left: 10%;
+        right: 10%;
+        height: 3px;
+        background: #e2e8f0;
+        z-index: 0;
+    }
+
+    .step-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+        flex: 1;
+    }
+
+    .step-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #94a3b8;
+        transition: all 0.3s ease;
+        margin-bottom: 12px;
+    }
+
+    .step-item.active .step-circle {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-color: var(--primary);
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .step-item.completed .step-circle {
+        background: var(--success);
+        border-color: var(--success);
+        color: white;
+    }
+
+    .step-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #64748b;
+        text-align: center;
+    }
+
+    .step-item.active .step-label {
+        color: var(--primary);
+    }
+
+    .step-item.completed .step-label {
+        color: var(--success);
+    }
+
+    /* ===============================================
+       SECTION CARDS
+    =============================================== */
+    .booking-section {
+        background: white;
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+        margin-bottom: 24px;
+        display: none;
+    }
+
+    .booking-section.active {
+        display: block;
+        animation: fadeInUp 0.4s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .section-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    /* ===============================================
+       FORM CONTROLS
+    =============================================== */
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label i {
+        color: var(--primary);
+    }
+
+    .form-control,
+    .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    /* ===============================================
+       TIME SLOTS GRID
+    =============================================== */
+    .time-slots-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .time-slot {
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .time-slot::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: transparent;
+        transition: all 0.3s ease;
+    }
+
+    .time-slot:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .time-slot.available {
+        border-color: var(--success);
+        background: rgba(16, 185, 129, 0.05);
+    }
+
+    .time-slot.available::before {
+        background: var(--success);
+    }
+
+    .time-slot.available:hover {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: var(--success);
+    }
+
+    .time-slot.booked {
+        background: rgba(239, 68, 68, 0.05);
+        border-color: #fecaca;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .time-slot.booked::before {
+        background: var(--danger);
+    }
+
+    .time-slot.selected {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-color: var(--primary);
+        color: white;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+    }
+
+    .time-slot.selected::before {
+        background: white;
+    }
+
+    .slot-time {
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 4px;
+    }
+
+    .slot-status {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .time-slot.available .slot-status {
+        color: var(--success);
+    }
+
+    .time-slot.booked .slot-status {
+        color: var(--danger);
+    }
+
+    .time-slot.selected .slot-status {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* ===============================================
+       SUMMARY BOX
+    =============================================== */
+    .booking-summary {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(14, 165, 233, 0.05));
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        border: 1px solid rgba(37, 99, 235, 0.1);
+    }
+
+    .summary-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+    }
+
+    .summary-item:last-child {
+        border-bottom: none;
+    }
+
+    .summary-label {
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .summary-value {
+        color: #1e293b;
+        font-weight: 700;
+    }
+
+    /* ===============================================
+       BUTTONS
+    =============================================== */
+    .btn-action {
+        padding: 14px 32px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        color: white;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--success), #059669);
+        color: white;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+        background: #f8fafc;
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 32px;
+    }
+
+    /* ===============================================
+       ALERTS
+    =============================================== */
+    .alert {
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .alert i {
+        font-size: 1.25rem;
+    }
+
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+        border-left: 4px solid var(--success);
+    }
+
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+        border-left: 4px solid var(--danger);
+    }
+
+    .alert-info {
+        background: rgba(37, 99, 235, 0.1);
+        color: #1e40af;
+        border-left: 4px solid var(--primary);
+    }
+
+    /* ===============================================
+       EMPTY STATE
+    =============================================== */
+    .empty-state {
+        text-align: center;
+        padding: 48px 24px;
+        color: #94a3b8;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 16px;
+        opacity: 0.3;
+    }
+
+    .empty-state h4 {
+        color: #475569;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    /* ===============================================
+       RESPONSIVE
+    =============================================== */
+    @@media (max-width: 768px) {
+        .booking-stepper {
+            padding: 0 12px;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            font-size: 0.875rem;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+        }
+
+        .booking-section {
+            padding: 24px;
+        }
+
+        .time-slots-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-action {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<!-- Success/Error Messages -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        <span>@TempData["SuccessMessage"]</span>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>@TempData["ErrorMessage"]</span>
+    </div>
+}
+
+<!-- Stepper Progress -->
+<div class="booking-stepper">
+    <div class="step-item active" id="stepIndicator1">
+        <div class="step-circle">
+            <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div class="step-label">Chọn sân & ngày</div>
+    </div>
+    <div class="step-item" id="stepIndicator2">
+        <div class="step-circle">
+            <i class="fas fa-clock"></i>
+        </div>
+        <div class="step-label">Chọn khung giờ</div>
+    </div>
+    <div class="step-item" id="stepIndicator3">
+        <div class="step-circle">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="step-label">Xác nhận đặt</div>
+    </div>
+</div>
+
+<!-- Step 1: Field & Date Selection -->
+<div class="booking-section active" id="step1Section">
+    <div class="section-header">
+        <div class="section-icon">
+            <i class="fas fa-futbol"></i>
+        </div>
+        <h2 class="section-title">Chọn Sân Bóng & Ngày Đặt</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="sanBongId" class="form-label">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Sân bóng
+                </label>
+                @Html.DropDownList("sanBongId", (SelectList)ViewBag.SanBongList, "--- Chọn sân bóng ---", new { @class = "form-select", id = "sanBongId" })
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="bookingDate" class="form-label">
+                    <i class="fas fa-calendar-day"></i>
+                    Ngày đặt sân
+                </label>
+                <input type="date" 
+                       id="bookingDate" 
+                       name="bookingDate" 
+                       class="form-control" 
+                       min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button type="button" id="btnCheckAvailability" class="btn-action btn-primary">
+            <i class="fas fa-search"></i>
+            Kiểm tra lịch trống
+        </button>
+    </div>
+</div>
+
+<!-- Step 2: Time Slot Selection -->
+<div class="booking-section" id="step2Section">
+    <div class="section-header">
+        <div class="section-icon">
+            <i class="fas fa-clock"></i>
+        </div>
+        <h2 class="section-title">Chọn Khung Giờ</h2>
+    </div>
+
+    <div class="alert alert-info" id="selectedDateInfo" style="display: none;">
+        <i class="fas fa-info-circle"></i>
+        <span>Sân bóng: <strong id="displayFieldName"></strong> - Ngày: <strong id="displayDate"></strong></span>
+    </div>
+
+    <div id="timeSlotsContainer"></div>
+
+    <div class="action-buttons">
+        <button type="button" id="btnConfirmTimeSlot" class="btn-action btn-success" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            Xác nhận khung giờ
+        </button>
+        <button type="button" id="btnBackToStep1" class="btn-action btn-secondary">
+            <i class="fas fa-arrow-left"></i>
+            Quay lại
+        </button>
+    </div>
+</div>
+
+<!-- Step 3: Booking Confirmation -->
+<div class="booking-section" id="step3Section">
+    <div class="section-header">
+        <div class="section-icon">
+            <i class="fas fa-clipboard-check"></i>
+        </div>
+        <h2 class="section-title">Xác Nhận Thông Tin Đặt Sân</h2>
+    </div>
+
+    @using (Html.BeginForm("BookField", "Booking", FormMethod.Post, new { @id = "bookingForm" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <!-- Hidden Fields -->
+        @Html.HiddenFor(model => model.IDSanBong, new { id = "hiddenSanBongId" })
+        @Html.HiddenFor(model => model.NgayBooking, new { id = "hiddenNgayBooking" })
+        <input type="hidden" name="startTime" id="hiddenStartTime" />
+        <input type="hidden" name="endTime" id="hiddenEndTime" />
+
+        <!-- Booking Summary -->
+        <div class="booking-summary">
+            <div class="summary-title">
+                <i class="fas fa-file-invoice"></i>
+                Thông tin đặt sân
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Sân bóng:</span>
+                <span class="summary-value" id="summaryField">-</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Ngày đặt:</span>
+                <span class="summary-value" id="summaryDate">-</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Khung giờ:</span>
+                <span class="summary-value" id="summaryTime">-</span>
+            </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="form-group">
+            <label class="form-label">
+                <i class="fas fa-credit-card"></i>
+                Phương thức thanh toán
+            </label>
+            @Html.DropDownListFor(model => model.IDPT, 
+                (SelectList)ViewBag.PhuongThucThanhToanList, 
+                "--- Chọn phương thức thanh toán ---", 
+                new { @class = "form-select" })
+            @Html.ValidationMessageFor(model => model.IDPT, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="action-buttons">
+            <button type="submit" class="btn-action btn-success">
+                <i class="fas fa-check-circle"></i>
+                Xác nhận đặt sân
+            </button>
+            <button type="button" id="btnBackToStep2" class="btn-action btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Quay lại
+            </button>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            let selectedSlot = null;
+            let currentStep = 1;
+
+            // Check availability
+            $('#btnCheckAvailability').click(function () {
+                const sanBongId = $('#sanBongId').val();
+                const bookingDate = $('#bookingDate').val();
+
+                if (!sanBongId || !bookingDate) {
+                    showAlert('Vui lòng chọn sân bóng và ngày đặt.', 'danger');
+                    return;
+                }
+
+                // Show loading
+                $('#btnCheckAvailability').html('<i class="fas fa-spinner fa-spin"></i> Đang kiểm tra...');
+                $('#btnCheckAvailability').prop('disabled', true);
+
+                $.ajax({
+                    url: '@Url.Action("GetAvailableSlotsAjax", "Home")',
+                    type: 'POST',
+                    data: { sanBongId: sanBongId, checkDate: bookingDate },
+                    success: function (data) {
+                        showTimeSlots(data, sanBongId, bookingDate);
+                        goToStep(2);
+                        $('#btnCheckAvailability').html('<i class="fas fa-search"></i> Kiểm tra lịch trống');
+                        $('#btnCheckAvailability').prop('disabled', false);
+                    },
+                    error: function () {
+                        showAlert('Có lỗi xảy ra khi kiểm tra lịch trống. Vui lòng thử lại.', 'danger');
+                        $('#btnCheckAvailability').html('<i class="fas fa-search"></i> Kiểm tra lịch trống');
+                        $('#btnCheckAvailability').prop('disabled', false);
+                    }
+                });
+            });
+
+            // Show time slots
+            function showTimeSlots(data, sanBongId, bookingDate) {
+                const fieldName = $('#sanBongId option:selected').text();
+                const formattedDate = new Date(bookingDate).toLocaleDateString('vi-VN', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                $('#displayFieldName').text(fieldName);
+                $('#displayDate').text(formattedDate);
+                $('#selectedDateInfo').show();
+
+                let html = '';
+                if (data.length === 0) {
+                    html = '<div class="empty-state"><i class="fas fa-calendar-times"></i><h4>Không có khung giờ nào</h4><p>Vui lòng chọn ngày khác</p></div>';
+                } else {
+                    html = '<div class="time-slots-grid">';
+                    $.each(data, function (index, slot) {
+                        const statusClass = slot.IsAvailable ? 'available' : 'booked';
+                        const statusText = slot.IsAvailable ? 'Còn trống' : 'Đã đặt';
+                        const timeDisplay = formatTime(slot.StartTime) + ' - ' + formatTime(slot.EndTime);
+
+                        html += `
+                            <div class="time-slot ${statusClass}" 
+                                 data-start="${formatTimeForInput(slot.StartTime)}" 
+                                 data-end="${formatTimeForInput(slot.EndTime)}" 
+                                 data-available="${slot.IsAvailable}"
+                                 data-display="${timeDisplay}">
+                                <div class="slot-time">${timeDisplay}</div>
+                                <div class="slot-status">${statusText}</div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                }
+
+                $('#timeSlotsContainer').html(html);
+
+                // Click handler for time slots
+                $('.time-slot.available').click(function () {
+                    $('.time-slot').removeClass('selected');
+                    $(this).addClass('selected');
+
+                    selectedSlot = {
+                        startTime: $(this).data('start'),
+                        endTime: $(this).data('end'),
+                        displayTime: $(this).data('display')
+                    };
+
+                    $('#btnConfirmTimeSlot').show();
+                });
+
+                $('.time-slot.booked').click(function () {
+                    showAlert('Khung giờ này đã được đặt. Vui lòng chọn khung giờ khác.', 'danger');
+                });
+            }
+
+            // Confirm time slot
+            $('#btnConfirmTimeSlot').click(function () {
+                if (!selectedSlot) {
+                    showAlert('Vui lòng chọn một khung giờ.', 'warning');
+                    return;
+                }
+
+                const sanBongId = $('#sanBongId').val();
+                const bookingDate = $('#bookingDate').val();
+                const fieldName = $('#sanBongId option:selected').text();
+                const formattedDate = new Date(bookingDate).toLocaleDateString('vi-VN');
+
+                // Fill hidden fields
+                $('#hiddenSanBongId').val(sanBongId);
+                $('#hiddenNgayBooking').val(bookingDate);
+                $('#hiddenStartTime').val(selectedSlot.startTime);
+                $('#hiddenEndTime').val(selectedSlot.endTime);
+
+                // Fill summary
+                $('#summaryField').text(fieldName);
+                $('#summaryDate').text(formattedDate);
+                $('#summaryTime').text(selectedSlot.displayTime);
+
+                goToStep(3);
+            });
+
+            // Navigation
+            $('#btnBackToStep1').click(() => goToStep(1));
+            $('#btnBackToStep2').click(() => goToStep(2));
+
+            function goToStep(step) {
+                currentStep = step;
+
+                // Hide all sections
+                $('.booking-section').removeClass('active');
+                $('.step-item').removeClass('active completed');
+
+                // Show current section
+                $(`#step${step}Section`).addClass('active');
+                $(`#stepIndicator${step}`).addClass('active');
+
+                // Mark completed steps
+                for (let i = 1; i < step; i++) {
+                    $(`#stepIndicator${i}`).addClass('completed');
+                }
+
+                // Scroll to top
+                $('html, body').animate({ scrollTop: 0 }, 300);
+            }
+
+            function showAlert(message, type) {
+                const alertHtml = `
+                    <div class="alert alert-${type}" style="animation: fadeInUp 0.3s ease-out;">
+                        <i class="fas fa-${type === 'danger' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+                $('.booking-section.active').prepend(alertHtml);
+                setTimeout(() => {
+                    $('.alert').fadeOut(function() { $(this).remove(); });
+                }, 5000);
+            }
+
+            function formatTime(timeSpan) {
+                const hours = Math.floor(timeSpan.Ticks / 36000000000) % 24;
+                const minutes = Math.floor((timeSpan.Ticks / 600000000) % 60);
+                return pad(hours) + ':' + pad(minutes);
+            }
+
+            function formatTimeForInput(timeSpan) {
+                return formatTime(timeSpan);
+            }
+
+            function pad(num) {
+                return num < 10 ? '0' + num : num;
+            }
+        });
+    </script>
+}

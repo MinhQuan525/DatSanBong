@@ -1,0 +1,433 @@
+﻿@model DatSanBong.Models.NguoiDung
+@{
+    ViewBag.Title = "Đăng ký";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow-x: hidden;
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        position: relative;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Animated background elements */
+    body::before {
+        content: '';
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.03)"/><circle cx="20" cy="80" r="0.5" fill="rgba(255,255,255,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        animation: float 20s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @@keyframes float {
+        0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+        33% { transform: translate(30px, -30px) rotate(120deg); }
+        66% { transform: translate(-20px, 20px) rotate(240deg); }
+    }
+
+    .register-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100vw;
+        padding: 20px;
+        box-sizing: border-box;
+        z-index: 10;
+        perspective: 1000px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .register-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        box-shadow:
+            0 25px 45px rgba(0, 0, 0, 0.1),
+            0 10px 20px rgba(0, 0, 0, 0.05),
+            inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        padding: 40px 35px;
+        width: 100%;
+        max-width: 480px;
+        animation: slideInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.3s ease;
+        margin: auto;
+    }
+
+    .register-card:hover {
+        transform: translateY(-5px) rotateX(2deg);
+    }
+
+    .register-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+        border-radius: 24px 24px 0 0;
+    }
+
+    .register-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .register-header h2 {
+        color: #2d3748;
+        font-weight: 700;
+        font-size: 28px;
+        margin: 0 0 8px 0;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .register-header p {
+        color: #718096;
+        font-size: 14px;
+        margin: 0;
+        font-weight: 400;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #4a5568;
+        font-weight: 600;
+        font-size: 14px;
+        letter-spacing: 0.025em;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 16px 50px 16px 20px;
+        border: 2px solid #e2e8f0;
+        border-radius: 16px;
+        font-size: 16px;
+        background: rgba(255, 255, 255, 0.9);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        outline: none;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow:
+            0 0 0 3px rgba(102, 126, 234, 0.1),
+            0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+        background: #fff;
+    }
+
+    .form-control::placeholder {
+        color: #a0aec0;
+        font-weight: 400;
+    }
+
+    .input-icon {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+        font-size: 18px;
+        transition: color 0.3s ease;
+        pointer-events: none;
+    }
+
+    .form-control:focus + .input-icon {
+        color: #667eea;
+    }
+
+    .validation-message {
+        color: #e53e3e;
+        font-size: 12px;
+        margin-top: 6px;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+    }
+
+    .validation-message:not(:empty) {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .text-danger {
+        color: #e53e3e;
+        font-size: 12px;
+        margin-top: 6px;
+        font-weight: 500;
+        display: block;
+    }
+
+    .btn-register {
+        width: 100%;
+        padding: 16px 24px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 16px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.025em;
+        margin: 24px 0 16px 0;
+    }
+
+    .btn-register::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-register:hover::before {
+        left: 100%;
+    }
+
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-register:active {
+        transform: translateY(0);
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 16px;
+        color: #718096;
+        font-size: 14px;
+    }
+
+    .login-link a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .login-link a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -2px;
+        left: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+
+    .login-link a:hover::after {
+        width: 100%;
+    }
+
+    .login-link a:hover {
+        color: #764ba2;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 16px;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 60px, 0) rotateX(-10deg);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) rotateX(0deg);
+        }
+    }
+
+    /* Responsive */
+    @@media (max-width: 540px) {
+        .register-container {
+            padding: 15px;
+        }
+
+        .register-card {
+            padding: 30px 25px;
+            max-width: 100%;
+        }
+
+        .register-header h2 {
+            font-size: 24px;
+        }
+
+        .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
+    }
+
+    /* Loading animation */
+    .btn-register.loading {
+        pointer-events: none;
+        opacity: 0.8;
+    }
+
+    .btn-register.loading::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        margin: auto;
+        border: 2px solid transparent;
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    @@keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+</style>
+
+<div class="register-container">
+    <div class="register-card">
+        <div class="register-header">
+            <h2>Tạo tài khoản mới</h2>
+            <p>Điền thông tin để đăng ký</p>
+        </div>
+
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "register-form", @id = "registerForm" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger text-center mb-3" })
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.username, new { @class = "form-label" })
+                <div style="position: relative;">
+                    @Html.TextBoxFor(m => m.username, new { @class = "form-control", placeholder = "Nhập tên người dùng", autocomplete = "username" })
+                    <span class="input-icon">👤</span>
+                </div>
+                @Html.ValidationMessageFor(m => m.username, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.email, new { @class = "form-label" })
+                <div style="position: relative;">
+                    @Html.TextBoxFor(m => m.email, new { @class = "form-control", type = "email", placeholder = "Nhập địa chỉ email", autocomplete = "email" })
+                    <span class="input-icon">📧</span>
+                </div>
+                @Html.ValidationMessageFor(m => m.email, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    @Html.Label("password", "Mật khẩu", new { @class = "form-label" })
+                    <div style="position: relative;">
+                        @Html.Password("password", null, new { @class = "form-control", placeholder = "Nhập mật khẩu", autocomplete = "new-password" })
+                        <span class="input-icon">🔒</span>
+                    </div>
+                    @Html.ValidationMessage("password", "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("confirmPassword", "Xác nhận mật khẩu", new { @class = "form-label" })
+                    <div style="position: relative;">
+                        @Html.Password("confirmPassword", null, new { @class = "form-control", placeholder = "Nhập lại mật khẩu", autocomplete = "new-password" })
+                        <span class="input-icon">🔐</span>
+                    </div>
+                    @Html.ValidationMessage("confirmPassword", "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register" id="registerBtn">
+                <span class="btn-text">Đăng ký</span>
+            </button>
+        }
+
+        <div class="login-link">
+            Đã có tài khoản? @Html.ActionLink("Đăng nhập", "Login", "Account")
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('registerForm');
+        const registerBtn = document.getElementById('registerBtn');
+
+        // Form submission
+        form.addEventListener('submit', function (e) {
+            // Add loading state
+            registerBtn.classList.add('loading');
+            registerBtn.querySelector('.btn-text').textContent = 'Đang đăng ký...';
+
+            // Let the form submit normally
+            // The loading animation will show until page reload
+        });
+
+        // Add floating animation on load
+        setTimeout(() => {
+            document.querySelector('.register-card').style.animation = 'none';
+        }, 800);
+    });
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

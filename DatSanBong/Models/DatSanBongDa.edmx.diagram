@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="b7a75d0235114d37bf4cc1a5e786ba87" Name="Diagram1">
+        <EntityTypeShape EntityType="DatSanBongDaModel.DonDatSan" Width="1.5" PointX="5.25" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DatSanBongDaModel.LoaiSanBong" Width="1.5" PointX="0.75" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DatSanBongDaModel.NguoiDung" Width="1.5" PointX="3" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DatSanBongDaModel.PhanCongNhanVien" Width="1.5" PointX="8.25" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="DatSanBongDaModel.PhuongThucThanhToan" Width="1.5" PointX="3" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DatSanBongDaModel.Review" Width="1.5" PointX="10.5" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DatSanBongDaModel.Role" Width="1.5" PointX="0.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DatSanBongDaModel.SanBong" Width="1.5" PointX="3" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DatSanBongDaModel.SuCo" Width="1.5" PointX="7.5" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DatSanBongDaModel.ThongBao" Width="1.5" PointX="5.25" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DatSanBongDaModel.TienIchSanBong" Width="1.5" PointX="5.25" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DatSanBongDaModel.TrangThaiDonDat" Width="1.5" PointX="3" PointY="18.625" IsExpanded="true" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__DonDatSan__IDPT__619B8048" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__DonDatSan__IDSan__6383C8BA" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__DonDatSan__IDsta__628FA481" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__DonDatSan__IDuse__60A75C0F" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__Reviews__IDBooki__6D0D32F4" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__SuCo__IDBooking__778AC167" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__SanBong__IDLoaiS__59063A47" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__NguoiDung__IDrol__4D94879B" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__PhanCongN__IDAdm__00200768" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__PhanCongN__IDuse__7E37BEF6" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__Reviews__IDuser__6C190EBB" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__SuCo__IDAdmin__797309D9" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__SuCo__IDuser__76969D2E" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__ThongBao__IDuser__71D1E811" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__PhanCongN__IDSan__7F2BE32F" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__Reviews__IDSanBo__6B24EA82" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.FK__SuCo__IDSanBong__787EE5A0" ManuallyRouted="false" />
+        <AssociationConnector Association="DatSanBongDaModel.SanBong_TienIch" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

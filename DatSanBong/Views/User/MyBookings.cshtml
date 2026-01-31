@@ -1,0 +1,727 @@
+﻿@model IEnumerable<DatSanBong.Models.DonDatSan>
+@{
+    ViewBag.Title = "Lịch sử đặt sân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1e40af;
+        --secondary: #0ea5e9;
+        --accent: #06b6d4;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    /* ===============================================
+       PAGE HEADER
+    =============================================== */
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 1rem;
+    }
+
+    /* ===============================================
+       FILTER & SEARCH
+    =============================================== */
+    .filter-section {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 32px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        align-items: end;
+    }
+
+    .filter-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .filter-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #475569;
+    }
+
+    .filter-input,
+    .filter-select {
+        padding: 10px 14px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .btn-filter {
+        padding: 10px 20px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-filter:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    /* ===============================================
+       STATS SUMMARY
+    =============================================== */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 4px;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    /* ===============================================
+       BOOKING CARDS
+    =============================================== */
+    .bookings-grid {
+        display: grid;
+        gap: 20px;
+    }
+
+    .booking-card {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+    }
+
+    .booking-card:hover {
+        transform: translateX(4px);
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+        border-left-color: var(--primary);
+    }
+
+    .booking-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .booking-id {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .booking-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-completed {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+    }
+
+    .status-pending {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning);
+    }
+
+    .status-cancelled {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+    }
+
+    .status-confirmed {
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--primary);
+    }
+
+    .booking-body {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .booking-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        font-size: 0.9375rem;
+        font-weight: 700;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .info-value i {
+        color: var(--primary);
+    }
+
+    .price-highlight {
+        font-size: 1.125rem;
+        color: var(--primary);
+    }
+
+    .booking-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding-top: 16px;
+        border-top: 2px solid #f1f5f9;
+    }
+
+    .btn-action {
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+    }
+
+    .btn-details {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-details:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        color: white;
+    }
+
+    .btn-rate {
+        background: linear-gradient(135deg, var(--warning), #f59e0b);
+        color: white;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+    }
+
+    .btn-rate:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+        color: white;
+    }
+
+    .btn-rated {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+        cursor: default;
+    }
+
+    .btn-rated:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* ===============================================
+       EMPTY STATE
+    =============================================== */
+    .empty-state {
+        background: white;
+        border-radius: 20px;
+        padding: 64px 32px;
+        text-align: center;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+    }
+
+    .empty-icon {
+        font-size: 80px;
+        margin-bottom: 24px;
+        opacity: 0.3;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 12px;
+    }
+
+    .empty-text {
+        color: #64748b;
+        font-size: 1rem;
+        margin-bottom: 24px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 12px 32px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        color: white;
+    }
+
+    /* ===============================================
+       RESPONSIVE
+    =============================================== */
+    @@media (max-width: 768px) {
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .booking-body {
+            grid-template-columns: 1fr;
+        }
+
+        .booking-actions {
+            flex-direction: column;
+        }
+
+        .btn-action {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .filter-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ===============================================
+       ANIMATIONS
+    =============================================== */
+    .booking-card {
+        animation: fadeInUp 0.5s ease-out backwards;
+    }
+
+    .booking-card:nth-child(1) { animation-delay: 0.1s; }
+    .booking-card:nth-child(2) { animation-delay: 0.2s; }
+    .booking-card:nth-child(3) { animation-delay: 0.3s; }
+    .booking-card:nth-child(4) { animation-delay: 0.4s; }
+    .booking-card:nth-child(5) { animation-delay: 0.5s; }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1 class="page-title">Lịch Sử Đặt Sân</h1>
+    <p class="page-subtitle">Quản lý và theo dõi các đơn đặt sân của bạn</p>
+</div>
+
+@if (Model.Any())
+{
+    <!-- Stats Summary -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-file-invoice"></i>
+            </div>
+            <div class="stat-value">@Model.Count()</div>
+            <div class="stat-label">Tổng đơn đặt</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-value">@Model.Count(b => b.TTThanhToan)</div>
+            <div class="stat-label">Đã thanh toán</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-value">@Model.Count(b => b.NgayBooking >= DateTime.Today)</div>
+            <div class="stat-label">Đơn sắp tới</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="stat-value">@Model.Sum(b => b.TongTien).ToString("N0")</div>
+            <div class="stat-label">Tổng chi tiêu (VNĐ)</div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <div class="filter-grid">
+            <div class="filter-item">
+                <label class="filter-label">Tìm kiếm</label>
+                <input type="text" 
+                       class="filter-input" 
+                       id="searchInput" 
+                       placeholder="Tìm theo tên sân, mã đơn...">
+            </div>
+            <div class="filter-item">
+                <label class="filter-label">Trạng thái</label>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="pending">Chờ duyệt</option>
+                    <option value="confirmed">Đã duyệt</option>
+                    <option value="completed">Hoàn thành</option>
+                    <option value="cancelled">Đã hủy</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label class="filter-label">Thanh toán</label>
+                <select class="filter-select" id="paymentFilter">
+                    <option value="">Tất cả</option>
+                    <option value="paid">Đã thanh toán</option>
+                    <option value="unpaid">Chưa thanh toán</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <button class="btn-filter" onclick="applyFilters()">
+                    <i class="fas fa-filter"></i> Lọc
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookings Grid -->
+    <div class="bookings-grid" id="bookingsContainer">
+        @foreach (var item in Model.OrderByDescending(b => b.created_at))
+        {
+            var statusClass = "status-pending";
+            if (item.TrangThaiDonDat.Tenstatus.Contains("Hoàn thành") || item.TrangThaiDonDat.Tenstatus.Contains("Đã duyệt"))
+            {
+                statusClass = "status-confirmed";
+            }
+            else if (item.TrangThaiDonDat.Tenstatus.Contains("Hủy"))
+            {
+                statusClass = "status-cancelled";
+            }
+
+            bool canRate = (item.NgayBooking < DateTime.Today || 
+                          (item.NgayBooking == DateTime.Today && item.end_time < DateTime.Now.TimeOfDay));
+            var existingReview = item.Reviews.FirstOrDefault(r => r.IDBooking == item.IDBooking);
+
+            <div class="booking-card" 
+                 data-field="@item.SanBong.TenSanBong.ToLower()" 
+                 data-id="@item.IDBooking"
+                 data-status="@(item.TrangThaiDonDat.Tenstatus.ToLower())"
+                 data-payment="@(item.TTThanhToan ? "paid" : "unpaid")">
+                
+                <div class="booking-header">
+                    <div class="booking-id">
+                        <i class="fas fa-hashtag"></i>
+                        Đơn @item.IDBooking
+                    </div>
+                    <span class="booking-status @statusClass">
+                        <i class="fas fa-circle"></i>
+                        @item.TrangThaiDonDat.Tenstatus
+                    </span>
+                </div>
+
+                <div class="booking-body">
+                    <div class="booking-info">
+                        <div class="info-label">Sân bóng</div>
+                        <div class="info-value">
+                            <i class="fas fa-futbol"></i>
+                            @item.SanBong.TenSanBong
+                        </div>
+                    </div>
+
+                    <div class="booking-info">
+                        <div class="info-label">Ngày đặt</div>
+                        <div class="info-value">
+                            <i class="fas fa-calendar-day"></i>
+                            @item.NgayBooking.ToString("dd/MM/yyyy")
+                        </div>
+                    </div>
+
+                    <div class="booking-info">
+                        <div class="info-label">Khung giờ</div>
+                        <div class="info-value">
+                            <i class="fas fa-clock"></i>
+                            @item.start_time.ToString(@"hh\:mm") - @item.end_time.ToString(@"hh\:mm")
+                        </div>
+                    </div>
+
+                    <div class="booking-info">
+                        <div class="info-label">Tổng tiền</div>
+                        <div class="info-value price-highlight">
+                            <i class="fas fa-money-bill-wave"></i>
+                            @item.TongTien.ToString("N0") VNĐ
+                        </div>
+                    </div>
+
+                    <div class="booking-info">
+                        <div class="info-label">Thanh toán</div>
+                        <div class="info-value">
+                            <i class="fas fa-@(item.TTThanhToan ? "check-circle" : "clock")"></i>
+                            @(item.TTThanhToan ? "Đã thanh toán" : "Chưa thanh toán")
+                        </div>
+                    </div>
+
+                    <div class="booking-info">
+                        <div class="info-label">Ngày tạo</div>
+                        <div class="info-value">
+                            <i class="fas fa-calendar-plus"></i>
+                            @item.created_at.ToString("dd/MM/yyyy")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-actions">
+                    <a href="@Url.Action("BookingDetails", "User", new { id = item.IDBooking })" 
+                       class="btn-action btn-details">
+                        <i class="fas fa-info-circle"></i>
+                        Chi tiết
+                    </a>
+
+                    @if (canRate && existingReview == null)
+                    {
+                        <a href="@Url.Action("RateField", "User", new { bookingId = item.IDBooking })" 
+                           class="btn-action btn-rate">
+                            <i class="fas fa-star"></i>
+                            Đánh giá
+                        </a>
+                    }
+                    else if (existingReview != null)
+                    {
+                        <span class="btn-action btn-rated">
+                            <i class="fas fa-check-circle"></i>
+                            Đã đánh giá (@existingReview.rating sao)
+                        </span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- No Results Message -->
+    <div id="noResults" style="display: none;">
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3 class="empty-title">Không tìm thấy kết quả</h3>
+            <p class="empty-text">Vui lòng thử lại với từ khóa hoặc bộ lọc khác</p>
+            <button class="btn-primary" onclick="clearFilters()">
+                <i class="fas fa-redo"></i>
+                Xóa bộ lọc
+            </button>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <h3 class="empty-title">Chưa có đơn đặt sân nào</h3>
+        <p class="empty-text">Bạn chưa đặt sân bóng nào. Hãy bắt đầu đặt sân ngay hôm nay!</p>
+        <a href="@Url.Action("Index", "Home")" class="btn-primary">
+            <i class="fas fa-futbol"></i>
+            Tìm sân bóng
+        </a>
+    </div>
+}
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            // Search and filter functionality
+            window.applyFilters = function() {
+                const searchTerm = $('#searchInput').val().toLowerCase();
+                const statusFilter = $('#statusFilter').val();
+                const paymentFilter = $('#paymentFilter').val();
+                
+                let visibleCount = 0;
+
+                $('.booking-card').each(function() {
+                    const $card = $(this);
+                    const fieldName = $card.data('field');
+                    const bookingId = $card.data('id').toString();
+                    const status = $card.data('status');
+                    const payment = $card.data('payment');
+
+                    let showCard = true;
+
+                    // Search filter
+                    if (searchTerm && !fieldName.includes(searchTerm) && !bookingId.includes(searchTerm)) {
+                        showCard = false;
+                    }
+
+                    // Status filter
+                    if (statusFilter && !status.includes(statusFilter)) {
+                        showCard = false;
+                    }
+
+                    // Payment filter
+                    if (paymentFilter && payment !== paymentFilter) {
+                        showCard = false;
+                    }
+
+                    if (showCard) {
+                        $card.show();
+                        visibleCount++;
+                    } else {
+                        $card.hide();
+                    }
+                });
+
+                // Show/hide no results message
+                if (visibleCount === 0) {
+                    $('#noResults').show();
+                } else {
+                    $('#noResults').hide();
+                }
+            };
+
+            window.clearFilters = function() {
+                $('#searchInput').val('');
+                $('#statusFilter').val('');
+                $('#paymentFilter').val('');
+                applyFilters();
+            };
+
+            // Real-time search
+            $('#searchInput').on('input', function() {
+                applyFilters();
+            });
+
+            // Filter change
+            $('#statusFilter, #paymentFilter').on('change', function() {
+                applyFilters();
+            });
+
+            // Animation on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.booking-card, .stat-card').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+}
+

@@ -1,0 +1,657 @@
+﻿@model DatSanBong.Models.DonDatSan
+@{
+    ViewBag.Title = "Chi tiết đơn đặt sân";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --secondary: #0ea5e9;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+    }
+
+    .details-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        margin-bottom: 32px;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 0.9375rem;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn-action {
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        border: 2px solid #e2e8f0;
+        background: white;
+        color: #64748b;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-action:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .alert {
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInDown 0.4s ease-out;
+    }
+
+    @@keyframes slideInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert i {
+        font-size: 1.25rem;
+    }
+
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+        border-left: 4px solid var(--success);
+    }
+
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+        border-left: 4px solid var(--danger);
+    }
+
+    .details-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        margin-bottom: 24px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 24px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card-title i {
+        color: var(--primary);
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #64748b;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-label i {
+        color: var(--primary);
+    }
+
+    .info-value {
+        font-size: 1rem;
+        color: #1e293b;
+    }
+
+    .info-value strong {
+        font-weight: 700;
+    }
+
+    .info-value small {
+        display: block;
+        color: #64748b;
+        font-size: 0.875rem;
+        margin-top: 4px;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+    }
+
+    .badge-warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: #92400e;
+    }
+
+    .badge-info {
+        background: rgba(59, 130, 246, 0.1);
+        color: #1e40af;
+    }
+
+    .badge-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+    }
+
+    .price-highlight {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--success);
+    }
+
+    .note-box {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 16px;
+        margin-top: 8px;
+    }
+
+    .note-box.empty {
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    .note-box.danger {
+        background: rgba(239, 68, 68, 0.05);
+        color: #991b1b;
+    }
+
+    .divider {
+        height: 2px;
+        background: #e2e8f0;
+        margin: 24px 0;
+    }
+
+    .update-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        position: sticky;
+        top: 24px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label i {
+        color: var(--primary);
+    }
+
+    .form-label .required {
+        color: var(--danger);
+    }
+
+    .form-select,
+    .form-control {
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .form-select:focus,
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .form-hint {
+        font-size: 0.8125rem;
+        color: #64748b;
+        margin-top: 6px;
+    }
+
+    .btn-update {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    .quick-actions {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        margin-top: 24px;
+    }
+
+    .quick-actions-title {
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .quick-actions-title i {
+        color: var(--warning);
+    }
+
+    .action-links {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .action-link {
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        color: #475569;
+        text-decoration: none;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .action-link:hover {
+        border-color: var(--primary);
+        background: rgba(37, 99, 235, 0.05);
+        color: var(--primary);
+        text-decoration: none;
+        transform: translateX(4px);
+    }
+
+    .action-link i {
+        width: 20px;
+        text-align: center;
+    }
+
+    @@media (max-width: 768px) {
+        .update-card {
+            position: static;
+            margin-top: 24px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="details-container">
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-file-invoice"></i>
+                Chi Tiết Đơn Đặt Sân #@Model.IDBooking
+            </h1>
+            <p class="page-subtitle">Thông tin chi tiết về đơn đặt sân bóng</p>
+        </div>
+        <div class="header-actions">
+            @Html.ActionLink("Quay lại", "Bookings", null, new { @class = "btn-action" })
+            <i class="fas fa-arrow-left"></i>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span>@TempData["SuccessMessage"]</span>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>@TempData["ErrorMessage"]</span>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Customer & Field Info -->
+            <div class="details-card">
+                <h2 class="card-title">
+                    <i class="fas fa-info-circle"></i>
+                    Thông Tin Đặt Sân
+                </h2>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-user"></i>
+                            Người đặt
+                        </div>
+                        <div class="info-value">
+                            <strong>@Model.NguoiDung.fullname</strong>
+                            <small>@Model.NguoiDung.email</small>
+                            @if (!string.IsNullOrEmpty(Model.NguoiDung.sdt))
+                            {
+                                <small><i class="fas fa-phone" style="font-size: 0.75rem;"></i> @Model.NguoiDung.sdt</small>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-futbol"></i>
+                            Sân bóng
+                        </div>
+                        <div class="info-value">
+                            <strong>@Model.SanBong.TenSanBong</strong>
+                            <small>@Model.SanBong.DiaChi</small>
+                            <small>Loại: @Model.SanBong.LoaiSanBong.LoaiSan</small>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-calendar-day"></i>
+                            Ngày đặt
+                        </div>
+                        <div class="info-value">
+                            <span class="badge badge-info" style="font-size: 1rem; padding: 8px 16px;">
+                                <i class="fas fa-calendar"></i>
+                                @Model.NgayBooking.ToString("dd/MM/yyyy")
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-clock"></i>
+                            Khung giờ
+                        </div>
+                        <div class="info-value">
+                            <span class="badge badge-warning" style="font-size: 1rem; padding: 8px 16px;">
+                                <i class="fas fa-hourglass-half"></i>
+                                @Model.start_time.ToString(@"hh\:mm") - @Model.end_time.ToString(@"hh\:mm")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-money-bill-wave"></i>
+                            Tổng tiền
+                        </div>
+                        <div class="info-value">
+                            <div class="price-highlight">@Model.TongTien.ToString("N0") ₫</div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-credit-card"></i>
+                            Thanh toán
+                        </div>
+                        <div class="info-value">
+                            @if (Model.TTThanhToan)
+                            {
+                                <span class="badge badge-success">
+                                    <i class="fas fa-check-circle"></i>
+                                    Đã thanh toán
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-warning">
+                                    <i class="fas fa-clock"></i>
+                                    Chưa thanh toán
+                                </span>
+                            }
+                            <small>Phương thức: @(Model.PhuongThucThanhToan?.TenPT ?? "Chưa chọn")</small>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-flag"></i>
+                            Trạng thái đơn
+                        </div>
+                        <div class="info-value">
+                            @{
+                                var statusName = Model.TrangThaiDonDat.Tenstatus;
+                                var badgeClass = statusName == "Chờ duyệt" ? "badge-warning"
+                                               : statusName == "Đã duyệt" ? "badge-info"
+                                               : statusName == "Hoàn thành" ? "badge-success"
+                                               : statusName == "Đã hủy" ? "badge-danger"
+                                               : "badge-info";
+                            }
+                            <span class="badge @badgeClass" style="font-size: 1rem; padding: 8px 16px;">
+                                @statusName
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="details-card">
+                <h2 class="card-title">
+                    <i class="fas fa-file-alt"></i>
+                    Thông Tin Bổ Sung
+                </h2>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-sticky-note"></i>
+                            Ghi chú Admin
+                        </div>
+                        <div class="info-value">
+                            @if (string.IsNullOrEmpty(Model.admin_notes))
+                            {
+                                <div class="note-box empty">Không có ghi chú</div>
+                            }
+                            else
+                            {
+                                <div class="note-box">@Model.admin_notes</div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-ban"></i>
+                            Lý do hủy
+                        </div>
+                        <div class="info-value">
+                            @if (string.IsNullOrEmpty(Model.LyDoHuy))
+                            {
+                                <div class="note-box empty">Không có</div>
+                            }
+                            else
+                            {
+                                <div class="note-box danger">@Model.LyDoHuy</div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-calendar-plus"></i>
+                            Ngày tạo
+                        </div>
+                        <div class="info-value">
+                            <small>@Model.created_at.ToString("dd/MM/yyyy HH:mm")</small>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-history"></i>
+                            Cập nhật cuối
+                        </div>
+                        <div class="info-value">
+                            <small>@Model.updated_at.ToString("dd/MM/yyyy HH:mm")</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Update Status Card -->
+            <div class="update-card">
+                <h2 class="card-title">
+                    <i class="fas fa-sync-alt"></i>
+                    Cập Nhật Trạng Thái
+                </h2>
+
+                @using (Html.BeginForm("UpdateBookingStatus", "Admin", FormMethod.Post, new { @id = "updateForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.IDBooking)
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label class="form-label">
+                            <i class="fas fa-flag"></i>
+                            Trạng thái mới
+                            <span class="required">*</span>
+                        </label>
+                        @Html.DropDownList("newStatusId", (SelectList)ViewBag.StatusOptions,
+                            "-- Chọn trạng thái --",
+                            new { @class = "form-select", required = "required" })
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label class="form-label">
+                            <i class="fas fa-comment-dots"></i>
+                            Ghi chú Admin
+                        </label>
+                        @Html.TextArea("adminNotes", Model.admin_notes,
+                            new { @class = "form-control", rows = 5, placeholder = "Nhập ghi chú của admin..." })
+                        <div class="form-hint">
+                            <i class="fas fa-info-circle"></i>
+                            Ghi chú này sẽ được lưu trong hệ thống
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-update">
+                        <i class="fas fa-save"></i>
+                        Cập nhật trạng thái
+                    </button>
+                }
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="quick-actions-title">
+                    <i class="fas fa-bolt"></i>
+                    Thao Tác Nhanh
+                </div>
+                <div class="action-links">
+                    @Html.ActionLink("", "Bookings", null, new { @class = "action-link" })
+                    <i class="fas fa-list"></i>
+                    Xem tất cả đơn
+                    @Html.ActionLink("", "PrintInvoice", new { id = Model.IDBooking }, new { @class = "action-link", target = "_blank" })
+                    <i class="fas fa-print"></i>
+                    In hóa đơn
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            $('#updateForm').on('submit', function(e) {
+                const status = $('select[name="newStatusId"]').val();
+                if (!status) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn trạng thái mới!');
+                    return false;
+                }
+            });
+        });
+    </script>
+}

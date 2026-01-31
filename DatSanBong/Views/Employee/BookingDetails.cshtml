@@ -1,0 +1,409 @@
+﻿@model DatSanBong.Models.DonDatSan
+@{
+    ViewBag.Title = "Chi tiết đơn đặt sân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .page-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 30px 0;
+    }
+
+    .main-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        margin: 0 auto;
+        max-width: 1200px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 40px;
+        position: relative;
+    }
+
+    .page-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 2px;
+    }
+
+    .info-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(102, 126, 234, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        transition: background-color 0.2s ease;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-row:hover {
+        background-color: rgba(102, 126, 234, 0.02);
+        border-radius: 8px;
+        margin: 0 -10px;
+        padding: 15px 10px;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #4a5568;
+        min-width: 200px;
+        display: flex;
+        align-items: center;
+        font-size: 0.95rem;
+    }
+
+    .info-label::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        margin-right: 12px;
+    }
+
+    .info-value {
+        color: #2d3748;
+        font-size: 0.95rem;
+        font-weight: 500;
+        flex: 1;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-paid {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        color: white;
+    }
+
+    .status-unpaid {
+        background: linear-gradient(135deg, #ed8936, #dd6b20);
+        color: white;
+    }
+
+    .price-highlight {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+
+    .alert-message {
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
+        color: #22543d;
+        border-left: 5px solid #48bb78;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #fed7d7, #feb2b2);
+        color: #742a2a;
+        border-left: 5px solid #e53e3e;
+    }
+
+    .alert-message::before {
+        content: '✓';
+        font-size: 1.2rem;
+        margin-right: 12px;
+        font-weight: bold;
+    }
+
+    .alert-danger::before {
+        content: '⚠';
+    }
+
+    .update-section {
+        background: linear-gradient(135deg, #f7fafc, #edf2f7);
+        border-radius: 16px;
+        padding: 30px;
+        margin-top: 40px;
+        border: 2px solid rgba(102, 126, 234, 0.1);
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 25px;
+        text-align: center;
+        position: relative;
+    }
+
+    .section-title::before {
+        content: '⚙';
+        margin-right: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 8px;
+        display: block;
+        font-size: 0.95rem;
+    }
+
+    .form-control,
+    .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background-color: #ffffff;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+
+    .btn-modern {
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 140px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #cbd5e0, #a0aec0);
+        color: #4a5568;
+        box-shadow: 0 4px 15px rgba(160, 174, 192, 0.3);
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(160, 174, 192, 0.4);
+        color: #4a5568;
+        text-decoration: none;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    @@media (max-width: 768px) {
+        .main-card {
+            margin: 0 15px;
+            padding: 25px;
+        }
+
+        .info-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .info-label {
+            min-width: auto;
+            margin-bottom: 5px;
+        }
+
+        .button-group {
+            flex-direction: column;
+        }
+
+        .btn-modern {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="page-container">
+    <div class="main-card">
+        <h1 class="page-title">Chi tiết đơn đặt sân #@Model.IDBooking</h1>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert-message alert-success">@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert-message alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <div class="info-card">
+            <div class="info-row">
+                <div class="info-label">👤 Người đặt:</div>
+                <div class="info-value">@Model.NguoiDung.fullname (@Model.NguoiDung.email)</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">⚽ Sân bóng:</div>
+                <div class="info-value">@Model.SanBong.TenSanBong (@Model.SanBong.DiaChi)</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">📅 Ngày đặt:</div>
+                <div class="info-value">@Model.NgayBooking.ToString("dd/MM/yyyy")</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">⏰ Thời gian:</div>
+                <div class="info-value">@Model.start_time.ToString(@"hh\:mm") - @Model.end_time.ToString(@"hh\:mm")</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">💰 Tổng tiền:</div>
+                <div class="info-value price-highlight">@Model.TongTien.ToString("N0") VNĐ</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">💳 Trạng thái thanh toán:</div>
+                <div class="info-value">
+                    <span class="status-badge @(Model.TTThanhToan ? "status-paid" : "status-unpaid")">
+                        @(Model.TTThanhToan ? "Đã thanh toán" : "Chưa thanh toán")
+                    </span>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">🏪 Phương thức thanh toán:</div>
+                <div class="info-value">@(Model.PhuongThucThanhToan?.TenPT ?? "Chưa chọn")</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">📊 Trạng thái đơn hiện tại:</div>
+                <div class="info-value">
+                    <span class="status-badge status-paid">@Model.TrangThaiDonDat.Tenstatus</span>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">📝 Ghi chú Admin:</div>
+                <div class="info-value">@(string.IsNullOrEmpty(Model.admin_notes) ? "Không có" : Model.admin_notes)</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">❌ Lý do hủy (nếu có):</div>
+                <div class="info-value">@(string.IsNullOrEmpty(Model.LyDoHuy) ? "Không có" : Model.LyDoHuy)</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">🕐 Ngày tạo đơn:</div>
+                <div class="info-value">@Model.created_at.ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">🔄 Cập nhật cuối:</div>
+                <div class="info-value">@Model.updated_at.ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+        </div>
+
+        <div class="update-section">
+            <h2 class="section-title">Cập nhật trạng thái đơn đặt sân</h2>
+
+            <div class="form-container">
+                @using (Html.BeginForm("UpdateBookingStatus", "Employee", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.IDBooking)
+
+                    <div class="form-group">
+                        @Html.Label("Trạng thái mới", new { @class = "form-label" })
+                        @Html.DropDownList("newStatusId", (SelectList)ViewBag.StatusOptions, new { @class = "form-select" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.Label("Ghi chú Admin", new { @class = "form-label" })
+                        @Html.TextArea("adminNotes", Model.admin_notes, new { @class = "form-control", rows = 4, placeholder = "Nhập ghi chú của admin..." })
+                    </div>
+
+                    <div class="button-group">
+                        <input type="submit" value="✅ Cập nhật trạng thái" class="btn-modern btn-primary" />
+                        @Html.ActionLink("🔙 Quay lại danh sách", "Bookings", null, new { @class = "btn-modern btn-secondary" })
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

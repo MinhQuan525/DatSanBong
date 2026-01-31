@@ -1,0 +1,792 @@
+﻿@model DatSanBong.Models.SanBong
+@{
+    ViewBag.Title = Model.TenSanBong;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1e40af;
+        --secondary: #0ea5e9;
+        --accent: #06b6d4;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    /* ===============================================
+       HERO SECTION
+    =============================================== */
+    .field-hero {
+        position: relative;
+        height: 450px;
+        margin: -40px -40px 40px -40px;
+        border-radius: 24px 24px 0 0;
+        overflow: hidden;
+    }
+
+    .field-hero-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .field-hero-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        padding: 40px;
+        color: white;
+    }
+
+    .field-hero-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 12px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .field-hero-location {
+        font-size: 1.125rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        opacity: 0.95;
+    }
+
+    .field-badges {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .hero-badge {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 10px 18px;
+        border-radius: 20px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .badge-rating {
+        color: var(--warning);
+    }
+
+    .badge-status {
+        color: var(--success);
+    }
+
+    .badge-type {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+    }
+
+    /* ===============================================
+       MAIN CONTENT LAYOUT
+    =============================================== */
+    .field-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 32px;
+        margin-bottom: 40px;
+    }
+
+    /* ===============================================
+       INFO SECTIONS
+    =============================================== */
+    .info-section {
+        background: white;
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+        margin-bottom: 24px;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .section-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    /* ===============================================
+       INFO GRID
+    =============================================== */
+    .info-grid {
+        display: grid;
+        gap: 20px;
+    }
+
+    .info-item {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 16px;
+        align-items: start;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #64748b;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-value {
+        color: #1e293b;
+        font-size: 0.9375rem;
+        line-height: 1.6;
+    }
+
+    /* ===============================================
+       PRICE CARD
+    =============================================== */
+    .price-card {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border-radius: 20px;
+        padding: 32px;
+        text-align: center;
+        position: sticky;
+        top: 24px;
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+    }
+
+    .price-label {
+        font-size: 0.875rem;
+        opacity: 0.9;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .price-amount {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 4px;
+        line-height: 1;
+    }
+
+    .price-unit {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 24px;
+    }
+
+    .price-divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.2);
+        margin: 24px 0;
+    }
+
+    .price-features {
+        text-align: left;
+        margin-bottom: 24px;
+    }
+
+    .price-feature {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        font-size: 0.9375rem;
+    }
+
+    .price-feature i {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* ===============================================
+       ACTION BUTTONS
+    =============================================== */
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .btn-action {
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: 1rem;
+    }
+
+    .btn-book {
+        background: white;
+        color: var(--primary);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-book:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        color: var(--primary);
+    }
+
+    .btn-check {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-check:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+        color: white;
+    }
+
+    /* ===============================================
+       AMENITIES
+    =============================================== */
+    .amenities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+    }
+
+    .amenity-item {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(14, 165, 233, 0.08));
+        padding: 12px 16px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        color: var(--primary);
+        font-size: 0.9375rem;
+        border: 1px solid rgba(37, 99, 235, 0.1);
+    }
+
+    .amenity-item i {
+        font-size: 1.125rem;
+    }
+
+    /* ===============================================
+       REVIEWS SECTION
+    =============================================== */
+    .reviews-summary {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(14, 165, 233, 0.05));
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .reviews-rating {
+        font-size: 3.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+    }
+
+    .reviews-stars {
+        color: var(--warning);
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+
+    .reviews-count {
+        color: #64748b;
+        font-size: 0.9375rem;
+    }
+
+    .review-card {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 16px;
+        border-left: 4px solid var(--primary);
+        transition: all 0.3s ease;
+    }
+
+    .review-card:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+
+    .reviewer-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .reviewer-avatar {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+
+    .reviewer-name {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 1.0625rem;
+    }
+
+    .review-rating {
+        display: flex;
+        gap: 4px;
+        color: var(--warning);
+    }
+
+    .review-comment {
+        color: #475569;
+        line-height: 1.7;
+        margin-bottom: 12px;
+        font-style: italic;
+    }
+
+    .review-date {
+        color: #94a3b8;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .no-reviews {
+        text-align: center;
+        padding: 48px 24px;
+        color: #94a3b8;
+    }
+
+    .no-reviews i {
+        font-size: 4rem;
+        margin-bottom: 16px;
+        opacity: 0.3;
+    }
+
+    /* ===============================================
+       STATUS BADGE
+    =============================================== */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .status-active {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+        color: var(--success);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .status-inactive {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+        color: var(--danger);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    /* ===============================================
+       BACK BUTTON
+    =============================================== */
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 24px;
+        transition: all 0.2s ease;
+    }
+
+    .back-button:hover {
+        color: var(--primary);
+        transform: translateX(-4px);
+    }
+
+    /* ===============================================
+       RESPONSIVE
+    =============================================== */
+    @@media (max-width: 1024px) {
+        .field-content {
+            grid-template-columns: 1fr;
+        }
+
+        .price-card {
+            position: relative;
+            top: 0;
+        }
+
+        .field-hero {
+            height: 350px;
+            margin: -32px -24px 32px -24px;
+        }
+
+        .info-item {
+            grid-template-columns: 120px 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .field-hero {
+            height: 300px;
+            margin: -24px -16px 24px -16px;
+        }
+
+        .field-hero-title {
+            font-size: 1.875rem;
+        }
+
+        .field-badges {
+            top: 16px;
+            right: 16px;
+        }
+
+        .info-section {
+            padding: 24px;
+        }
+
+        .info-item {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .amenities-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .price-amount {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+
+<!-- Back Button -->
+<a href="@Url.Action("Index", "Home")" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+    Quay lại danh sách
+</a>
+
+<!-- Hero Section -->
+<div class="field-hero">
+    @if (!string.IsNullOrEmpty(Model.AnhSan))
+    {
+        <img src="@Url.Content("~/Content/Images/" + Model.AnhSan)" class="field-hero-image" alt="@Model.TenSanBong" />
+    }
+    else
+    {
+        <img src="https://via.placeholder.com/1200x450/2563eb/ffffff?text=⚽+@Uri.EscapeDataString(Model.TenSanBong)" class="field-hero-image" alt="@Model.TenSanBong">
+    }
+
+    <div class="field-badges">
+        <div class="hero-badge badge-type">
+            <i class="fas fa-futbol"></i>
+            @Model.LoaiSanBong.LoaiSan
+        </div>
+        <div class="hero-badge badge-rating">
+            <i class="fas fa-star"></i>
+            @Model.AverageDanhGia.ToString("F1")
+        </div>
+        @if (Model.TrangThaiSan_)
+        {
+            <div class="hero-badge badge-status">
+                <i class="fas fa-check-circle"></i>
+                Đang hoạt động
+            </div>
+        }
+    </div>
+
+    <div class="field-hero-overlay">
+        <h1 class="field-hero-title">@Model.TenSanBong</h1>
+        <div class="field-hero-location">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>@Model.DiaChi</span>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="field-content">
+    <!-- Left Column: Details -->
+    <div>
+        <!-- Basic Information -->
+        <div class="info-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <h2 class="section-title">Thông Tin Chi Tiết</h2>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-futbol"></i>
+                        Loại sân
+                    </div>
+                    <div class="info-value">
+                        <strong>@Model.LoaiSanBong.LoaiSan</strong>
+                        (@Model.LoaiSanBong.min_players - @Model.LoaiSanBong.max_players người)
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-ruler-combined"></i>
+                        Kích thước
+                    </div>
+                    <div class="info-value">
+                        @(string.IsNullOrEmpty(Model.MoTaKichThuoc) ? "Đang cập nhật" : Model.MoTaKichThuoc)
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-toggle-on"></i>
+                        Trạng thái
+                    </div>
+                    <div class="info-value">
+                        <span class="status-badge @(Model.TrangThaiSan_ ? "status-active" : "status-inactive")">
+                            <i class="fas fa-@(Model.TrangThaiSan_ ? "check-circle" : "times-circle")"></i>
+                            @(Model.TrangThaiSan_ ? "Đang hoạt động" : "Tạm dừng")
+                        </span>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.MoTaSan))
+                {
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-align-left"></i>
+                            Mô tả
+                        </div>
+                        <div class="info-value">@Model.MoTaSan</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Amenities -->
+        <div class="info-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-check-double"></i>
+                </div>
+                <h2 class="section-title">Tiện Ích</h2>
+            </div>
+
+            @if (Model.TienIchSanBongs != null && Model.TienIchSanBongs.Any())
+            {
+                <div class="amenities-grid">
+                    @foreach (var tienIch in Model.TienIchSanBongs)
+                    {
+                        <div class="amenity-item">
+                            <i class="fas fa-check"></i>
+                            <span>@tienIch.TenTienIch</span>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted" style="text-align: center; padding: 24px;">
+                    <i class="fas fa-info-circle"></i> Chưa có thông tin tiện ích
+                </p>
+            }
+        </div>
+
+        <!-- Reviews -->
+        <div class="info-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h2 class="section-title">Đánh Giá Từ Khách Hàng</h2>
+            </div>
+
+            @if (Model.Reviews != null && Model.Reviews.Any())
+            {
+                <div class="reviews-summary">
+                    <div class="reviews-rating">@Model.AverageDanhGia.ToString("F1")</div>
+                    <div class="reviews-stars">
+                        @for (int i = 0; i < (int)Math.Round(Model.AverageDanhGia); i++)
+                        {
+                            <i class="fas fa-star"></i>
+                        }
+                        @for (int i = (int)Math.Round(Model.AverageDanhGia); i < 5; i++)
+                        {
+                            <i class="far fa-star"></i>
+                        }
+                    </div>
+                    <div class="reviews-count">Dựa trên @Model.TongLuotDanhGia đánh giá</div>
+                </div>
+
+                foreach (var review in Model.Reviews.OrderByDescending(r => r.created_at).Take(5))
+                {
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">
+                                    @review.NguoiDung.fullname.Substring(0, 1).ToUpper()
+                                </div>
+                                <div>
+                                    <div class="reviewer-name">@review.NguoiDung.fullname</div>
+                                    <div class="review-rating">
+                                        @for (int i = 0; i < review.rating; i++)
+                                        {
+                                            <i class="fas fa-star"></i>
+                                        }
+                                        @for (int i = review.rating; i < 5; i++)
+                                        {
+                                            <i class="far fa-star"></i>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="review-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                @review.created_at.Value.ToString("dd/MM/yyyy")
+                            </div>
+                        </div>
+                        <div class="review-comment">"@review.comment"</div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-reviews">
+                    <i class="fas fa-comment-slash"></i>
+                    <div style="font-size: 1.125rem; margin-bottom: 8px;">Chưa có đánh giá</div>
+                    <div>Hãy là người đầu tiên đánh giá sân này!</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Right Column: Price & Actions -->
+    <div>
+        <div class="price-card">
+            <div class="price-label">Giá thuê sân</div>
+            <div class="price-amount">@(Model.GiaThue / 1000)K</div>
+            <div class="price-unit">VNĐ / giờ</div>
+
+            <div class="price-divider"></div>
+
+            <div class="price-features">
+                <div class="price-feature">
+                    <i class="fas fa-users"></i>
+                    <span>@Model.LoaiSanBong.min_players - @Model.LoaiSanBong.max_players người chơi</span>
+                </div>
+                <div class="price-feature">
+                    <i class="fas fa-star"></i>
+                    <span>@Model.AverageDanhGia.ToString("F1") sao (@Model.TongLuotDanhGia đánh giá)</span>
+                </div>
+                @if (Model.TienIchSanBongs != null && Model.TienIchSanBongs.Any())
+                {
+                    <div class="price-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>@Model.TienIchSanBongs.Count() tiện ích</span>
+                    </div>
+                }
+            </div>
+
+            <div class="action-buttons">
+                @if (Model.TrangThaiSan_)
+                {
+                    @Html.ActionLink("Đặt Sân Ngay", "BookField", "Booking", new { sanBongId = Model.IDSanBong }, new { @class = "btn-action btn-book" })
+                    @Html.ActionLink("Xem Lịch Trống", "CheckAvailability", new { sanBongId = Model.IDSanBong }, new { @class = "btn-action btn-check" })
+                }
+                else
+                {
+                    <button class="btn-action btn-book" disabled style="opacity: 0.5; cursor: not-allowed;">
+                        <i class="fas fa-times-circle"></i>
+                        Sân Tạm Ngưng
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            // Smooth scroll to reviews
+            $('.reviews-count').on('click', function() {
+                $('html, body').animate({
+                    scrollTop: $('.reviews-summary').offset().top - 100
+                }, 800);
+            });
+
+            // Add animation on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.info-section, .review-card').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s ease-out';
+                observer.observe(el);
+            });
+        });
+    </script>
+}

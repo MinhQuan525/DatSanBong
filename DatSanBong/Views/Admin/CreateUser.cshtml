@@ -1,0 +1,419 @@
+﻿@model DatSanBong.Models.NguoiDung
+@{
+    ViewBag.Title = "Thêm người dùng mới";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1e40af;
+        --secondary: #0ea5e9;
+        --success: #10b981;
+        --danger: #ef4444;
+    }
+
+    .create-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        margin-bottom: 32px;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 0.9375rem;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .section-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .section-title i {
+        color: var(--primary);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label i {
+        color: var(--primary);
+        font-size: 1rem;
+    }
+
+    .form-label .required {
+        color: var(--danger);
+        margin-left: 4px;
+    }
+
+    .form-control,
+    .form-select {
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: #94a3b8;
+    }
+
+    .password-wrapper {
+        position: relative;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .password-toggle:hover {
+        color: var(--primary);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 2px solid #e2e8f0;
+    }
+
+    .btn-action {
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+        background: #f8fafc;
+        border-color: var(--primary);
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .validation-summary-errors {
+        background: rgba(239, 68, 68, 0.1);
+        border-left: 4px solid var(--danger);
+        color: #991b1b;
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+    }
+
+    .validation-summary-errors ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .text-danger {
+        color: var(--danger);
+        font-size: 0.8125rem;
+        margin-top: 6px;
+        font-weight: 600;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(14, 165, 233, 0.05));
+        border-left: 4px solid var(--primary);
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 24px;
+    }
+
+    .info-box-title {
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-box-title i {
+        color: var(--primary);
+    }
+
+    .info-box-list {
+        margin: 0;
+        padding-left: 20px;
+        color: #64748b;
+        font-size: 0.875rem;
+    }
+
+    .info-box-list li {
+        margin-bottom: 4px;
+    }
+</style>
+
+<div class="create-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-user-plus"></i>
+            Thêm Người Dùng Mới
+        </h1>
+        <p class="page-subtitle">Tạo tài khoản người dùng mới cho hệ thống</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+        @using (Html.BeginForm("CreateUser", "Admin", FormMethod.Post, new { @id = "createUserForm" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+
+            <!-- Info Box -->
+            <div class="info-box">
+                <div class="info-box-title">
+                    <i class="fas fa-info-circle"></i>
+                    Lưu ý quan trọng
+                </div>
+                <ul class="info-box-list">
+                    <li>Tên đăng nhập và email phải là duy nhất trong hệ thống</li>
+                    <li>Mật khẩu sẽ được mã hóa tự động khi lưu</li>
+                    <li>Tài khoản sẽ được kích hoạt ngay sau khi tạo</li>
+                    <li>Người dùng có thể đổi mật khẩu sau khi đăng nhập</li>
+                </ul>
+            </div>
+
+            <!-- Account Info Section -->
+            <div class="section-title">
+                <i class="fas fa-key"></i>
+                Thông Tin Tài Khoản
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            Tên đăng nhập
+                            <span class="required">*</span>
+                        </label>
+                        @Html.EditorFor(model => model.username, new { htmlAttributes = new { 
+                            @class = "form-control", 
+                            required = "required", 
+                            placeholder = "Nhập tên đăng nhập",
+                            autocomplete = "off"
+                        } })
+                        @Html.ValidationMessageFor(model => model.username, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-envelope"></i>
+                            Email
+                            <span class="required">*</span>
+                        </label>
+                        @Html.EditorFor(model => model.email, new { htmlAttributes = new { 
+                            @class = "form-control", 
+                            type = "email", 
+                            required = "required", 
+                            placeholder = "email@example.com"
+                        } })
+                        @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-lock"></i>
+                            Mật khẩu
+                            <span class="required">*</span>
+                        </label>
+                        <div class="password-wrapper">
+                            @Html.EditorFor(model => model.pass_hash, new { htmlAttributes = new { 
+                                @class = "form-control", 
+                                type = "password", 
+                                required = "required", 
+                                placeholder = "Nhập mật khẩu",
+                                id = "passwordInput"
+                            } })
+                            <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.pass_hash, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user-tag"></i>
+                            Vai trò
+                            <span class="required">*</span>
+                        </label>
+                        @Html.DropDownListFor(model => model.IDrole, (SelectList)ViewBag.IDrole, "--- Chọn vai trò ---", new { @class = "form-select", required = "required" })
+                        @Html.ValidationMessageFor(model => model.IDrole, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Info Section -->
+            <div class="section-title" style="margin-top: 32px;">
+                <i class="fas fa-id-card"></i>
+                Thông Tin Cá Nhân
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-signature"></i>
+                    Họ và tên
+                </label>
+                @Html.EditorFor(model => model.fullname, new { htmlAttributes = new { 
+                    @class = "form-control", 
+                    placeholder = "Nhập họ và tên đầy đủ"
+                } })
+                @Html.ValidationMessageFor(model => model.fullname, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-phone"></i>
+                            Số điện thoại
+                        </label>
+                        @Html.EditorFor(model => model.sdt, new { htmlAttributes = new { 
+                            @class = "form-control", 
+                            placeholder = "0123456789",
+                            pattern = "[0-9]{10,11}"
+                        } })
+                        @Html.ValidationMessageFor(model => model.sdt, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Địa chỉ
+                        </label>
+                        @Html.EditorFor(model => model.DiaChi, new { htmlAttributes = new { 
+                            @class = "form-control", 
+                            placeholder = "Nhập địa chỉ"
+                        } })
+                        @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button type="submit" class="btn-action btn-primary">
+                    <i class="fas fa-check"></i>
+                    Tạo người dùng
+                </button>
+                @Html.ActionLink("Hủy bỏ", "Users", null, new { @class = "btn-action btn-secondary" })
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            // Password toggle
+            $('#togglePassword').on('click', function() {
+                const passwordInput = $('#passwordInput');
+                const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+                passwordInput.attr('type', type);
+                $(this).toggleClass('fa-eye fa-eye-slash');
+            });
+
+            // Form validation
+            $('#createUserForm').on('submit', function(e) {
+                const password = $('#passwordInput').val();
+                if (password.length < 6) {
+                    e.preventDefault();
+                    alert('Mật khẩu phải có ít nhất 6 ký tự!');
+                    return false;
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,285 @@
+﻿@model DatSanBong.Models.TrangThaiDonDat
+@{
+    ViewBag.Title = "Thêm Trạng thái mới";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --secondary: #0ea5e9;
+        --success: #10b981;
+        --danger: #ef4444;
+    }
+
+    .create-container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        margin-bottom: 32px;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 0.9375rem;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label i {
+        color: var(--primary);
+    }
+
+    .form-label .required {
+        color: var(--danger);
+        margin-left: 4px;
+    }
+
+    .form-control {
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+        resize: vertical;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: #94a3b8;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 2px solid #e2e8f0;
+    }
+
+    .btn-action {
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+        background: #f8fafc;
+        border-color: var(--primary);
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .validation-summary-errors {
+        background: rgba(239, 68, 68, 0.1);
+        border-left: 4px solid var(--danger);
+        color: #991b1b;
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+    }
+
+    .text-danger {
+        color: var(--danger);
+        font-size: 0.8125rem;
+        margin-top: 6px;
+        font-weight: 600;
+    }
+
+    .example-box {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(6, 182, 212, 0.05));
+        border-left: 4px solid var(--success);
+        border-radius: 10px;
+        padding: 16px;
+        margin-top: 24px;
+    }
+
+    .example-title {
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .example-title i {
+        color: var(--success);
+    }
+
+    .example-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .example-item {
+        background: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .status-badge {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+
+    .status-badge.pending { background: #f59e0b; }
+    .status-badge.approved { background: #10b981; }
+    .status-badge.completed { background: #3b82f6; }
+    .status-badge.cancelled { background: #ef4444; }
+</style>
+
+<div class="create-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-tasks"></i>
+            Thêm Trạng Thái Mới
+        </h1>
+        <p class="page-subtitle">Tạo trạng thái đơn đặt sân mới cho hệ thống</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+        @using (Html.BeginForm("CreateBookingStatus", "Admin", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-tag"></i>
+                    Tên Trạng Thái
+                    <span class="required">*</span>
+                </label>
+                @Html.EditorFor(model => model.Tenstatus, new { htmlAttributes = new { 
+                    @class = "form-control", 
+                    required = "required", 
+                    placeholder = "Ví dụ: Chờ duyệt, Đã duyệt, Hoàn thành..."
+                } })
+                @Html.ValidationMessageFor(model => model.Tenstatus, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-align-left"></i>
+                    Mô Tả
+                </label>
+                @Html.TextAreaFor(model => model.MoTa, new { 
+                    @class = "form-control", 
+                    rows = 4,
+                    placeholder = "Nhập mô tả chi tiết về trạng thái này..."
+                })
+                @Html.ValidationMessageFor(model => model.MoTa, "", new { @class = "text-danger" })
+            </div>
+
+            <!-- Examples Box -->
+            <div class="example-box">
+                <div class="example-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Ví dụ trạng thái phổ biến
+                </div>
+                <div class="example-list">
+                    <div class="example-item">
+                        <span class="status-badge pending"></span>
+                        Chờ duyệt
+                    </div>
+                    <div class="example-item">
+                        <span class="status-badge approved"></span>
+                        Đã duyệt
+                    </div>
+                    <div class="example-item">
+                        <span class="status-badge completed"></span>
+                        Hoàn thành
+                    </div>
+                    <div class="example-item">
+                        <span class="status-badge cancelled"></span>
+                        Đã hủy
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button type="submit" class="btn-action btn-primary">
+                    <i class="fas fa-plus-circle"></i>
+                    Tạo trạng thái
+                </button>
+                @Html.ActionLink("Hủy bỏ", "BookingStatuses", null, new { @class = "btn-action btn-secondary" })
+            </div>
+        }
+    </div>
+</div>

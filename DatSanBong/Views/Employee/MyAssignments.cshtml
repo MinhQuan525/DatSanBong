@@ -1,0 +1,115 @@
+﻿@model IEnumerable<DatSanBong.Models.PhanCongNhanVien>
+@{
+    ViewBag.Title = "Lịch phân công của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    h2 {
+        text-align: center;
+        color: #007acc;
+        margin-bottom: 30px;
+        font-weight: 600;
+    }
+
+    .table {
+        font-size: 0.95rem;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+    }
+
+        .table thead {
+            background-color: #007acc;
+            color: #ffffff;
+        }
+
+            .table thead th {
+                padding: 12px;
+                font-weight: 600;
+                border-bottom: none;
+            }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f8f9fa;
+    }
+
+    .table td {
+        padding: 10px 12px;
+        vertical-align: middle;
+        color: #333;
+    }
+
+    .table tbody tr:hover {
+        background-color: #e3f2fd;
+        cursor: pointer;
+    }
+
+    .alert-success,
+    .alert-danger,
+    .alert-info {
+        border-radius: 8px;
+        font-size: 0.95rem;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .alert-info {
+        background-color: #e0f7fa;
+        color: #00796b;
+    }
+
+</style>
+
+<h2>Lịch phân công của tôi</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Bạn chưa có phân công nào.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Ngày phân công</th>
+                <th>Sân bóng</th>
+                <th>Admin phân công</th>
+                <th>Chi tiết</th>
+                <th>Ngày tạo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.IDPhanCong</td>
+                    <td>@item.NgayPhanCong.ToString("dd/MM/yyyy")</td>
+                    <td>@item.SanBong.TenSanBong</td>
+                    <td>@(item.NguoiDung1?.fullname ?? "N/A")</td>
+                    <td>@item.ChiTiet</td>
+                    <td>@item.created_at.Value.ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,161 @@
+﻿@{
+    ViewBag.Title = ViewBag.ReportTitle ?? "Báo cáo Trạng thái Đơn đặt sân";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    .report-header {
+        margin-bottom: 30px;
+    }
+
+    .report-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 20px;
+    }
+
+    .stats-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    .chart-container {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 60px 20px;
+        color: #64748b;
+    }
+
+    .no-data i {
+        font-size: 64px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+</style>
+
+<div class="report-header">
+    <h1 class="report-title">
+        <i class="fas fa-chart-pie"></i>
+        @ViewBag.ReportTitle
+    </h1>
+</div>
+
+@if (ViewBag.TotalBookings != null)
+{
+    <div class="stats-card">
+        <div class="stat-label">Tổng số đơn đặt sân</div>
+        <div class="stat-value">@ViewBag.TotalBookings</div>
+    </div>
+}
+
+<div class="chart-container">
+    @if (ViewBag.Labels != null && ViewBag.Data != null)
+    {
+        <canvas id="statusChart" height="80"></canvas>
+    }
+    else
+    {
+        <div class="no-data">
+            <i class="fas fa-chart-pie"></i>
+            <h3>Chưa có dữ liệu</h3>
+            <p>Không có dữ liệu đơn đặt sân</p>
+        </div>
+    }
+</div>
+
+@section scripts {
+    @if (ViewBag.Labels != null && ViewBag.Data != null)
+    {
+        <script>
+            $(document).ready(function() {
+                var labels = @Html.Raw(ViewBag.Labels);
+                var data = @Html.Raw(ViewBag.Data);
+
+                if (labels && data && labels.length > 0) {
+                    var ctx = document.getElementById('statusChart').getContext('2d');
+                    
+                    // Color palette for different statuses
+                    var colors = [
+                        'rgba(37, 99, 235, 0.8)',   // Blue
+                        'rgba(16, 185, 129, 0.8)',  // Green
+                        'rgba(245, 158, 11, 0.8)',  // Orange
+                        'rgba(239, 68, 68, 0.8)',   // Red
+                        'rgba(139, 92, 246, 0.8)',  // Purple
+                        'rgba(236, 72, 153, 0.8)'   // Pink
+                    ];
+
+                    var statusChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Số lượng đơn',
+                                data: data,
+                                backgroundColor: colors.slice(0, labels.length),
+                                borderColor: '#fff',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        padding: 20,
+                                        font: {
+                                            size: 12,
+                                            weight: '600'
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            var label = context.label || '';
+                                            var value = context.parsed || 0;
+                                            var total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            var percentage = ((value / total) * 100).toFixed(1);
+                                            return label + ': ' + value + ' (' + percentage + '%)';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
+    }
+}

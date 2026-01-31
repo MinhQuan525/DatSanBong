@@ -1,0 +1,588 @@
+﻿@model DatSanBong.Models.SuCo
+@{
+    ViewBag.Title = "Báo cáo sự cố";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1e40af;
+        --secondary: #0ea5e9;
+        --accent: #06b6d4;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    /* ===============================================
+       BACK BUTTON
+    =============================================== */
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 24px;
+        transition: all 0.2s ease;
+    }
+
+    .back-button:hover {
+        color: var(--primary);
+        transform: translateX(-4px);
+    }
+
+    /* ===============================================
+       PAGE CONTAINER
+    =============================================== */
+    .incident-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    /* ===============================================
+       PAGE HEADER
+    =============================================== */
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .page-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--danger), #dc2626);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 36px;
+        box-shadow: 0 8px 24px rgba(239, 68, 68, 0.25);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--danger), #dc2626);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    /* ===============================================
+       INCIDENT CARD
+    =============================================== */
+    .incident-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===============================================
+       INFO BOX
+    =============================================== */
+    .info-box {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(220, 38, 38, 0.05));
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 32px;
+        border-left: 4px solid var(--danger);
+    }
+
+    .info-box-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .info-box-icon {
+        color: var(--danger);
+        font-size: 1.25rem;
+        margin-top: 2px;
+    }
+
+    .info-box-text {
+        flex: 1;
+    }
+
+    .info-box-title {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 0.9375rem;
+        margin-bottom: 4px;
+    }
+
+    .info-box-desc {
+        color: #64748b;
+        font-size: 0.875rem;
+        line-height: 1.6;
+    }
+
+    /* ===============================================
+       FORM ELEMENTS
+    =============================================== */
+    .form-section {
+        margin-bottom: 24px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label i {
+        color: var(--primary);
+    }
+
+    .form-label .required {
+        color: var(--danger);
+        margin-left: 4px;
+    }
+
+    .form-control,
+    .form-select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .form-control::placeholder,
+    .form-select option[value=""] {
+        color: #94a3b8;
+    }
+
+    .form-select {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 12px center;
+        background-repeat: no-repeat;
+        background-size: 16px;
+        padding-right: 40px;
+        appearance: none;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .form-hint {
+        font-size: 0.8125rem;
+        color: #94a3b8;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .form-hint i {
+        color: var(--warning);
+    }
+
+    /* ===============================================
+       INCIDENT TYPES
+    =============================================== */
+    .incident-types {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+        margin-top: 32px;
+        padding: 20px;
+        background: #f8fafc;
+        border-radius: 12px;
+    }
+
+    .incident-type-item {
+        text-align: center;
+        padding: 16px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .incident-type-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    }
+
+    .incident-type-icon {
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+
+    .incident-type-text {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    /* ===============================================
+       BUTTONS
+    =============================================== */
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 32px;
+    }
+
+    .btn-action {
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--danger), #dc2626);
+        color: white;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+        background: #f8fafc;
+        border-color: var(--primary);
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    /* ===============================================
+       ALERTS
+    =============================================== */
+    .validation-summary-errors {
+        background: rgba(239, 68, 68, 0.1);
+        border-left: 4px solid var(--danger);
+        color: #991b1b;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        animation: slideInDown 0.4s ease-out;
+    }
+
+    @@keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .validation-summary-errors ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .validation-summary-errors li {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .text-danger {
+        color: var(--danger);
+        font-size: 0.8125rem;
+        margin-top: 6px;
+        font-weight: 600;
+    }
+
+    /* ===============================================
+       RESPONSIVE
+    =============================================== */
+    @@media (max-width: 768px) {
+        .incident-card {
+            padding: 24px;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-action {
+            width: 100%;
+        }
+
+        .incident-types {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+
+<!-- Back Button -->
+<a href="@Url.Action("MyBookings", "User")" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+    Quay lại lịch sử
+</a>
+
+<div class="incident-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h1 class="page-title">Báo Cáo Sự Cố</h1>
+        <p class="page-subtitle">Giúp chúng tôi cải thiện dịch vụ bằng cách báo cáo vấn đề bạn gặp phải</p>
+    </div>
+
+    <!-- Incident Card -->
+    <div class="incident-card">
+        <!-- Info Box -->
+        <div class="info-box">
+            <div class="info-box-content">
+                <i class="fas fa-info-circle info-box-icon"></i>
+                <div class="info-box-text">
+                    <div class="info-box-title">Lưu ý quan trọng</div>
+                    <div class="info-box-desc">
+                        Vui lòng mô tả chi tiết sự cố để chúng tôi có thể hỗ trợ bạn nhanh chóng và hiệu quả nhất.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @using (Html.BeginForm("ReportIncident", "User", FormMethod.Post, new { @id = "incidentForm" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+
+            @Html.HiddenFor(model => model.IDuser)
+            @Html.HiddenFor(model => model.reported_at)
+            @Html.HiddenFor(model => model.TrangThai)
+            @Html.HiddenFor(model => model.resolution_notes)
+            @Html.HiddenFor(model => model.resolved_at)
+            @Html.HiddenFor(model => model.IDAdmin)
+
+            <!-- Incident Type -->
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-list"></i>
+                    Loại sự cố
+                    <span class="required">*</span>
+                </label>
+                @Html.DropDownListFor(model => model.LoaiSuCo, 
+                    (SelectList)ViewBag.LoaiSuCoList, 
+                    "--- Chọn loại sự cố ---", 
+                    new { @class = "form-select", required = "required" })
+                @Html.ValidationMessageFor(model => model.LoaiSuCo, "", new { @class = "text-danger" })
+                <div class="form-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Chọn loại sự cố phù hợp nhất với tình huống
+                </div>
+            </div>
+
+            <!-- Related Booking -->
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-calendar-check"></i>
+                    Đơn đặt sân liên quan (tùy chọn)
+                </label>
+                @Html.DropDownListFor(model => model.IDBooking, 
+                    (SelectList)ViewBag.BookingList, 
+                    "--- Chọn đơn đặt sân ---", 
+                    new { @class = "form-select" })
+                @Html.ValidationMessageFor(model => model.IDBooking, "", new { @class = "text-danger" })
+                <div class="form-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Nếu sự cố liên quan đến một đơn đặt sân cụ thể
+                </div>
+            </div>
+
+            <!-- Related Field -->
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-futbol"></i>
+                    Sân bóng liên quan (tùy chọn)
+                </label>
+                @Html.DropDownListFor(model => model.IDSanBong, 
+                    (SelectList)ViewBag.SanBongList, 
+                    "--- Chọn sân bóng ---", 
+                    new { @class = "form-select" })
+                @Html.ValidationMessageFor(model => model.IDSanBong, "", new { @class = "text-danger" })
+                <div class="form-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Chọn sân bóng nếu sự cố xảy ra tại một sân cụ thể
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-comment-dots"></i>
+                    Mô tả chi tiết sự cố
+                    <span class="required">*</span>
+                </label>
+                @Html.TextAreaFor(model => model.MoTa, new { 
+                    @class = "form-control", 
+                    rows = 6, 
+                    required = "required", 
+                    placeholder = "Vui lòng mô tả chi tiết sự cố: thời gian xảy ra, địa điểm, tình huống, hậu quả..."
+                })
+                @Html.ValidationMessageFor(model => model.MoTa, "", new { @class = "text-danger" })
+                <div class="form-hint">
+                    <i class="fas fa-lightbulb"></i>
+                    Càng chi tiết càng giúp chúng tôi xử lý nhanh chóng
+                </div>
+            </div>
+
+            <!-- Common Incident Types -->
+            <div class="incident-types">
+                <div class="incident-type-item">
+                    <div class="incident-type-icon">🏟️</div>
+                    <div class="incident-type-text">Sân bóng</div>
+                </div>
+                <div class="incident-type-item">
+                    <div class="incident-type-icon">🚿</div>
+                    <div class="incident-type-text">Tiện ích</div>
+                </div>
+                <div class="incident-type-item">
+                    <div class="incident-type-icon">💳</div>
+                    <div class="incident-type-text">Thanh toán</div>
+                </div>
+                <div class="incident-type-item">
+                    <div class="incident-type-icon">👥</div>
+                    <div class="incident-type-text">Dịch vụ</div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button type="submit" class="btn-action btn-primary" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    <span id="btnText">Gửi báo cáo</span>
+                </button>
+                @Html.ActionLink("Hủy bỏ", "MyBookings", null, new { @class = "btn-action btn-secondary" })
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            const form = $('#incidentForm');
+            const submitBtn = $('#submitBtn');
+            const btnText = $('#btnText');
+
+            // Form validation
+            form.on('submit', function(e) {
+                const incidentType = $('select[name="LoaiSuCo"]').val();
+                const description = $('textarea[name="MoTa"]').val().trim();
+
+                if (!incidentType) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn loại sự cố!');
+                    $('select[name="LoaiSuCo"]').focus();
+                    return false;
+                }
+
+                if (!description) {
+                    e.preventDefault();
+                    alert('Vui lòng mô tả chi tiết sự cố!');
+                    $('textarea[name="MoTa"]').focus();
+                    return false;
+                }
+
+                if (description.length < 20) {
+                    e.preventDefault();
+                    alert('Mô tả sự cố quá ngắn! Vui lòng cung cấp thêm chi tiết.');
+                    $('textarea[name="MoTa"]').focus();
+                    return false;
+                }
+
+                // Add loading state
+                submitBtn.prop('disabled', true);
+                btnText.html('<i class="fas fa-spinner fa-spin"></i> Đang gửi...');
+            });
+
+            // Character counter for description
+            $('textarea[name="MoTa"]').on('input', function() {
+                const length = $(this).val().length;
+                const hint = $(this).siblings('.form-hint');
+                
+                if (length > 0 && length < 20) {
+                    hint.html('<i class="fas fa-exclamation-triangle"></i> Cần ít nhất 20 ký tự (' + length + '/20)');
+                    hint.css('color', 'var(--warning)');
+                } else if (length >= 20) {
+                    hint.html('<i class="fas fa-check-circle"></i> Mô tả chi tiết (' + length + ' ký tự)');
+                    hint.css('color', 'var(--success)');
+                } else {
+                    hint.html('<i class="fas fa-lightbulb"></i> Càng chi tiết càng giúp chúng tôi xử lý nhanh chóng');
+                    hint.css('color', '#94a3b8');
+                }
+            });
+        });
+    </script>
+}

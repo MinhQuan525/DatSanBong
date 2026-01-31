@@ -1,0 +1,709 @@
+﻿@model DatSanBong.Models.DonDatSan
+@{
+    ViewBag.Title = "Chi tiết đơn đặt sân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1e40af;
+        --secondary: #0ea5e9;
+        --accent: #06b6d4;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    /* ===============================================
+       BACK BUTTON
+    =============================================== */
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 24px;
+        transition: all 0.2s ease;
+    }
+
+    .back-button:hover {
+        color: var(--primary);
+        transform: translateX(-4px);
+    }
+
+    /* ===============================================
+       BOOKING HEADER
+    =============================================== */
+    .booking-header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 20px;
+        padding: 32px;
+        margin-bottom: 32px;
+        color: white;
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+    }
+
+    .booking-id-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+    }
+
+    .booking-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .booking-subtitle {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    .booking-status-header {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    /* ===============================================
+       STATUS BADGES
+    =============================================== */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-paid {
+        background: rgba(16, 185, 129, 0.2);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .status-unpaid {
+        background: rgba(239, 68, 68, 0.2);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .status-booking {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* ===============================================
+       INFO SECTIONS
+    =============================================== */
+    .info-sections {
+        display: grid;
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .info-section {
+        background: white;
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .section-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    /* ===============================================
+       INFO GRID
+    =============================================== */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .info-item {
+        padding: 16px;
+        background: #f8fafc;
+        border-radius: 12px;
+        border-left: 4px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+        background: #f1f5f9;
+        border-left-color: var(--primary);
+        transform: translateX(4px);
+    }
+
+    .info-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+
+    .info-label i {
+        color: var(--primary);
+    }
+
+    .info-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1e293b;
+        line-height: 1.5;
+    }
+
+    .info-item.highlight {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(14, 165, 233, 0.05));
+        border-left-color: var(--primary);
+    }
+
+    .info-item.highlight .info-value {
+        font-size: 1.5rem;
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    /* ===============================================
+       PRICE SUMMARY
+    =============================================== */
+    .price-summary {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(14, 165, 233, 0.05));
+        border-radius: 16px;
+        padding: 24px;
+        border: 2px solid rgba(37, 99, 235, 0.1);
+    }
+
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+    }
+
+    .price-row:last-child {
+        border-bottom: none;
+        margin-top: 8px;
+        padding-top: 16px;
+        border-top: 2px solid rgba(37, 99, 235, 0.2);
+    }
+
+    .price-label {
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    .price-value {
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .price-row:last-child .price-value {
+        font-size: 1.5rem;
+        color: var(--primary);
+    }
+
+    /* ===============================================
+       TIMELINE
+    =============================================== */
+    .timeline {
+        position: relative;
+        padding-left: 40px;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e2e8f0;
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 24px;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -33px;
+        top: 4px;
+        width: 12px;
+        height: 12px;
+        background: var(--primary);
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 0 0 2px var(--primary);
+    }
+
+    .timeline-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #64748b;
+        margin-bottom: 4px;
+    }
+
+    .timeline-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    /* ===============================================
+       ACTION BUTTONS
+    =============================================== */
+    .action-section {
+        background: white;
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+        text-align: center;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        color: white;
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, var(--warning), #f59e0b);
+        color: white;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+    }
+
+    .btn-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+        background: #f8fafc;
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .rating-badge {
+        background: linear-gradient(135deg, var(--success), #059669);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
+    /* ===============================================
+       ALERTS
+    =============================================== */
+    .alert {
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .alert-info {
+        background: rgba(37, 99, 235, 0.1);
+        color: #1e40af;
+        border-left: 4px solid var(--primary);
+    }
+
+    .alert-warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: #b45309;
+        border-left: 4px solid var(--warning);
+    }
+
+    /* ===============================================
+       RESPONSIVE
+    =============================================== */
+    @@media (max-width: 768px) {
+        .booking-header {
+            padding: 24px;
+        }
+
+        .booking-title {
+            font-size: 1.5rem;
+        }
+
+        .info-section {
+            padding: 24px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-action {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<!-- Back Button -->
+<a href="@Url.Action("MyBookings", "User")" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+    Quay lại lịch sử đặt sân
+</a>
+
+<!-- Booking Header -->
+<div class="booking-header">
+    <div class="booking-id-badge">
+        <i class="fas fa-receipt"></i>
+        Mã đơn: #@Model.IDBooking
+    </div>
+    <h1 class="booking-title">Chi Tiết Đơn Đặt Sân</h1>
+    <p class="booking-subtitle">@Model.SanBong.TenSanBong - @Model.NgayBooking.ToString("dd/MM/yyyy")</p>
+    
+    <div class="booking-status-header">
+        <span class="status-badge @(Model.TTThanhToan ? "status-paid" : "status-unpaid")">
+            <i class="fas fa-@(Model.TTThanhToan ? "check-circle" : "clock")"></i>
+            @(Model.TTThanhToan ? "Đã thanh toán" : "Chưa thanh toán")
+        </span>
+        <span class="status-badge status-booking">
+            <i class="fas fa-info-circle"></i>
+            @Model.TrangThaiDonDat.Tenstatus
+        </span>
+    </div>
+</div>
+
+<!-- Info Sections -->
+<div class="info-sections">
+    <!-- Field Information -->
+    <div class="info-section">
+        <div class="section-header">
+            <div class="section-icon">
+                <i class="fas fa-futbol"></i>
+            </div>
+            <h2 class="section-title">Thông Tin Sân Bóng</h2>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Tên sân
+                </div>
+                <div class="info-value">@Model.SanBong.TenSanBong</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-location-dot"></i>
+                    Địa chỉ
+                </div>
+                <div class="info-value">@Model.SanBong.DiaChi</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-layer-group"></i>
+                    Loại sân
+                </div>
+                <div class="info-value">@Model.SanBong.LoaiSanBong.LoaiSan</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Time & Payment -->
+    <div class="info-section">
+        <div class="section-header">
+            <div class="section-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <h2 class="section-title">Thời Gian & Thanh Toán</h2>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-calendar-day"></i>
+                    Ngày đặt sân
+                </div>
+                <div class="info-value">@Model.NgayBooking.ToString("dddd, dd/MM/yyyy")</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-clock"></i>
+                    Khung giờ
+                </div>
+                <div class="info-value">@Model.start_time.ToString(@"hh\:mm") - @Model.end_time.ToString(@"hh\:mm")</div>
+            </div>
+
+            <div class="info-item highlight">
+                <div class="info-label">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Tổng tiền
+                </div>
+                <div class="info-value">@Model.TongTien.ToString("N0") VNĐ</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-credit-card"></i>
+                    Phương thức thanh toán
+                </div>
+                <div class="info-value">@(Model.PhuongThucThanhToan?.TenPT ?? "Chưa chọn")</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-circle-check"></i>
+                    Trạng thái thanh toán
+                </div>
+                <div class="info-value">
+                    @if (Model.TTThanhToan)
+                    {
+                        <span style="color: var(--success);">✓ Đã thanh toán</span>
+                    }
+                    else
+                    {
+                        <span style="color: var(--danger);">✕ Chưa thanh toán</span>
+                    }
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-tasks"></i>
+                    Trạng thái đơn
+                </div>
+                <div class="info-value">@Model.TrangThaiDonDat.Tenstatus</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Information -->
+    @if (!string.IsNullOrEmpty(Model.admin_notes) || !string.IsNullOrEmpty(Model.LyDoHuy))
+    {
+        <div class="info-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-sticky-note"></i>
+                </div>
+                <h2 class="section-title">Ghi Chú & Thông Tin Thêm</h2>
+            </div>
+
+            <div class="info-grid">
+                @if (!string.IsNullOrEmpty(Model.admin_notes))
+                {
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-comment-dots"></i>
+                            Ghi chú từ Admin
+                        </div>
+                        <div class="info-value">@Model.admin_notes</div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.LyDoHuy))
+                {
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-times-circle"></i>
+                            Lý do hủy
+                        </div>
+                        <div class="info-value" style="color: var(--danger);">@Model.LyDoHuy</div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Timeline -->
+    <div class="info-section">
+        <div class="section-header">
+            <div class="section-icon">
+                <i class="fas fa-history"></i>
+            </div>
+            <h2 class="section-title">Lịch Sử Đơn Hàng</h2>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-label">Ngày tạo đơn</div>
+                <div class="timeline-value">@Model.created_at.ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-label">Cập nhật gần nhất</div>
+                <div class="timeline-value">@Model.updated_at.ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Section -->
+<div class="action-section">
+    <div class="section-header">
+        <div class="section-icon">
+            <i class="fas fa-hand-pointer"></i>
+        </div>
+        <h2 class="section-title">Thao Tác</h2>
+    </div>
+
+    @{
+        bool canRate = (Model.NgayBooking < DateTime.Today || 
+                       (Model.NgayBooking == DateTime.Today && Model.end_time < DateTime.Now.TimeOfDay));
+        var existingReview = Model.Reviews.FirstOrDefault(r => r.IDBooking == Model.IDBooking);
+    }
+
+    @if (!canRate && existingReview == null)
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <span>Bạn chỉ có thể đánh giá sân sau khi hoàn thành đơn đặt.</span>
+        </div>
+    }
+
+    @if (existingReview != null)
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-check-circle"></i>
+            <span>
+                Bạn đã đánh giá sân này với <strong>@existingReview.rating sao</strong>
+                @if (!string.IsNullOrEmpty(existingReview.comment))
+                {
+                    <br />
+                    <em>"@existingReview.comment"</em>
+                }
+            </span>
+        </div>
+    }
+
+    <div class="action-buttons">
+        @if (canRate && existingReview == null)
+        {
+            <a href="@Url.Action("RateField", "User", new { bookingId = Model.IDBooking })" class="btn-action btn-warning">
+                <i class="fas fa-star"></i>
+                Đánh giá sân
+            </a>
+        }
+
+        <a href="@Url.Action("ChangeBooking", "Booking", new { id = Model.IDBooking })" class="btn-action btn-primary">
+            <i class="fas fa-exchange-alt"></i>
+            Đổi lịch đặt
+        </a>
+
+        <a href="@Url.Action("MyBookings", "User")" class="btn-action btn-secondary">
+            <i class="fas fa-list"></i>
+            Xem tất cả đơn
+        </a>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            // Add animation on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.info-section').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s ease-out';
+                observer.observe(el);
+            });
+        });
+    </script>
+}

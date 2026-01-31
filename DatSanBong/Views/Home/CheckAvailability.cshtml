@@ -1,0 +1,440 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Kiểm tra lịch trống";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    /* Main title styling */
+    h2 {
+        text-align: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 40px;
+        font-weight: 700;
+        font-size: 2.2rem;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        border-radius: 2px;
+        animation: shimmer 2s ease-in-out infinite alternate;
+    }
+
+    @@keyframes shimmer {
+        0% { opacity: 0.7; transform: translateX(-50%) scaleX(1); }
+        100% { opacity: 1; transform: translateX(-50%) scaleX(1.2); }
+    }
+
+    /* Form container styling */
+    .form-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow:
+            0 15px 35px rgba(102, 126, 234, 0.1),
+            0 5px 15px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+
+    .form-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+        background-size: 200% 100%;
+        animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    @@keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 8px;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 12px;
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        box-shadow: none;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background: rgba(255, 255, 255, 1);
+        transform: translateY(-2px);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    }
+
+    .btn-primary:hover::before {
+        left: 100%;
+    }
+
+    /* Results section */
+    #availabilityResults {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    #availabilityResults h3 {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    /* Time slot cards */
+    .time-slot-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: default;
+        overflow: hidden;
+        position: relative;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+    }
+
+    /* Available slot styling */
+    .time-slot-available {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: white !important;
+        border: 2px solid rgba(16, 185, 129, 0.3) !important;
+    }
+
+    .time-slot-available:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    }
+
+    /* Booked slot styling */
+    .time-slot-booked {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+        color: white !important;
+        border: 2px solid rgba(239, 68, 68, 0.3) !important;
+    }
+
+    .time-slot-booked:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .card-body {
+        padding: 15px 12px;
+        text-align: center;
+    }
+
+    .card-title {
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 5px;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-text {
+        font-size: 0.85rem;
+        font-weight: 500;
+        opacity: 0.9;
+    }
+
+    /* Status indicators */
+    .status-available::before {
+        content: '✅';
+        margin-right: 5px;
+    }
+
+    .status-booked::before {
+        content: '❌';
+        margin-right: 5px;
+    }
+
+    /* Alert styling */
+    .alert-info {
+        border-radius: 15px;
+        padding: 20px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        color: #4a5568;
+        font-weight: 500;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* Loading animation */
+    .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .loading::after {
+        content: '';
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #667eea;
+        border-radius: 50%;
+        border-top: 2px solid transparent;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Card animations */
+    .time-slot-card {
+        animation: slideInUp 0.4s ease-out;
+        animation-fill-mode: both;
+    }
+
+    .time-slot-card:nth-child(1) { animation-delay: 0.1s; }
+    .time-slot-card:nth-child(2) { animation-delay: 0.15s; }
+    .time-slot-card:nth-child(3) { animation-delay: 0.2s; }
+    .time-slot-card:nth-child(4) { animation-delay: 0.25s; }
+    .time-slot-card:nth-child(5) { animation-delay: 0.3s; }
+    .time-slot-card:nth-child(6) { animation-delay: 0.35s; }
+    .time-slot-card:nth-child(7) { animation-delay: 0.4s; }
+    .time-slot-card:nth-child(8) { animation-delay: 0.45s; }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        h2 {
+            font-size: 1.8rem;
+        }
+
+        .form-container {
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .btn-primary {
+            width: 100%;
+        }
+
+        .card-body {
+            padding: 10px 8px;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Prevent color conflicts */
+    .time-slot-card.bg-success,
+    .time-slot-card.bg-danger {
+        background: none !important;
+    }
+
+    .time-slot-card.text-white {
+        color: inherit !important;
+    }
+</style>
+
+<h2>🕐 Kiểm tra lịch trống sân bóng</h2>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="form-container">
+            <form id="checkAvailabilityForm">
+                <div class="mb-4">
+                    <label for="sanBongId" class="form-label">
+                        ⚽ Chọn sân bóng:
+                    </label>
+                    @Html.DropDownList("sanBongId", (SelectList)ViewBag.SanBongList, "--- Chọn sân bóng ---", new { @class = "form-select", id = "sanBongId" })
+                </div>
+                <div class="mb-4">
+                    <label for="checkDate" class="form-label">
+                        📅 Chọn ngày:
+                    </label>
+                    <input type="date" id="checkDate" name="checkDate" class="form-control" value="@ViewBag.SelectedDate" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="text-center">
+                    <button type="button" id="btnCheckAvailability" class="btn btn-primary">
+                        🔍 Kiểm tra lịch trống
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="loading" id="loadingIndicator">
+    Đang tải dữ liệu...
+</div>
+
+<div id="availabilityResults" class="mt-4">
+    @if (ViewBag.AvailableSlots != null)
+    {
+        <h3>📊 Lịch trống cho ngày @ViewBag.SelectedDate</h3>
+        <div class="row row-cols-2 row-cols-md-4 g-3">
+            @foreach (var slot in ViewBag.AvailableSlots)
+            {
+                <div class="col">
+                    <div class="card time-slot-card @(slot.IsAvailable ? "time-slot-available" : "time-slot-booked")">
+                        <div class="card-body">
+                            <h6 class="card-title mb-1">@slot.StartTime.ToString(@"hh\:mm") - @slot.EndTime.ToString(@"hh\:mm")</h6>
+                            <small class="card-text @(slot.IsAvailable ? "status-available" : "status-booked")">@(slot.IsAvailable ? "Trống" : "Đã đặt")</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#btnCheckAvailability').click(function () {
+                var sanBongId = $('#sanBongId').val();
+                var checkDate = $('#checkDate').val();
+
+                if (!sanBongId || !checkDate) {
+                    alert('Vui lòng chọn sân bóng và ngày.');
+                    return;
+                }
+
+                // Show loading
+                $('#loadingIndicator').show();
+                $('#availabilityResults').hide();
+
+                $.ajax({
+                    url: '@Url.Action("GetAvailableSlotsAjax", "Home")',
+                    type: 'POST',
+                    data: { sanBongId: sanBongId, checkDate: checkDate },
+                    success: function (data) {
+                        $('#loadingIndicator').hide();
+
+                        var resultsHtml = '<h3>📊 Lịch trống cho ngày ' + new Date(checkDate).toLocaleDateString('vi-VN') + '</h3>';
+                        resultsHtml += '<div class="row row-cols-2 row-cols-md-4 g-3">';
+
+                        if (data.length === 0) {
+                            resultsHtml += '<div class="col-12"><div class="alert alert-info">⚠️ Không có khung giờ nào khả dụng cho ngày này.</div></div>';
+                        } else {
+                            $.each(data, function (index, slot) {
+                                var cardClass = slot.IsAvailable ? 'time-slot-available' : 'time-slot-booked';
+                                var statusClass = slot.IsAvailable ? 'status-available' : 'status-booked';
+                                var statusText = slot.IsAvailable ? 'Trống' : 'Đã đặt';
+
+                                resultsHtml += '<div class="col">';
+                                resultsHtml += '<div class="card time-slot-card ' + cardClass + '">';
+                                resultsHtml += '<div class="card-body">';
+                                resultsHtml += '<h6 class="card-title mb-1">' + formatTime(slot.StartTime) + ' - ' + formatTime(slot.EndTime) + '</h6>';
+                                resultsHtml += '<small class="card-text ' + statusClass + '">' + statusText + '</small>';
+                                resultsHtml += '</div></div></div>';
+                            });
+                        }
+                        resultsHtml += '</div>';
+
+                        $('#availabilityResults').html(resultsHtml).show();
+                    },
+                    error: function (xhr, status, error) {
+                        $('#loadingIndicator').hide();
+                        console.error(xhr.responseText);
+                        alert('❌ Có lỗi xảy ra khi kiểm tra lịch trống. Vui lòng thử lại.');
+                    }
+                });
+            });
+
+            function formatTime(timeSpan) {
+                var hours = Math.floor(timeSpan.Ticks / 36000000000) % 24;
+                var minutes = Math.floor((timeSpan.Ticks / 600000000) % 60);
+                return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+            }
+        });
+    </script>
+}

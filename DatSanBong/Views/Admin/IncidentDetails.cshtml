@@ -1,0 +1,625 @@
+﻿@model DatSanBong.Models.SuCo
+@{
+    ViewBag.Title = "Chi tiết báo cáo sự cố";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --secondary: #0ea5e9;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+    }
+
+    .details-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        margin-bottom: 32px;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 0.9375rem;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn-action {
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        border: 2px solid #e2e8f0;
+        background: white;
+        color: #64748b;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-action:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .alert {
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInDown 0.4s ease-out;
+    }
+
+    @@keyframes slideInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert i {
+        font-size: 1.25rem;
+    }
+
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+        border-left: 4px solid var(--success);
+    }
+
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+        border-left: 4px solid var(--danger);
+    }
+
+    .details-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        margin-bottom: 24px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 24px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card-title i {
+        color: var(--primary);
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #64748b;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-label i {
+        color: var(--primary);
+    }
+
+    .info-value {
+        font-size: 1rem;
+        color: #1e293b;
+    }
+
+    .info-value strong {
+        font-weight: 700;
+    }
+
+    .info-value small {
+        display: block;
+        color: #64748b;
+        font-size: 0.875rem;
+        margin-top: 4px;
+    }
+
+    .incident-type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .type-equipment {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+    }
+
+    .type-facility {
+        background: rgba(245, 158, 11, 0.1);
+        color: #92400e;
+    }
+
+    .type-service {
+        background: rgba(59, 130, 246, 0.1);
+        color: #1e40af;
+    }
+
+    .type-other {
+        background: rgba(100, 116, 139, 0.1);
+        color: #475569;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-new {
+        background: rgba(59, 130, 246, 0.1);
+        color: #1e40af;
+    }
+
+    .badge-processing {
+        background: rgba(245, 158, 11, 0.1);
+        color: #92400e;
+    }
+
+    .badge-resolved {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+    }
+
+    .badge-invalid {
+        background: rgba(100, 116, 139, 0.1);
+        color: #475569;
+    }
+
+    .description-box {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 16px;
+        margin-top: 8px;
+        border-left: 4px solid var(--primary);
+        color: #475569;
+        line-height: 1.6;
+    }
+
+    .note-box {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 16px;
+        margin-top: 8px;
+    }
+
+    .note-box.empty {
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    .divider {
+        height: 2px;
+        background: #e2e8f0;
+        margin: 24px 0;
+    }
+
+    .update-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        position: sticky;
+        top: 24px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label i {
+        color: var(--primary);
+    }
+
+    .form-label .required {
+        color: var(--danger);
+    }
+
+    .form-select,
+    .form-control {
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .form-select:focus,
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .btn-update {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    @@media (max-width: 768px) {
+        .update-card {
+            position: static;
+            margin-top: 24px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="details-container">
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-exclamation-triangle"></i>
+                Báo Cáo Sự Cố #@Model.IDSuCo
+            </h1>
+            <p class="page-subtitle">Chi tiết báo cáo và xử lý sự cố</p>
+        </div>
+        <div class="header-actions">
+            @Html.ActionLink("Quay lại", "Incidents", null, new { @class = "btn-action" })
+            <i class="fas fa-arrow-left"></i>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span>@TempData["SuccessMessage"]</span>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>@TempData["ErrorMessage"]</span>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Incident Info -->
+            <div class="details-card">
+                <h2 class="card-title">
+                    <i class="fas fa-info-circle"></i>
+                    Thông Tin Sự Cố
+                </h2>
+
+                <div class="info-grid">
+                    <div class="info-item" style="grid-column: 1 / -1;">
+                        <div class="info-label">
+                            <i class="fas fa-tag"></i>
+                            Loại sự cố
+                        </div>
+                        <div class="info-value">
+                            @{
+                                var incidentType = Model.LoaiSuCo;
+                                var typeClass = incidentType.Contains("thiết bị") || incidentType.Contains("Thiết bị") ? "type-equipment"
+                                              : incidentType.Contains("sở") || incidentType.Contains("Cơ sở") ? "type-facility"
+                                              : incidentType.Contains("vụ") || incidentType.Contains("Dịch vụ") ? "type-service"
+                                              : "type-other";
+                            }
+                            <span class="incident-type-badge @typeClass">
+                                <i class="fas fa-exclamation-circle"></i>
+                                @Model.LoaiSuCo
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-user"></i>
+                            Người báo cáo
+                        </div>
+                        <div class="info-value">
+                            <strong>@(Model.NguoiDung?.fullname ?? Model.user_backup_info ?? "N/A")</strong>
+                            @if (Model.NguoiDung != null)
+                            {
+                                <small>@Model.NguoiDung.email</small>
+                                if (!string.IsNullOrEmpty(Model.NguoiDung.sdt))
+                                {
+                                    <small><i class="fas fa-phone" style="font-size: 0.75rem;"></i> @Model.NguoiDung.sdt</small>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-futbol"></i>
+                            Sân liên quan
+                        </div>
+                        <div class="info-value">
+                            <strong>@(Model.SanBong?.TenSanBong ?? Model.sanBong_backup_info ?? "N/A")</strong>
+                            @if (Model.SanBong != null)
+                            {
+                                <small>@Model.SanBong.DiaChi</small>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-calendar-check"></i>
+                            Đơn đặt sân
+                        </div>
+                        <div class="info-value">
+                            @if (Model.DonDatSan != null)
+                            {
+                                <strong>#@Model.DonDatSan.IDBooking</strong>
+                                <small>@Model.DonDatSan.NgayBooking.ToString("dd/MM/yyyy") - @Model.DonDatSan.start_time.ToString(@"hh\:mm")</small>
+                            }
+                            else
+                            {
+                                <span style="color: #94a3b8;">@(Model.booking_backup_info ?? "N/A")</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-flag"></i>
+                            Trạng thái
+                        </div>
+                        <div class="info-value">
+                            @{
+                                var status = Model.TrangThai;
+                                var badgeClass = status == "Mới" ? "badge-new"
+                                               : status == "Đang xử lý" ? "badge-processing"
+                                               : status == "Đã giải quyết" ? "badge-resolved"
+                                               : "badge-invalid";
+                                var icon = status == "Mới" ? "fa-circle"
+                                         : status == "Đang xử lý" ? "fa-spinner"
+                                         : status == "Đã giải quyết" ? "fa-check-circle"
+                                         : "fa-times-circle";
+                            }
+                            <span class="badge @badgeClass" style="font-size: 1rem; padding: 8px 16px;">
+                                <i class="fas @icon"></i>
+                                @Model.TrangThai
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-file-alt"></i>
+                        Mô tả chi tiết
+                    </div>
+                    <div class="description-box">
+                        @Model.MoTa
+                    </div>
+                </div>
+            </div>
+
+            <!-- Processing Info -->
+            <div class="details-card">
+                <h2 class="card-title">
+                    <i class="fas fa-cogs"></i>
+                    Thông Tin Xử Lý
+                </h2>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-user-shield"></i>
+                            Người xử lý
+                        </div>
+                        <div class="info-value">
+                            @if (Model.NguoiDung1 != null || !string.IsNullOrEmpty(Model.admin_backup_info))
+                            {
+                                <strong>@(Model.NguoiDung1?.fullname ?? Model.admin_backup_info)</strong>
+                                if (Model.NguoiDung1 != null)
+                                {
+                                    <small>@Model.NguoiDung1.email</small>
+                                }
+                            }
+                            else
+                            {
+                                <span style="color: #94a3b8; font-style: italic;">Chưa phân công</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-calendar-plus"></i>
+                            Ngày báo cáo
+                        </div>
+                        <div class="info-value">
+                            <small>@Model.reported_at.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-calendar-check"></i>
+                            Ngày giải quyết
+                        </div>
+                        <div class="info-value">
+                            @if (Model.resolved_at.HasValue)
+                            {
+                                <small>@Model.resolved_at.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                            }
+                            else
+                            {
+                                <span style="color: #94a3b8; font-style: italic;">Chưa giải quyết</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item" style="grid-column: 1 / -1;">
+                        <div class="info-label">
+                            <i class="fas fa-sticky-note"></i>
+                            Ghi chú giải quyết
+                        </div>
+                        <div class="info-value">
+                            @if (string.IsNullOrEmpty(Model.resolution_notes))
+                            {
+                                <div class="note-box empty">Chưa có ghi chú</div>
+                            }
+                            else
+                            {
+                                <div class="note-box">@Model.resolution_notes</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Update Card -->
+            <div class="update-card">
+                <h2 class="card-title">
+                    <i class="fas fa-sync-alt"></i>
+                    Cập Nhật Sự Cố
+                </h2>
+
+                @using (Html.BeginForm("UpdateIncidentStatus", "Admin", FormMethod.Post, new { @id = "updateForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.IDSuCo)
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label class="form-label">
+                            <i class="fas fa-flag"></i>
+                            Trạng thái
+                            <span class="required">*</span>
+                        </label>
+                        <select name="trangThai" class="form-select" required>
+                            <option value="Mới" @(Model.TrangThai == "Mới" ? "selected" : "")>Mới</option>
+                            <option value="Đang xử lý" @(Model.TrangThai == "Đang xử lý" ? "selected" : "")>Đang xử lý</option>
+                            <option value="Đã giải quyết" @(Model.TrangThai == "Đã giải quyết" ? "selected" : "")>Đã giải quyết</option>
+                            <option value="Không hợp lệ" @(Model.TrangThai == "Không hợp lệ" ? "selected" : "")>Không hợp lệ</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label class="form-label">
+                            <i class="fas fa-user-tie"></i>
+                            Người xử lý
+                        </label>
+                        @Html.DropDownList("IDAdmin", (SelectList)ViewBag.AdminList, "--- Chọn người xử lý ---", new { @class = "form-select" })
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label class="form-label">
+                            <i class="fas fa-comment-dots"></i>
+                            Ghi chú giải quyết
+                        </label>
+                        @Html.TextArea("resolutionNotes", Model.resolution_notes, new { @class = "form-control", rows = 5, placeholder = "Nhập ghi chú về quá trình xử lý..." })
+                    </div>
+
+                    <div style="display: flex; gap: 12px;">
+                        <button type="submit" class="btn-update" style="flex: 1;">
+                            <i class="fas fa-save"></i>
+                            Cập nhật
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            $('#updateForm').on('submit', function(e) {
+                const status = $('select[name="trangThai"]').val();
+                if (!status) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn trạng thái!');
+                    return false;
+                }
+            });
+        });
+    </script>
+}

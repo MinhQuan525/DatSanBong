@@ -1,0 +1,586 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Đánh giá sân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1e40af;
+        --secondary: #0ea5e9;
+        --accent: #06b6d4;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --star-color: #fbbf24;
+    }
+
+    /* ===============================================
+       BACK BUTTON
+    =============================================== */
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 24px;
+        transition: all 0.2s ease;
+    }
+
+    .back-button:hover {
+        color: var(--primary);
+        transform: translateX(-4px);
+    }
+
+    /* ===============================================
+       PAGE CONTAINER
+    =============================================== */
+    .rating-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    /* ===============================================
+       PAGE HEADER
+    =============================================== */
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .page-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--star-color), #f59e0b);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 36px;
+        box-shadow: 0 8px 24px rgba(251, 191, 36, 0.25);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--star-color), #f59e0b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .field-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-top: 12px;
+    }
+
+    /* ===============================================
+       RATING CARD
+    =============================================== */
+    .rating-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===============================================
+       STAR RATING
+    =============================================== */
+    .star-rating-section {
+        margin-bottom: 32px;
+    }
+
+    .star-rating-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 16px;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .star-rating-label i {
+        color: var(--star-color);
+    }
+
+    .star-rating-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.05), rgba(245, 158, 11, 0.05));
+        padding: 24px;
+        border-radius: 16px;
+        border: 2px solid rgba(251, 191, 36, 0.1);
+    }
+
+    .stars-container {
+        display: flex;
+        gap: 8px;
+    }
+
+    .star {
+        font-size: 48px;
+        color: #e2e8f0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .star:hover,
+    .star.active {
+        color: var(--star-color);
+        transform: scale(1.2);
+        filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.5));
+    }
+
+    .star:hover ~ .star {
+        color: #e2e8f0;
+        transform: scale(1);
+    }
+
+    .rating-text {
+        flex: 1;
+        padding-left: 24px;
+        border-left: 2px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .rating-value {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--star-color);
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .rating-description {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    .rating-hint {
+        font-size: 0.8125rem;
+        color: #94a3b8;
+        margin-top: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .rating-hint i {
+        color: var(--warning);
+    }
+
+    /* ===============================================
+       FORM ELEMENTS
+    =============================================== */
+    .form-section {
+        margin-bottom: 24px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label i {
+        color: var(--primary);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .form-control:focus {
+        border-color: var(--star-color);
+        box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: #94a3b8;
+    }
+
+    .form-hint {
+        font-size: 0.8125rem;
+        color: #94a3b8;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .form-hint i {
+        color: var(--warning);
+    }
+
+    /* ===============================================
+       BUTTONS
+    =============================================== */
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 32px;
+    }
+
+    .btn-action {
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--star-color), #f59e0b);
+        color: white;
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.25);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(251, 191, 36, 0.35);
+        color: white;
+    }
+
+    .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+        background: #f8fafc;
+        border-color: var(--star-color);
+        color: var(--star-color);
+    }
+
+    /* ===============================================
+       ALERTS
+    =============================================== */
+    .alert {
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInDown 0.4s ease-out;
+    }
+
+    .alert i {
+        font-size: 1.25rem;
+    }
+
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+        border-left: 4px solid var(--danger);
+    }
+
+    @@keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .validation-summary-errors {
+        background: rgba(239, 68, 68, 0.1);
+        border-left: 4px solid var(--danger);
+        color: #991b1b;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+    }
+
+    .validation-summary-errors ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .validation-summary-errors li {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    /* ===============================================
+       RESPONSIVE
+    =============================================== */
+    @@media (max-width: 768px) {
+        .rating-card {
+            padding: 24px;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        .star-rating-wrapper {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .rating-text {
+            padding-left: 0;
+            padding-top: 16px;
+            border-left: none;
+            border-top: 2px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .star {
+            font-size: 36px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-action {
+            width: 100%;
+        }
+    }
+</style>
+
+<!-- Back Button -->
+<a href="@Url.Action("MyBookings", "User")" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+    Quay lại lịch sử
+</a>
+
+<div class="rating-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-icon">
+            <i class="fas fa-star"></i>
+        </div>
+        <h1 class="page-title">Đánh Giá Sân Bóng</h1>
+        <p class="page-subtitle">Chia sẻ trải nghiệm của bạn để giúp cộng đồng</p>
+        @if (!string.IsNullOrEmpty(ViewBag.SanBongName))
+        {
+            <div class="field-name">@ViewBag.SanBongName</div>
+        }
+    </div>
+
+    <!-- Error Message -->
+    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>@ViewBag.ErrorMessage</span>
+        </div>
+    }
+    else
+    {
+        <!-- Rating Card -->
+        <div class="rating-card">
+            @using (Html.BeginForm("RateField", "User", FormMethod.Post, new { @id = "ratingForm" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("bookingId", (int)ViewBag.BookingId)
+                @Html.Hidden("sanBongId", (int)ViewBag.SanBongId)
+                @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+
+                <!-- Star Rating Section -->
+                <div class="star-rating-section">
+                    <label class="star-rating-label">
+                        <i class="fas fa-star"></i>
+                        Đánh giá của bạn
+                    </label>
+                    <div class="star-rating-wrapper">
+                        <div class="stars-container">
+                            <span class="star" data-rating="1">★</span>
+                            <span class="star" data-rating="2">★</span>
+                            <span class="star" data-rating="3">★</span>
+                            <span class="star" data-rating="4">★</span>
+                            <span class="star" data-rating="5">★</span>
+                        </div>
+                        <div class="rating-text">
+                            <div class="rating-value" id="ratingValue">0</div>
+                            <div class="rating-description" id="ratingDesc">Chọn số sao</div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="rating" id="ratingInput" value="0" required />
+                    <div class="rating-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Nhấp vào số sao để đánh giá
+                    </div>
+                </div>
+
+                <!-- Comment Section -->
+                <div class="form-section">
+                    <label class="form-label">
+                        <i class="fas fa-comment-dots"></i>
+                        Nhận xét chi tiết (tùy chọn)
+                    </label>
+                    <textarea name="comment"
+                              class="form-control"
+                              placeholder="Chia sẻ chi tiết về trải nghiệm của bạn: chất lượng sân, dịch vụ, cơ sở vật chất, nhân viên..."></textarea>
+                    <div class="form-hint">
+                        <i class="fas fa-lightbulb"></i>
+                        Nhận xét chi tiết giúp người khác có thêm thông tin hữu ích
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="submit" class="btn-action btn-primary" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i>
+                        <span id="btnText">Gửi đánh giá</span>
+                    </button>
+                    <a href="@Url.Action("MyBookings", "User")" class="btn-action btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Hủy bỏ
+                    </a>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            const stars = $('.star');
+            const ratingInput = $('#ratingInput');
+            const ratingValue = $('#ratingValue');
+            const ratingDesc = $('#ratingDesc');
+            const form = $('#ratingForm');
+            const submitBtn = $('#submitBtn');
+            const btnText = $('#btnText');
+
+            const descriptions = {
+                0: 'Chọn số sao',
+                1: 'Rất không hài lòng',
+                2: 'Không hài lòng',
+                3: 'Bình thường',
+                4: 'Hài lòng',
+                5: 'Rất hài lòng'
+            };
+
+            // Star click handler
+            stars.on('click', function() {
+                const rating = $(this).data('rating');
+                ratingInput.val(rating);
+                ratingValue.text(rating);
+                ratingDesc.text(descriptions[rating]);
+
+                // Update star appearance
+                stars.each(function(index) {
+                    if (index < rating) {
+                        $(this).addClass('active');
+                    } else {
+                        $(this).removeClass('active');
+                    }
+                });
+            });
+
+            // Star hover handler
+            stars.on('mouseenter', function() {
+                const rating = $(this).data('rating');
+                stars.each(function(index) {
+                    if (index < rating) {
+                        $(this).addClass('active');
+                    } else {
+                        $(this).removeClass('active');
+                    }
+                });
+            });
+
+            // Reset on mouse leave
+            $('.stars-container').on('mouseleave', function() {
+                const currentRating = ratingInput.val();
+                stars.each(function(index) {
+                    if (index < currentRating) {
+                        $(this).addClass('active');
+                    } else {
+                        $(this).removeClass('active');
+                    }
+                });
+            });
+
+            // Form submission
+            form.on('submit', function(e) {
+                const rating = ratingInput.val();
+                
+                if (rating === '0' || rating === '') {
+                    e.preventDefault();
+                    alert('Vui lòng chọn số sao đánh giá!');
+                    return false;
+                }
+
+                // Add loading state
+                submitBtn.prop('disabled', true);
+                btnText.html('<i class="fas fa-spinner fa-spin"></i> Đang gửi...');
+            });
+        });
+    </script>
+}
